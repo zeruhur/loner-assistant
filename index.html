@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <title>Loner App</title>
+    <script src="https://unpkg.com/vue@3.0.2"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -12,20 +13,32 @@
             <h1 class="text-light">Loner Assistant</h1>
         </div>
     </nav>
-    <div class="container">
+    <div id="app" class="container">
         <div class="row">
             <div class="col-md-4">
-                <!-- <div class="card m-3" id="character">
+                <div class="card m-3" id="character">
                     <div class="card-body">
                         <h1 class="card-header my-1 card text-white bg-dark">My Character</h1>
-                        <p class="card-text p-1">
-                            <strong><span id="name"></span></strong> <span id="concept-skills-frailty"></span></br>
-                            <strong>Gear:</strong> <span id="gear"></span></br>
-                            <strong>Goal and Motive:</strong> <span id="goal-motive"></span></br>
-                            <strong>Nemesis:</strong> <span id="nemesis"></span></br>
-                            <strong>Luck:</strong> <span id="luck"></span>
+                        <p class="card-text p-1 mb-0">
+                            <strong><span id="name" contenteditable="true" >{{ name }}</span></strong> <span id="concept" contenteditable="true"></span></br>
+                            <span><strong>Skills:</strong></span>
+                            <ul id="skills" class="mb-0">                                
+                                <li v-for="skill in skills" contenteditable="true">
+                                    {{ skill }}
+                                </li>
+                            </ul>
+                            <strong>Frailty:</strong> <span id="frailty" contenteditable="true">{{ frailty }}</span></br>
+                            <span><strong>Gear:</strong></span>
+                            <ul id="gear" class="mb-0">                                
+                                <li v-for="g in gear" contenteditable="true">
+                                    {{ g }}
+                                </li>
+                            </ul>
+                            <strong>Goal and Motive:</strong> <span id="goal-motive" contenteditable="true">{{ goal }} / {{ motive }}</span></br>
+                            <strong>Nemesis:</strong> <span id="nemesis" contenteditable="true">{{ nemesis }}</span></br>
+                            <strong>Luck:</strong> <span id="luck">{{ luck }}</span>
                     </div>
-                </div> -->
+                </div>
             </div>
             <div class="col-md-4 text-center">
                 <div class="card m-3" id="oracle">
