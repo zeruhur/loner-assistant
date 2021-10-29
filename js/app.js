@@ -1,3 +1,47 @@
+const app = Vue.createApp({
+  //data, functions
+  data() {
+      return {
+          url: 'https://www.italiantranslationalliance.org',
+          showBooks: true,
+          characters : [
+            {
+
+            }
+          ],
+          name: "Zahra Nakajima", 
+          concept:  "Space Smuggler", 
+          skills:  ["Nimble", "Smart"], 
+          frailty:  "Merciful", 
+          gear:  ["Knife", "Low O2 Supplement"],
+          goal:  "obtain unknown technology",
+          motive:  "save her planet from atmosphere collapse.",
+          nemesis:  "The Naturalist Order",
+          luck: 6
+      }
+  },
+  methods: {
+      toggleShowBooks() {
+          this.showBooks = !this.showBooks
+      },
+      toggleFav(book) {
+          book.isFav = !book.isFav
+      },
+  },
+  computed: {
+      filteredBooks() {
+          return this.books.filter((book) => book.isFav)
+      }
+  }
+})
+
+app.mount('#app')
+
+
+
+
+
+
 class Character {
     constructor(
       name, 
@@ -20,6 +64,7 @@ class Character {
     }
   }
 
+  /*
 let myChar = new Character(
   "Zahra Nakajima", 
   "Space Smuggler", 
@@ -33,8 +78,11 @@ let myChar = new Character(
   );
 
 document.getElementById("name").innerHTML = myChar.name
-document.getElementById("concept-skills-frailty").innerHTML = myChar.concept + ". " + myChar.skills.join(', ') + ", " + myChar.frailty
+document.getElementById("concept").innerHTML = myChar.concept
+document.getElementById("skills").innerHTML = myChar.skills.join(', ')
+document.getElementById("frailty").innerHTML = myChar.frailty
 document.getElementById("gear").innerHTML = myChar.gear.join(', ')
 document.getElementById("goal-motive").innerHTML = myChar.goal  + " / " + myChar.motive
 document.getElementById("nemesis").innerHTML = myChar.nemesis
 document.getElementById("luck").innerHTML = myChar.luck
+*/
