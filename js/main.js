@@ -1,4 +1,13 @@
 var twistCounter = 0;
+var selector = document.getElementById("modifiers").value;
+
+function selectModifier(selector) {
+    selector = document.getElementById("modifiers").value;
+}
+
+function getRandomArrayElement(array) {
+    return array[Math.floor(Math.random() * array.length)];
+}
 
 function rollD6() {
     let result = Math.floor(Math.random() * 6) + 1;
@@ -54,35 +63,34 @@ function resetTwistCounter() {
     if (twistCounter >= 3) {
       twistCounter = 0;
     }
-}    
-
-var selector = document.getElementById("modifiers").value;
-
-function selectModifier(selector) {
-    selector = document.getElementById("modifiers").value;
 }
 
 document.getElementById("twist-counter").innerHTML = 'twist counter: ' + window.twistCounter;
 
 function invokeOracle(){
-//   var white  = rollD6();
-//   var black  = rollD6();
-//   var advantage  = rollD6();
-//   var disadvantage = rollD6();
-  var selector = document.getElementById("modifiers").value;
+    var selector = document.getElementById("modifiers").value;
+    var oracle = myOracle(selector);
 
-  var oracle = myOracle(selector);
+    document.getElementById("twist-counter").innerHTML = 'twist counter: ' + window.twistCounter;
+    document.getElementById("oracle").innerHTML = oracle;
 
-  document.getElementById("twist-counter").innerHTML = 'twist counter: ' + window.twistCounter;
-  document.getElementById("oracle").innerHTML = oracle;
-//   document.getElementById("white").innerHTML = 'white ' + white;
-//   document.getElementById("black").innerHTML = 'black ' + black;
-//   document.getElementById("advantage").innerHTML = 'advantage ' + advantage;
-//   document.getElementById("disadvantage").innerHTML = 'disadvantage ' + disadvantage;
+    if (twistCounter == 3) {
+        console.log(getRandomArrayElement(subject));
 
-  resetTwistCounter();
+        var subj = getRandomArrayElement(subject);
+        var act = getRandomArrayElement(action);
+
+        document.getElementById("subject-action").innerHTML = subj + " " + act;
+        //document.getElementById("").innerHTML = getRandomArrayElement(nextScene);
+    } else {
+        document.getElementById("subject-action").innerHTML = "";
+    }
+
+    resetTwistCounter();
 
 }
+
+
 
 class Character {
     constructor(
