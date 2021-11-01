@@ -11,16 +11,64 @@
     <script src="js/data.js"></script>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <h1 class="text-light">Loner Assistant <span class="display-6">v0.2</span></h1>
+        <div class="container-fluid">
+            <span  class="navbar-brand" href="#">
+                <img src="/assets/logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
+                Loner Assistant
+            </span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="https://zeruhur.space/loner/">Home Page</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#about" data-bs-toggle="offcanvas">About</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="https://zeruhur.itch.io/loner/">Loner on itch.io</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="https://github.com/zeruhur/loner-assistant/">Github</a>
+                  </li>
+              </div>
         </div>
     </nav>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="about" aria-labelledby="aboutLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="aboutLabel">About</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div>
+            <h4>Loner Assistant v0.3</h4>
+            <h5>A digital companion to Loner RPG</h5>
+            <p>Loner is a bare-bone freeform solo RPG designed to play with a solo character in “narrative” mode. 
+               You’ll guide your character through the story that will unravel during the game, 
+               asking closed questions to an oracle who will assume the role of Game Master. 
+               Every now and then the game will surprise you when an unexpected plot twist happens!
+            </p></br>
+            <p>Use the control buttons to invoke the Oracle. You can also generate a game prompt 
+                and the tone of the next scene to play
+            </p>
+            <p>You can also keep track on the text editor below. It autosaves every 5 seconds</p>
+            <p>The complete ruleset is available on the <a href="https://zeruhur.space/loner/">website</a> 
+                or on the <a href="https://zeruhur.itch.io/loner/">itch.io page</a>
+            </p>
+            <p>Loner 2021 by Roberto Bisceglie is released under Creative Commons License Attribution Share-Alike 4.0 </p>
+          </div>
+        </div>
+      </div>
+
     <div class="container">
         <div class="row m-1">
             <div class="col-md-4">
                 <div class="card m-2 h-100" id="character">
                     <div class="card-body">
-                        <h1 class="card-header my-1 card text-white bg-dark">My Character</h1>
+                        <h3 class="card-header my-1 card text-white bg-dark">My Character</h3>
                         <p class="card-text p-1 mb-0">
                             <strong><span id="name" contenteditable="true" >{{ name }}</span></strong> <span id="concept" contenteditable="true"></span></br>
                             <span><strong>Skills:</strong></span>
@@ -45,7 +93,7 @@
             <div class="col-md-4 text-center">
                 <div class="card m-2 h-100" id="oracle-card">
                     <div class="card-body">
-                        <h1 class="card-header my-1 card text-white bg-dark">The Oracle</h1>
+                        <h2 class="card-header my-1 card text-white bg-dark">The Oracle</h2>
                         <p class="fw-bold">Twist Counter <span id="twist-counter" class="badge bg-dark"></span></p>
                         
                         <!-- <p id="twist-counter"></p> -->
