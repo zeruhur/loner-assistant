@@ -100,7 +100,7 @@ function combat() {
 }
 
 
-document.getElementById("twist-counter").innerHTML = window.twistCounter;
+
 
 function invokeOracle(){
     let selector = document.getElementById("modifiers").value;
@@ -172,8 +172,6 @@ function askOpenQuestion() {
 
 }
 
-resetCharSheet();
-
 function editCharSheet() {
     document.getElementById('edit-char-sheet').style.display = 'none';
     document.getElementById('save-char-sheet').style.display = 'block';
@@ -218,6 +216,8 @@ function resetCharSheet() {
     document.getElementById("gear").textContent = "Gear";
     document.getElementById("goal-motive").textContent = "Goal and Motive";
     document.getElementById("nemesis").textContent = "Nemesis";
-}  
+}
 
+document.getElementById("twist-counter").innerHTML = window.twistCounter;
 document.getElementById("luck").innerHTML = '<strong>' + luck + '</strong>';
+resetCharSheet();
