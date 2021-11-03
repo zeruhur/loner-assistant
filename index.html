@@ -44,7 +44,7 @@
         </div>
         <div class="offcanvas-body">
           <div>
-            <h4>Loner Assistant v0.4</h4>
+            <h4>Loner Assistant v0.5</h4>
             <h5>A digital companion to Loner RPG</h5>
             <p>Loner is a bare-bone freeform solo RPG designed to play with a solo character in “narrative” mode. 
                You’ll guide your character through the story that will unravel during the game, 
@@ -105,6 +105,11 @@
                                 <p id="combat-outcome" class="display-6"></p>
                                 <button type="button" class="btn btn-sm btn-success m-1" onclick="endCombat()">End Combat</button>
                                 <button id="fight-button" type="button" class="btn btn-sm btn-danger m-1" onclick="fight()">Fight!</button>
+                                <select id="fight-modifiers" type="button" class="btn btn-sm m-1" onchange="selectModifier()">
+                                    <option value="advantage">Advantage</option> 
+                                    <option selected value="normal">Normal</option>
+                                    <option value="disadvantage">Disadvantage</option>
+                                </select>
                                 <!-- <button  id="reset-luck" type="button" class="btn btn-sm btn-dark m-1" onclick="resetLuck()">Reset Luck</button> -->
                             </div>
                             <p"><strong>Opponent's Luck</strong></br><span id="opponent-luck"></span></p>

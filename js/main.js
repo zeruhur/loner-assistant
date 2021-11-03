@@ -1,11 +1,18 @@
 var twistCounter = 0;
 var selector = document.getElementById("modifiers").value;
+var combatSelector = document.getElementById("fight-modifiers").value;
 var luck = 6;
 var opponentLuck = 6;
 
 const getRandomArrayElement = array => array[Math.floor(Math.random() * array.length)];
 
 const rollD6 = () => Math.floor(Math.random() * 6) + 1;
+
+
+function selectModifier() {
+    selector = document.getElementById("modifiers").value;
+    combatSelector = document.getElementById("fight-modifiers").value;
+}
 
 function resetOracle() {
     document.getElementById("oracle").className = "d-none";
@@ -75,7 +82,7 @@ function myOracle(modifier){
     }
 
 function combat() {
-    let oracle = myOracle(selector);
+    let oracle = myOracle(combatSelector);
     let damage = 0;
 
     if (oracle === "Yes, and...") {
