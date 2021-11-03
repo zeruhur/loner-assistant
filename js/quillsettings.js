@@ -26,7 +26,7 @@ quill.on('text-change', function(delta) {
     change = change.compose(delta);
 });
 
-if (change.length() == 0) {
+if (change.length() == 0 || quill.getText() == "\n\n") {
   localStorage.removeItem('storedText');
 }
 
