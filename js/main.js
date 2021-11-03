@@ -102,8 +102,82 @@ function combat() {
         damage = -3;
         luck = luck + damage;
     }
-    //return damage;
-    console.log(damage, opponentLuck, luck);
+    return damage;
+    //console.log(damage, opponentLuck, luck);
+}
+
+function victory() {
+    let outcome = "continue";
+    if (opponentLuck <= 0) {
+        outcome = "win";
+    }
+    else if (luck <= 0) {
+        outcome = "lose";
+    } 
+    return outcome;
+}
+
+function renderLuck(luck) {
+    let bullet = "";
+    for (i = 0; i < luck; i++) {
+        bullet += "&#11044";
+    }
+    return bullet;
+}
+
+function resetLuck() {
+    luck = 6;
+    opponentLuck = 6;
+    document.getElementById("char-luck").innerHTML = renderLuck(luck);
+    document.getElementById("opponent-luck").innerHTML = renderLuck(opponentLuck);
+}
+
+function fight() {
+    // invoke combat
+    let damage = combat();
+    // interpreta damage in messaggio
+
+    if (damage < 0) {
+        document.getElementById("combat-outcome").innerHTML = "You Take " + Math.abs(damage) + " Harm";
+    }
+    else {
+        document.getElementById("combat-outcome").innerHTML = "You Cause " + Math.abs(damage) + " Harm";
+    }
+    // renderLuck
+    document.getElementById("char-luck").innerHTML = renderLuck(luck);
+    document.getElementById("opponent-luck").innerHTML = renderLuck(opponentLuck);
+    
+    // controlla vittoria
+    // interpreta messaggio di vittoria
+    // inibire pulsante combat (opzionale) se finito
+    let outcome = victory();
+
+    switch (outcome) {
+        case "win":
+            document.getElementById("combat-outcome").innerHTML = "You Win!";
+            opponentLuck = 6
+            document.getElementById("opponent-luck").innerHTML = renderLuck(opponentLuck);
+            break;
+        case "lose":
+            document.getElementById("combat-outcome").innerHTML = "You Lose!";
+            document.getElementById("fight-button").setAttribute("disabled");
+            break;
+    }
+}
+
+function startCombat(){
+    document.getElementById('start-combat').style.display = 'none';
+    document.getElementById("fight-button").removeAttribute("disabled");
+    document.getElementById("combat-outcome").innerHTML = "";
+    document.getElementById('combat-run').style.display = 'block';
+}
+
+function endCombat() {
+    document.getElementById("fight-button").removeAttribute("disabled");
+    document.getElementById('combat-run').style.display = 'none';
+    document.getElementById('start-combat').style.display = 'block';
+    resetLuck();
+    document.getElementById("combat-outcome").innerHTML = "";
 }
 
 function invokeOracle(){
@@ -222,9 +296,13 @@ function resetCharSheet() {
     document.getElementById("nemesis").textContent = "Nemesis";
 }
 
-document.getElementById("twist-counter").innerHTML = window.twistCounter;
-document.getElementById("luck").innerHTML = '<strong>' + luck + '</strong>';
-
 if(!localStorage.getItem('charSheet')) {
     resetCharSheet();
 }
+
+document.getElementById("char-luck").innerHTML = renderLuck(luck);
+document.getElementById("opponent-luck").innerHTML = renderLuck(opponentLuck);
+document.getElementById("twist-counter").innerHTML = twistCounter;
+document.getElementById("luck").innerHTML = '<strong>' + luck + '</strong>';
+
+

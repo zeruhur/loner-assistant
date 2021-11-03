@@ -95,11 +95,17 @@
                     <div class="card-body">
                         <h3 class="card-header my-1 card text-white bg-danger">Combat</h3>
                         <p class="card-text p-1 mb-0">
-                            <p><strong>Character's Luck</strong></br><span>&#11044;&#11044;&#11044;&#11044;&#11044;&#11044;</span></p>
-                            <div>
-                                <button type="button" class="btn btn-lg btn-outline-danger m-1" onclick="combat()">START</button>
+                            <p><strong>Character's Luck</strong></br><span id="char-luck"></span></p>
+                            <div id="start-combat">
+                                <button type="button" class="btn btn-lg btn-outline-danger m-1" onclick="startCombat()">START!</button>
                             </div>
-                            <p><strong>Opponent's Luck</strong></br><span>&#11044;&#11044;&#11044;&#11044;&#11044;&#11044;</span></p>
+                            <div id="combat-run" style="display: none;">
+                                <p id="combat-outcome" class="display-6"></p>
+                                <button type="button" class="btn btn-sm btn-success m-1" onclick="endCombat()">End Combat</button>
+                                <button id="fight-button" type="button" class="btn btn-sm btn-danger m-1" onclick="fight()">Fight!</button>
+                                <!-- <button  id="reset-luck" type="button" class="btn btn-sm btn-dark m-1" onclick="resetLuck()">Reset Luck</button> -->
+                            </div>
+                            <p"><strong>Opponent's Luck</strong></br><span id="opponent-luck"></span></p>
                         </p>
                     </div>
                 </div>
