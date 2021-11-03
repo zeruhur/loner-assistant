@@ -26,6 +26,10 @@ quill.on('text-change', function(delta) {
     change = change.compose(delta);
 });
 
+if (change.length() == 0) {
+  localStorage.removeItem('storedText');
+}
+
 if (storedText) {
   quill.updateContents(storedText);
 }
