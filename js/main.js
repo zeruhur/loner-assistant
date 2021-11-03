@@ -99,9 +99,6 @@ function combat() {
 
 }
 
-
-
-
 function invokeOracle(){
     let selector = document.getElementById("modifiers").value;
     let oracle = myOracle(selector);
