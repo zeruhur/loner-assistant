@@ -5,14 +5,9 @@ function selectModifier(selector) {
     selector = document.getElementById("modifiers").value;
 }
 
-function getRandomArrayElement(array) {
-    return array[Math.floor(Math.random() * array.length)];
-}
+const getRandomArrayElement = array => array[Math.floor(Math.random() * array.length)];
 
-function rollD6() {
-    let result = Math.floor(Math.random() * 6) + 1;
-    return result;
-}
+const rollD6 = () => Math.floor(Math.random() * 6) + 1;
 
 function resetOracle() {
     document.getElementById("oracle").className = "d-none";
@@ -217,9 +212,9 @@ let myChar = new Character(
 
 document.getElementById("name").innerHTML = myChar.name;
 document.getElementById("concept").innerHTML = myChar.concept;
-document.getElementById("skills").innerHTML = myChar.skills.join(', ');
+document.getElementById("skills").innerHTML = myChar.skills.map(n => "<li>" + n + "</li>").join("");
 document.getElementById("frailty").innerHTML = myChar.frailty;
-document.getElementById("gear").innerHTML = myChar.gear.join(', ');
+document.getElementById("gear").innerHTML = myChar.gear.map(n => "<li>" + n + "</li>").join("");
 document.getElementById("goal-motive").innerHTML = myChar.goal  + " / " + myChar.motive;
 document.getElementById("nemesis").innerHTML = myChar.nemesis;
 document.getElementById("luck").innerHTML = myChar.luck;

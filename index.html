@@ -63,30 +63,39 @@
         </div>
       </div>
 
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="character" aria-labelledby="characterLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="characterLabel">Character Sheet</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div>
+            <p>
+                <strong><span id="name" contenteditable="true" ></span></strong> 
+                <span id="concept" contenteditable="true"></span></br>
+                <span><strong>Skills:</strong></span>
+                <ul id="skills" class="mb-0"></ul>
+                <strong>Frailty:</strong> <span id="frailty" contenteditable="true"></span></br>
+                <span><strong>Gear:</strong></span>
+                <ul id="gear" class="mb-0"></ul>
+                <strong>Goal and Motive:</strong> <span id="goal-motive" contenteditable="true"></span></br>
+                <strong>Nemesis:</strong> <span id="nemesis" contenteditable="true"></span></br>
+                <strong>Luck:</strong> <span id="luck"></span>
+            </p>    
+          </div>
+        </div>
+      </div>
+
+
     <div class="container">
         <div class="row m-1">
             <div class="col-md-4">
-                <div class="card m-2 h-100" id="character">
+                <div class="card m-2 h-100" id="combat">
                     <div class="card-body">
-                        <h3 class="card-header my-1 card text-white bg-dark">My Character</h3>
+                        <h3 class="card-header my-1 card text-white bg-danger">Combat</h3>
                         <p class="card-text p-1 mb-0">
-                            <strong><span id="name" contenteditable="true" >{{ name }}</span></strong> <span id="concept" contenteditable="true"></span></br>
-                            <span><strong>Skills:</strong></span>
-                            <ul id="skills" class="mb-0">                                
-                                <li contenteditable="true">
-                                    {{ skill }}
-                                </li>
-                            </ul>
-                            <strong>Frailty:</strong> <span id="frailty" contenteditable="true">{{ frailty }}</span></br>
-                            <span><strong>Gear:</strong></span>
-                            <ul id="gear" class="mb-0">                                
-                                <li contenteditable="true">
-                                    {{ g }}
-                                </li>
-                            </ul>
-                            <strong>Goal and Motive:</strong> <span id="goal-motive" contenteditable="true">{{ goal }} / {{ motive }}</span></br>
-                            <strong>Nemesis:</strong> <span id="nemesis" contenteditable="true">{{ nemesis }}</span></br>
-                            <strong>Luck:</strong> <span id="luck">{{ luck }}</span>
+
+                        </p>
                     </div>
                 </div>
             </div>
@@ -126,16 +135,17 @@
             <div class="col-md-4 text-center">
                 <div class="card m-2 h-100" id="buttons">
                     <div class="card-body">
+                        <button type="button" class="btn btn-outline-dark m-1" onclick="generateHook()">Game Prompt</button>
+                        <a class="btn btn-danger m-1" href="#character" data-bs-toggle="offcanvas">Character Sheet</a> 
                         <button type="button" class="btn btn-dark m-1" onclick="invokeOracle()">Ask the oracle</button>
                         <select id="modifiers" type="button" class="btn m-1" onchange="selectModifier()">
                             <option value="advantage">Advantage</option> 
                             <option selected value="normal">Normal</option>
                             <option value="disadvantage">Disadvantage</option>
                         </select>
-                        <!-- <button type="button" class="btn btn-danger m-1">Combat</button> -->
+                        <!-- <button type="button" class="btn btn-danger m-1"></button> -->                                                
                         <button type="button" class="btn btn-outline-secondary m-1" onclick="askOpenQuestion()">Open question</button>
-                        <button type="button" class="btn btn-outline-dark m-1" onclick="generateHook()">Game Prompt</button>                     
-                        <button type="button" class="btn btn-outline-success m-1" onclick="askNextScene()">Next Scene</button>
+                        <button type="button" class="btn btn-success m-1" onclick="askNextScene()">Next Scene</button>
 
                     </div>
                 </div>
