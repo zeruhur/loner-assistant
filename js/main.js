@@ -1,9 +1,6 @@
 var twistCounter = 0;
 var selector = document.getElementById("modifiers").value;
-
-function selectModifier(selector) {
-    selector = document.getElementById("modifiers").value;
-}
+var luck = 6;
 
 const getRandomArrayElement = array => array[Math.floor(Math.random() * array.length)];
 
@@ -175,46 +172,52 @@ function askOpenQuestion() {
 
 }
 
-class Character {
-    constructor(
-      name, 
-      concept, 
-      skills, 
-      frailty, 
-      gear, 
-      goal, 
-      motive, 
-      nemesis) {
-        this.name = name;
-        this.concept = concept;
-        this.skills = skills;
-        this.frailty = frailty;
-        this.gear = gear;
-        this.goal = goal;
-        this.motive = motive;
-        this.nemesis = nemesis;
-        this.luck = 6;
+resetCharSheet();
+
+function editCharSheet() {
+    document.getElementById('edit-char-sheet').style.display = 'none';
+    document.getElementById('save-char-sheet').style.display = 'block';
+    document.getElementById('name').setAttribute('contenteditable','true');
+    document.getElementById('concept').setAttribute('contenteditable','true');
+    document.getElementById('skills').setAttribute('contenteditable','true');
+    document.getElementById('frailty').setAttribute('contenteditable','true');
+    document.getElementById('gear').setAttribute('contenteditable','true');
+    document.getElementById('goal-motive').setAttribute('contenteditable','true');
+    document.getElementById('nemesis').setAttribute('contenteditable','true');
+}
+
+function saveCharSheet() {
+    document.getElementById('save-char-sheet').style.display = 'none';
+    document.getElementById('edit-char-sheet').style.display = 'block';
+    localStorage.setItem('charSheet', true);
+    localStorage.setItem('name', document.getElementById('name').textContent);
+    localStorage.setItem('concept', document.getElementById('concept').textContent);
+    localStorage.setItem('skills', document.getElementById('skills').textContent);
+    localStorage.setItem('frailty', document.getElementById('frailty').textContent);
+    localStorage.setItem('gear', document.getElementById('gear').textContent);
+    localStorage.setItem('goal-motive', document.getElementById('goal-motive').textContent);
+    localStorage.setItem('nemesis', document.getElementById('nemesis').textContent);
     }
-  }
+     
+    if(localStorage.getItem('charSheet')){
+        document.getElementById("name").textContent = localStorage.getItem('name');
+        document.getElementById("concept").textContent = localStorage.getItem('concept');
+        document.getElementById("skills").textContent = localStorage.getItem('skills');
+        document.getElementById("frailty").textContent = localStorage.getItem('frailty');
+        document.getElementById("gear").textContent = localStorage.getItem('gear');
+        document.getElementById("goal-motive").textContent = localStorage.getItem('goal-motive');
+        document.getElementById("nemesis").textContent = localStorage.getItem('nemesis');
+    }
 
+function resetCharSheet() {
+    localStorage.setItem('charSheet', false);
+    document.getElementById("name").textContent = "Character Name";
+    document.getElementById("concept").textContent = "Concept";
+    document.getElementById("skills").textContent = "Skills";
+    document.getElementById("frailty").textContent = "Frailty";
+    document.getElementById("gear").textContent = "Gear";
+    document.getElementById("goal-motive").textContent = "Goal and Motive";
+    document.getElementById("nemesis").textContent = "Nemesis";
+}  
 
-let myChar = new Character(
-  "Zahra Nakajima", 
-  "Space Smuggler", 
-  ["Nimble", "Smart"], 
-  "Merciful", 
-  ["Knife", 
-  "Low O2 Supplement"],
-  "obtain unknown technology",
-  "save her planet from atmosphere collapse.",
-  "The Naturalist Order",
-  );
-
-document.getElementById("name").innerHTML = myChar.name;
-document.getElementById("concept").innerHTML = myChar.concept;
-document.getElementById("skills").innerHTML = myChar.skills.map(n => "<li>" + n + "</li>").join("");
-document.getElementById("frailty").innerHTML = myChar.frailty;
-document.getElementById("gear").innerHTML = myChar.gear.map(n => "<li>" + n + "</li>").join("");
-document.getElementById("goal-motive").innerHTML = myChar.goal  + " / " + myChar.motive;
-document.getElementById("nemesis").innerHTML = myChar.nemesis;
-document.getElementById("luck").innerHTML = myChar.luck;
+document.getElementById("luck").innerHTML = '<strong>' + luck + '</strong>';
