@@ -1,4 +1,5 @@
 var Delta = Quill.import('delta');
+const storedText = JSON.parse(localStorage.getItem('storedText'));
 
 var quill = new Quill('#editor', {
     modules: {
@@ -25,24 +26,21 @@ quill.on('text-change', function(delta) {
     change = change.compose(delta);
 });
 
+if (storedText) {
+  quill.updateContents(storedText);
+}
+
 // Save periodically
 setInterval(function() {
     if (change.length() > 0) {
-        console.log('Saving changes', change);
-    /* 
-    Send partial changes
-    $.post('/your-endpoint', { 
-    partial: JSON.stringify(change) 
-    });
-    
-    Send entire document
-    $.post('/your-endpoint', { 
-    doc: JSON.stringify(quill.getContents())
-    });
-    */
-    change = new Delta();
+      console.log('Saving changes', change);
+
+      const data = JSON.stringify(quill.getContents())
+      localStorage.setItem('storedText', data);
+
+      change = new Delta();
     }   
-}, 5*1000);
+}, 3*1000);
 
 // Check for unsaved data
 window.onbeforeunload = function() {
@@ -50,6 +48,8 @@ window.onbeforeunload = function() {
         return 'There are unsaved changes. Are you sure you want to leave?';
     }
 }
+
+
 
 
 //quill.on('text-change', function(delta, source) {
