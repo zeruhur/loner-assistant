@@ -252,7 +252,7 @@ function askOpenQuestion() {
 
 function editCharSheet() {
     document.getElementById('edit-char-sheet').style.display = 'none';
-    document.getElementById('save-char-sheet').style.display = 'block';
+    document.getElementById('save-char-sheet').style.display = 'inline';
     document.getElementById('name').setAttribute('contenteditable','true');
     document.getElementById('concept').setAttribute('contenteditable','true');
     document.getElementById('skills').setAttribute('contenteditable','true');
@@ -264,7 +264,7 @@ function editCharSheet() {
 
 function saveCharSheet() {
     document.getElementById('save-char-sheet').style.display = 'none';
-    document.getElementById('edit-char-sheet').style.display = 'block';
+    document.getElementById('edit-char-sheet').style.display = 'inline';
     localStorage.setItem('charSheet', true);
     localStorage.setItem('name', document.getElementById('name').textContent);
     localStorage.setItem('concept', document.getElementById('concept').textContent);
