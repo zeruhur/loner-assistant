@@ -1,6 +1,7 @@
 var twistCounter = 0;
 var selector = document.getElementById("modifiers").value;
 var luck = 6;
+var opponentLuck = 6;
 
 const getRandomArrayElement = array => array[Math.floor(Math.random() * array.length)];
 
@@ -76,27 +77,33 @@ function myOracle(modifier){
 function combat() {
     let oracle = myOracle(selector);
     let damage = 0;
-    let hit = 0;
 
     if (oracle === "Yes, and...") {
-        hit = 3;
+        damage = 3;
+        opponentLuck = opponentLuck - damage;
     }
     else if (oracle === "Yes") {
-        hit = 2;
+        damage = 2;
+        opponentLuck = opponentLuck - damage;
     }
     else if (oracle === "Yes, but...") {
-        hit = 1;
+        damage = 1;
+        opponentLuck = opponentLuck - damage;
     }
     else if (oracle === "No, but...") {
-        damage = 1;
+        damage = -1;
+        luck = luck + damage;
     }
     else if (oracle === "No") {
-        damage = 2;
+        damage = -2;
+        luck = luck + damage;
     }
     else if (oracle === "No, and...") {
-        damage = 3;
+        damage = -3;
+        luck = luck + damage;
     }
-
+    //return damage;
+    console.log(damage, opponentLuck, luck);
 }
 
 function invokeOracle(){
@@ -217,4 +224,7 @@ function resetCharSheet() {
 
 document.getElementById("twist-counter").innerHTML = window.twistCounter;
 document.getElementById("luck").innerHTML = '<strong>' + luck + '</strong>';
-resetCharSheet();
+
+if(!localStorage.getItem('charSheet')) {
+    resetCharSheet();
+}
