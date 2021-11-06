@@ -9,6 +9,7 @@
 </head>
 <body>
     <script src="js/data.js"></script>
+    <script src="js/icons.js"></script>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -165,6 +166,21 @@
                         <hr>
                         <button type="button" class="btn btn-outline-secondary m-1" onclick="askOpenQuestion()">Open question</button>
                         <button type="button" class="btn btn-success m-1" onclick="askNextScene()">Next Scene</button>
+                        <hr>
+                        <button id="story-dice-button" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#story-dice">
+                            Story Dice
+                        </button>
+                        <select id="story-dice-n" type="button" class="btn m-1">
+                            <option value="1">1</option> 
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option> 
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option> 
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -178,6 +194,22 @@
             </div>
         </div>
     </div>
+
+    <div id="story-dice" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Story Dice</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div id="story-dice-body" class="row text-center"></div>
+                    </div>
+                </div>
+          </div>
+        </div>
+      </div>
 
     <script src="js/main.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
