@@ -45,7 +45,7 @@
         </div>
         <div class="offcanvas-body">
           <div>
-            <h4>Loner Assistant v0.5</h4>
+            <h4>Loner Assistant v0.6</h4>
             <h5>A digital companion to Loner RPG</h5>
             <p>Loner is a bare-bone freeform solo RPG designed to play with a solo character in “narrative” mode. 
                You’ll guide your character through the story that will unravel during the game, 
@@ -60,6 +60,9 @@
                 or on the <a href="https://zeruhur.itch.io/loner/">itch.io page</a>
             </p>
             <p>Loner 2021 by Roberto Bisceglie is released under Creative Commons License Attribution 4.0 </p>
+            <p>Story Dice make use of <a href="https://game-icons.net/">game-icons.net</a> collection, 
+                released under Creative Commons License Attribution 3.0 Unported
+            </p>
           </div>
         </div>
       </div>
@@ -158,7 +161,7 @@
                         <a class="btn btn-danger m-1" href="#character" data-bs-toggle="offcanvas">Character Sheet</a>
                         <hr>
                         <button type="button" class="btn btn-dark m-1" onclick="invokeOracle()">Ask the oracle</button>
-                        <select id="modifiers" type="button" class="btn m-1" onchange="selectModifier()">
+                        <select id="modifiers" type="button" class="btn m-1" onchange="selectModifier()"  data-bs-placement="bottom" title="Select (dis)advantage">
                             <option value="advantage">Advantage</option> 
                             <option selected value="normal">Normal</option>
                             <option value="disadvantage">Disadvantage</option>
@@ -167,10 +170,10 @@
                         <button type="button" class="btn btn-outline-secondary m-1" onclick="askOpenQuestion()">Open question</button>
                         <button type="button" class="btn btn-success m-1" onclick="askNextScene()">Next Scene</button>
                         <hr>
-                        <button id="story-dice-button" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#story-dice">
+                        <button id="story-dice-button" type="button" class="btn btn-dark m-1" data-bs-toggle="modal" data-bs-target="#story-dice">
                             Story Dice
                         </button>
-                        <select id="story-dice-n" type="button" class="btn m-1">
+                        <select id="story-dice-n" type="button" class="btn m-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Select number of dice to roll">
                             <option value="1">1</option> 
                             <option value="2">2</option>
                             <option value="3">3</option>
