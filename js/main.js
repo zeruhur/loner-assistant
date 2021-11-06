@@ -310,6 +310,29 @@ if(!localStorage.getItem('charSheet')) {
 document.getElementById("char-luck").innerHTML = renderLuck(luck);
 document.getElementById("opponent-luck").innerHTML = renderLuck(opponentLuck);
 document.getElementById("twist-counter").innerHTML = twistCounter;
-document.getElementById("luck").innerHTML = '<strong>' + luck + '</strong>';
+//document.getElementById("luck").innerHTML = '<strong>' + luck + '</strong>';
 
+// get random icon from icon folder
+const iconpath = 'assets/icons/';
+var myModal = document.getElementById("story-dice");
+var myModalBody = document.getElementById("story-dice-body");
 
+//$('.el').append("<img src='"+path+imgs[i]+"'>").hide().fadeIn(2000);
+
+// function generateStoryDice() {
+
+// }
+
+myModal.addEventListener('show.bs.modal', function () {
+    let n = document.getElementById("story-dice-n").value
+    myModalBody.innerHTML = "";
+    for (i = 0; i < n; i++) {
+        let icon = getRandomArrayElement(icons);
+        let div = document.createElement('div');
+        div.className = "col-4 my-1";
+        console.log(div);
+        div.innerHTML = '<img src="' + iconpath + icon + '" width="100">'
+        myModalBody.appendChild(div);
+        //<div class="col-md-4"><img src="assets/icons/whale-tail.svg" alt=""></div>
+    }
+})
