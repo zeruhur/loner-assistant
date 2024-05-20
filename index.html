@@ -73,23 +73,32 @@
           <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <div>
-            <p id="char-sheet">
-                <strong>Name: </strong><span id="name" class="border"></span></br>
-                <strong>Concept: </strong><span id="concept" class="border"></span></br>
-                <strong>Skills: </strong><span id="skills" class="border"></span></br>
-                <strong>Frailty: </strong><span id="frailty" class="border"></span></br>
-                <strong>Gear: </strong><span id="gear" class="border"></span></br>
-                <strong>Goal and Motive: </strong> <span id="goal-motive" class="border"></span></br>
-                <strong>Nemesis: </strong><span id="nemesis" class="border"></span></br>
-                <!-- <strong>Luck: </strong><span id="luck" class="border"></span> -->
-            </p>
-            </div>
             <div>
-                <button type="button" id="reset-char-sheet" class="btn btn-danger m-1" onclick="resetCharSheet()">Reset</button>
-                <button type="button" id="edit-char-sheet" class="btn btn-success m-1" onclick="editCharSheet()">Edit</button>
+                <strong>Name: </strong><span id="name" class="border" contenteditable="false">Character Name</span><br>
+                <strong>Concept: </strong><span id="concept" class="border" contenteditable="false">Concept</span><br>
+                <strong>Skills: </strong>
+                <ul id="skills-list" class="border">
+                  <!-- Qui verranno aggiunti dinamicamente gli elementi delle skills -->
+                </ul>
+                <button type="button" class="btn btn-secondary" onclick="addToList('skills')">Add Skill</button><br>
+                <strong>Frailty: </strong>
+                <ul id="frailty-list" class="border">
+                  <!-- Qui verranno aggiunti dinamicamente gli elementi delle frailty -->
+                </ul>
+                <button type="button" class="btn btn-secondary" onclick="addToList('frailty')">Add Frailty</button><br>
+                <strong>Gear: </strong>
+                <ul id="gear-list" class="border">
+                  <!-- Qui verranno aggiunti dinamicamente gli elementi delle gear -->
+                </ul>
+                <button type="button" class="btn btn-secondary" onclick="addToList('gear')">Add Gear</button><br>
+                <strong>Goal and Motive: </strong><span id="goal-motive" class="border" contenteditable="false">Goal and Motive</span><br>
+                <strong>Nemesis: </strong><span id="nemesis" class="border" contenteditable="false">Nemesis</span><br>
+              </div>
+              <div>
+                <button type="button" id="reset-char-sheet" class="btn btn-danger m-1" onclick="confirmResetCharSheet()">Reset</button>
+                <button type="button" id="edit-char-sheet" class="btn btn-success m-1" onclick="toggleEdit()">Edit</button>
                 <button type="button" id="save-char-sheet" class="btn btn-danger m-1" onclick="saveCharSheet()" style="display: none;">Save</button>
-          </div>
+              </div>                                           
         </div>
       </div>
 
