@@ -257,55 +257,164 @@ function askOpenQuestion() {
 
 }
 
-function editCharSheet() {
-    document.getElementById('edit-char-sheet').style.display = 'none';
-    document.getElementById('save-char-sheet').style.display = 'inline';
-    document.getElementById('name').setAttribute('contenteditable','true');
-    document.getElementById('concept').setAttribute('contenteditable','true');
-    document.getElementById('skills').setAttribute('contenteditable','true');
-    document.getElementById('frailty').setAttribute('contenteditable','true');
-    document.getElementById('gear').setAttribute('contenteditable','true');
-    document.getElementById('goal-motive').setAttribute('contenteditable','true');
-    document.getElementById('nemesis').setAttribute('contenteditable','true');
-}
+// character sheet
 
-function saveCharSheet() {
-    document.getElementById('save-char-sheet').style.display = 'none';
-    document.getElementById('edit-char-sheet').style.display = 'inline';
-    localStorage.setItem('charSheet', true);
-    localStorage.setItem('name', document.getElementById('name').textContent);
-    localStorage.setItem('concept', document.getElementById('concept').textContent);
-    localStorage.setItem('skills', document.getElementById('skills').textContent);
-    localStorage.setItem('frailty', document.getElementById('frailty').textContent);
-    localStorage.setItem('gear', document.getElementById('gear').textContent);
-    localStorage.setItem('goal-motive', document.getElementById('goal-motive').textContent);
-    localStorage.setItem('nemesis', document.getElementById('nemesis').textContent);
+// Variabili globali
+let isEditMode = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const characterSheet = {
+        name: document.getElementById('name'),
+        concept: document.getElementById('concept'),
+        skillsList: document.getElementById('skills-list'),
+        frailtyList: document.getElementById('frailty-list'),
+        gearList: document.getElementById('gear-list'),
+        goalMotive: document.getElementById('goal-motive'),
+        nemesis: document.getElementById('nemesis'),
+        editButton: document.getElementById('edit-char-sheet'),
+        saveButton: document.getElementById('save-char-sheet'),
+        resetButton: document.getElementById('reset-char-sheet')
+    };
+
+    function toggleEdit() {
+        const isEditable = characterSheet.name.contentEditable === "true";
+        const newEditState = !isEditable;
+
+        characterSheet.name.contentEditable = newEditState;
+        characterSheet.concept.contentEditable = newEditState;
+        characterSheet.goalMotive.contentEditable = newEditState;
+        characterSheet.nemesis.contentEditable = newEditState;
+
+        characterSheet.editButton.style.display = newEditState ? 'none' : 'inline-block';
+        characterSheet.saveButton.style.display = newEditState ? 'inline-block' : 'none';
+
+        toggleListItemsEditable(characterSheet.skillsList, newEditState);
+        toggleListItemsEditable(characterSheet.frailtyList, newEditState);
+        toggleListItemsEditable(characterSheet.gearList, newEditState);
     }
-     
-    if(localStorage.getItem('charSheet')){
-        document.getElementById("name").textContent = localStorage.getItem('name');
-        document.getElementById("concept").textContent = localStorage.getItem('concept');
-        document.getElementById("skills").textContent = localStorage.getItem('skills');
-        document.getElementById("frailty").textContent = localStorage.getItem('frailty');
-        document.getElementById("gear").textContent = localStorage.getItem('gear');
-        document.getElementById("goal-motive").textContent = localStorage.getItem('goal-motive');
-        document.getElementById("nemesis").textContent = localStorage.getItem('nemesis');
+
+    function toggleListItemsEditable(list, isEditable) {
+        const items = list.querySelectorAll('li');
+        items.forEach(item => {
+            item.contentEditable = isEditable;
+        });
     }
 
-function resetCharSheet() {
-    localStorage.setItem('charSheet', false);
-    document.getElementById("name").textContent = "Character Name";
-    document.getElementById("concept").textContent = "Concept";
-    document.getElementById("skills").textContent = "Skills";
-    document.getElementById("frailty").textContent = "Frailty";
-    document.getElementById("gear").textContent = "Gear";
-    document.getElementById("goal-motive").textContent = "Goal and Motive";
-    document.getElementById("nemesis").textContent = "Nemesis";
+    function saveCharSheet() {
+        const characterData = {
+            name: characterSheet.name.innerText,
+            concept: characterSheet.concept.innerText,
+            skills: getListItems(characterSheet.skillsList),
+            frailty: getListItems(characterSheet.frailtyList),
+            gear: getListItems(characterSheet.gearList),
+            goalMotive: characterSheet.goalMotive.innerText,
+            nemesis: characterSheet.nemesis.innerText
+        };
+
+        localStorage.setItem('characterSheet', JSON.stringify(characterData));
+        toggleEdit();
+    }
+
+    function getListItems(list) {
+        const items = list.querySelectorAll('li span');
+        return Array.from(items).map(item => item.innerText);
+    }
+
+    function loadCharSheet() {
+        const characterData = JSON.parse(localStorage.getItem('characterSheet'));
+        if (characterData) {
+            characterSheet.name.innerText = characterData.name;
+            characterSheet.concept.innerText = characterData.concept;
+            setListItems(characterSheet.skillsList, characterData.skills);
+            setListItems(characterSheet.frailtyList, characterData.frailty);
+            setListItems(characterSheet.gearList, characterData.gear);
+            characterSheet.goalMotive.innerText = characterData.goalMotive;
+            characterSheet.nemesis.innerText = characterData.nemesis;
+        }
+    }
+
+    function setListItems(list, items) {
+        list.innerHTML = '';
+        items.forEach(item => {
+            const li = document.createElement('li');
+            const span = document.createElement('span');
+            span.innerText = item;
+            span.contentEditable = characterSheet.name.contentEditable;
+            li.appendChild(span);
+
+            const removeButton = document.createElement('button');
+            removeButton.innerText = 'Remove';
+            removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ms-2');
+            removeButton.onclick = function() {
+                list.removeChild(li);
+            };
+            li.appendChild(removeButton);
+
+            list.appendChild(li);
+        });
+    }
+
+    function addToList(listId) {
+        const list = document.getElementById(`${listId}-list`);
+        const li = document.createElement('li');
+        const span = document.createElement('span');
+        span.contentEditable = characterSheet.name.contentEditable;
+        span.innerText = 'New Item';
+        li.appendChild(span);
+
+        const removeButton = document.createElement('button');
+        removeButton.innerText = 'Remove';
+        removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ms-2');
+        removeButton.onclick = function() {
+            list.removeChild(li);
+        };
+        li.appendChild(removeButton);
+
+        list.appendChild(li);
+    }
+
+    function confirmResetCharSheet() {
+        if (confirm("Are you sure you want to reset the character sheet?")) {
+            resetCharSheet();
+        }
+    }
+
+    function resetCharSheet() {
+        localStorage.removeItem('characterSheet');
+        characterSheet.name.innerText = 'Character Name';
+        characterSheet.concept.innerText = 'Concept';
+        characterSheet.skillsList.innerHTML = '';
+        characterSheet.frailtyList.innerHTML = '';
+        characterSheet.gearList.innerHTML = '';
+        characterSheet.goalMotive.innerText = 'Goal and Motive';
+        characterSheet.nemesis.innerText = 'Nemesis';
+    }
+
+    characterSheet.editButton.addEventListener('click', toggleEdit);
+    characterSheet.saveButton.addEventListener('click', saveCharSheet);
+    characterSheet.resetButton.addEventListener('click', confirmResetCharSheet);
+
+    document.querySelectorAll('.btn-secondary').forEach(button => {
+        button.addEventListener('click', function() {
+            const listId = button.getAttribute('onclick').match(/'(\w+)'/)[1];
+            addToList(listId);
+        });
+    });
+
+    loadCharSheet();
+});
+
+
+
+// Funzione per inizializzare la pagina
+function initPage() {
+  loadCharSheet();
+  toggleEdit(); // Disabilita la modifica all'avvio della pagina
 }
 
-if(!localStorage.getItem('charSheet')) {
-    resetCharSheet();
-}
+initPage(); // Chiamata alla funzione di inizializzazione
+
+  
 
 document.getElementById("char-luck").innerHTML = renderLuck(luck);
 document.getElementById("opponent-luck").innerHTML = renderLuck(opponentLuck);
