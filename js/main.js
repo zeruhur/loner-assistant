@@ -1,447 +1,453 @@
-var twistCounter = 0;
-var selector = document.getElementById("modifiers").value;
-var combatSelector = document.getElementById("fight-modifiers").value;
-var luck = 6;
-var opponentLuck = 6;
+/**
+ * LONER ASSISTANT v2.0 - Main Application Controller
+ * 
+ * This file ONLY handles:
+ * - Application initialization
+ * - State management (save/load)
+ * - Coordinating between modules
+ * - Theme switching
+ * - Debug tools
+ */
 
-const getRandomArrayElement = array => array[Math.floor(Math.random() * array.length)];
+// Global state
+let currentCampaignId = null;
+let currentSessionId = null;
+let currentCharacterId = null;
 
-const rollD6 = () => Math.floor(Math.random() * 6) + 1;
-
-
-function selectModifier() {
-    selector = document.getElementById("modifiers").value;
-    combatSelector = document.getElementById("fight-modifiers").value;
+/**
+ * Save current state to localStorage
+ */
+function saveAppState() {
+  localStorage.setItem('lonerAppState', JSON.stringify({
+    campaignId: currentCampaignId,
+    sessionId: currentSessionId,
+    characterId: currentCharacterId
+  }));
+  console.log('💾 App state saved');
 }
 
-function resetOracle() {
-    document.getElementById("oracle").className = "d-none";
-    document.getElementById("subject-action").className = "d-none";
-}
-
-function resetScene() {
-    document.getElementById("next-scene").className = "d-none";
-}
-
-function resetHook() {
-    document.getElementById("hook-p").className = "d-none";
-}
-
-function resetOpenQuestion() {
-    document.getElementById("open-question").className = "d-none";
-}
-
-function resetTwistCounter() {
-    if (twistCounter >= 3) {
-      twistCounter = 0;
+/**
+ * Load state from localStorage
+ */
+function loadAppState() {
+  const saved = localStorage.getItem('lonerAppState');
+  if (saved) {
+    try {
+      const state = JSON.parse(saved);
+      currentCampaignId = state.campaignId;
+      currentSessionId = state.sessionId;
+      currentCharacterId = state.characterId;
+      console.log('📂 App state loaded:', state);
+      return state;
+    } catch (e) {
+      console.warn('Could not parse saved app state:', e);
     }
+  }
+  return null;
 }
 
-function myOracle(modifier){
-    let white  = rollD6();
-    let black  = rollD6();
-    let advantage  = rollD6();
-    let disadvantage = rollD6();
+/**
+ * Get current app state
+ */
+function getState() {
+  return {
+    campaignId: currentCampaignId,
+    sessionId: currentSessionId,
+    characterId: currentCharacterId
+  };
+}
 
-    let oracle = "";
+/**
+ * Set current campaign and session
+ */
+function setCurrentCampaign(campaignId, sessionId) {
+  currentCampaignId = campaignId;
+  currentSessionId = sessionId;
+  saveAppState();
+}
 
-    function yesNo (black, white) {
-        if (white > black) {
-            return "Yes";
-        } 
-        else if (white === black) {
-            twistCounter++;
-            return "Yes";
-        }
-        else {
-            return "No";
-        } 
-    }
+/**
+ * Clear current campaign
+ */
+function clearCurrentCampaign() {
+  currentCampaignId = null;
+  currentSessionId = null;
+  saveAppState();
+}
 
-    function andBut(black, white) {
-        if (black === white) {
-            return ", but...";
-        }
-        else if (black < 4 && white < 4) {
-            return ", but...";
-        } 
-        else if (black > 3 && white > 3) {
-            return ", and...";
-        } else return "";
-    }
+/**
+ * Set current character
+ */
+function setCurrentCharacter(characterId) {
+  currentCharacterId = characterId;
+  saveAppState();
+}
+
+/**
+ * Clear current character
+ */
+function clearCurrentCharacter() {
+  currentCharacterId = null;
+  saveAppState();
+}
+
+/**
+ * Initialize the application when page loads
+ */
+
+document.addEventListener('DOMContentLoaded', async function() {
+  console.log('🎲 Loner Assistant v2.0 starting...');
   
-    if (modifier == "advantage" && advantage > white) {
-        return oracle = yesNo(black, advantage) + andBut(black, advantage);
-    }
-    else if (modifier == "disadvantage" && disadvantage > black) {
-        return oracle = yesNo(disadvantage, white) + andBut(disadvantage, white);
-    }
-    else {
-        return oracle = yesNo(black, white) + andBut(black, white);
-        }
-    }
-
-function combat() {
-    let oracle = myOracle(combatSelector);
-    let damage = 0;
-
-    if (oracle === "Yes, and...") {
-        damage = 3;
-        opponentLuck = opponentLuck - damage;
-    }
-    else if (oracle === "Yes") {
-        damage = 2;
-        opponentLuck = opponentLuck - damage;
-    }
-    else if (oracle === "Yes, but...") {
-        damage = 1;
-        opponentLuck = opponentLuck - damage;
-    }
-    else if (oracle === "No, but...") {
-        damage = -1;
-        luck = luck + damage;
-    }
-    else if (oracle === "No") {
-        damage = -2;
-        luck = luck + damage;
-    }
-    else if (oracle === "No, and...") {
-        damage = -3;
-        luck = luck + damage;
-    }
-    return damage;
-    //console.log(damage, opponentLuck, luck);
-}
-
-function victory() {
-    let outcome = "continue";
-    if (opponentLuck <= 0) {
-        outcome = "win";
-    }
-    else if (luck <= 0) {
-        outcome = "lose";
-    } 
-    return outcome;
-}
-
-function renderLuck(luck) {
-    let bullet = "";
-    for (i = 0; i < luck; i++) {
-        bullet += "&#11044";
-    }
-    return bullet;
-}
-
-function resetLuck() {
-    luck = 6;
-    opponentLuck = 6;
-    document.getElementById("char-luck").innerHTML = renderLuck(luck);
-    document.getElementById("opponent-luck").innerHTML = renderLuck(opponentLuck);
-}
-
-function fight() {
-    // invoke combat
-    let damage = combat();
-    // interpreta damage in messaggio
-
-    if (damage < 0) {
-        document.getElementById("combat-outcome").innerHTML = "You Take " + Math.abs(damage) + " Harm";
-    }
-    else {
-        document.getElementById("combat-outcome").innerHTML = "You Cause " + Math.abs(damage) + " Harm";
-    }
-    // renderLuck
-    document.getElementById("char-luck").innerHTML = renderLuck(luck);
-    document.getElementById("opponent-luck").innerHTML = renderLuck(opponentLuck);
+  try {
+    // 1. Initialize UI first (doesn't need database)
+    UI.initializeNavigation();
+    loadThemePreference();
+    console.log('✅ UI initialized');
     
-    // controlla vittoria
-    // interpreta messaggio di vittoria
-    // inibire pulsante combat (opzionale) se finito
-    let outcome = victory();
-
-    switch (outcome) {
-        case "win":
-            document.getElementById("combat-outcome").innerHTML = "You Win!";
-            opponentLuck = 6
-            document.getElementById("opponent-luck").innerHTML = renderLuck(opponentLuck);
-            break;
-        case "lose":
-            document.getElementById("combat-outcome").innerHTML = "You Lose!";
-            document.getElementById("fight-button").setAttribute("disabled");
-            break;
-    }
-}
-
-function startCombat(){
-    document.getElementById('start-combat').style.display = 'none';
-    document.getElementById("fight-button").removeAttribute("disabled");
-    document.getElementById("combat-outcome").innerHTML = "";
-    document.getElementById('combat-run').style.display = 'block';
-}
-
-function endCombat() {
-    document.getElementById("fight-button").removeAttribute("disabled");
-    document.getElementById('combat-run').style.display = 'none';
-    document.getElementById('start-combat').style.display = 'block';
-    resetLuck();
-    document.getElementById("combat-outcome").innerHTML = "";
-}
-
-function invokeOracle(){
-    let selector = document.getElementById("modifiers").value;
-    let oracle = myOracle(selector);
-
-    resetHook();
-    resetScene();
-    resetOpenQuestion();
-    document.getElementById("oracle").className = "display-2 d-block";
-
-    document.getElementById("twist-counter").innerHTML = twistCounter;
-    document.getElementById("oracle").innerHTML = oracle;
+    // 2. Initialize editor (doesn't need database)
+    Editor.initializeEditor();
+    console.log('✅ Editor initialized');
     
+    // 3. WAIT for database to be fully ready
+    await db.open();
+    console.log('✅ Database ready');
 
-    if (twistCounter == 3) {
-        document.getElementById("twist-counter").className = "badge bg-danger";
-
-        var subj = getRandomArrayElement(subject);
-        var act = getRandomArrayElement(action);
-
-        document.getElementById("subject-action").className = "d-block";
-        document.getElementById("twist").innerHTML = subj + " " + act;
-    } else {
-        document.getElementById("subject-action").className = "d-none";
-        document.getElementById("twist-counter").className = "badge bg-dark";
+    // Initialize Tables System
+    if (typeof TableSystem !== 'undefined') {
+      await TableSystem.init();
+      console.log('✅ Table System initialized');
     }
 
-    resetTwistCounter();
-
-}
-
-function askNextScene() {
-    resetOracle();
-    resetScene();
-    resetHook();
-    resetOpenQuestion();
-    document.getElementById("next-scene").className = "d-block";
-    document.getElementById("nxt-scn").innerHTML = "The next scene is <strong>" + getRandomArrayElement(nextScene) + "</strong>";
-}
-
-function generateHook() {
-    resetOracle();
-    resetScene();
-    resetHook();
-    resetOpenQuestion();
-
-    document.getElementById("hook-p").className = "d-block";
-
-    document.getElementById("who").innerHTML = "<strong>Who?</strong> " + getRandomArrayElement(who);
-    document.getElementById("what").innerHTML = "<strong>What?</strong> " + getRandomArrayElement(what);
-    document.getElementById("why").innerHTML = "<strong>Why?</strong> " + getRandomArrayElement(why);
-    document.getElementById("where").innerHTML = "<strong>Where?</strong> " + getRandomArrayElement(where);
-    document.getElementById("how").innerHTML = "<strong>How?</strong> " + getRandomArrayElement(how);
-    document.getElementById("obstacle").innerHTML = "<strong>Obstacle?</strong> " + getRandomArrayElement(obstacle);
-
-}
-
-function askOpenQuestion() {
-    resetOracle();
-    resetScene();
-    resetHook();
-    resetOpenQuestion();
-
-    document.getElementById("open-question").className = "d-block";
-
-    document.getElementById("verb").innerHTML = getRandomArrayElement(verbs);
-    document.getElementById("adjective").innerHTML = getRandomArrayElement(adjectives);
-    document.getElementById("noun").innerHTML = getRandomArrayElement(nouns);
-
-}
-
-// character sheet
-
-// Variabili globali
-let isEditMode = false;
-
-document.addEventListener('DOMContentLoaded', function() {
-    const characterSheet = {
-        name: document.getElementById('name'),
-        concept: document.getElementById('concept'),
-        skillsList: document.getElementById('skills-list'),
-        frailtyList: document.getElementById('frailty-list'),
-        gearList: document.getElementById('gear-list'),
-        goalMotive: document.getElementById('goal-motive'),
-        nemesis: document.getElementById('nemesis'),
-        editButton: document.getElementById('edit-char-sheet'),
-        saveButton: document.getElementById('save-char-sheet'),
-        resetButton: document.getElementById('reset-char-sheet')
-    };
-
-    function toggleEdit() {
-        const isEditable = characterSheet.name.contentEditable === "true";
-        const newEditState = !isEditable;
-
-        characterSheet.name.contentEditable = newEditState;
-        characterSheet.concept.contentEditable = newEditState;
-        characterSheet.goalMotive.contentEditable = newEditState;
-        characterSheet.nemesis.contentEditable = newEditState;
-
-        characterSheet.editButton.style.display = newEditState ? 'none' : 'inline-block';
-        characterSheet.saveButton.style.display = newEditState ? 'inline-block' : 'none';
-
-        toggleListItemsEditable(characterSheet.skillsList, newEditState);
-        toggleListItemsEditable(characterSheet.frailtyList, newEditState);
-        toggleListItemsEditable(characterSheet.gearList, newEditState);
+    // Load random tables panel
+    if (typeof TableManager !== 'undefined') {
+      TableManager.showRandomTablesPanel();
     }
+    
+    // 4. Give it a moment to settle
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // 5. NOW load saved state
+    const savedState = loadAppState();
+    
+    if (savedState && savedState.campaignId) {
+      try {
+        const campaign = await LonerDB.getCampaign(savedState.campaignId);
+        if (campaign) {
+          CampaignManager.displayCurrentCampaign(campaign);
+          
+          // Load session
+          if (savedState.sessionId) {
+            const session = await LonerDB.getSession(savedState.sessionId);
+            if (session) {
+              await Editor.loadSession(savedState.sessionId);
+              SessionManager.displayCurrentSession(session);
 
-    function toggleListItemsEditable(list, isEditable) {
-        const items = list.querySelectorAll('li');
-        items.forEach(item => {
-            item.contentEditable = isEditable;
-        });
-    }
-
-    function saveCharSheet() {
-        const characterData = {
-            name: characterSheet.name.innerText,
-            concept: characterSheet.concept.innerText,
-            skills: getListItems(characterSheet.skillsList),
-            frailty: getListItems(characterSheet.frailtyList),
-            gear: getListItems(characterSheet.gearList),
-            goalMotive: characterSheet.goalMotive.innerText,
-            nemesis: characterSheet.nemesis.innerText
-        };
-
-        localStorage.setItem('characterSheet', JSON.stringify(characterData));
-        toggleEdit();
-    }
-
-    function getListItems(list) {
-        const items = list.querySelectorAll('li span');
-        return Array.from(items).map(item => item.innerText);
-    }
-
-    function loadCharSheet() {
-        const characterData = JSON.parse(localStorage.getItem('characterSheet'));
-        if (characterData) {
-            characterSheet.name.innerText = characterData.name;
-            characterSheet.concept.innerText = characterData.concept;
-            setListItems(characterSheet.skillsList, characterData.skills);
-            setListItems(characterSheet.frailtyList, characterData.frailty);
-            setListItems(characterSheet.gearList, characterData.gear);
-            characterSheet.goalMotive.innerText = characterData.goalMotive;
-            characterSheet.nemesis.innerText = characterData.nemesis;
+                // Initialize Quick Links panels - ADD THIS
+                setTimeout(async () => {
+                    if (typeof showNPCPanel === 'function') await showNPCPanel();
+                    if (typeof showLocationPanel === 'function') await showLocationPanel();
+                    if (typeof showThreadPanel === 'function') await showThreadPanel();
+                    if (typeof showEventPanel === 'function') await showEventPanel();
+                }, 500);
+            }
+          }
         }
+      } catch (error) {
+        console.warn('Could not load saved state:', error);
+        localStorage.removeItem('lonerAppState');
+      }
     }
-
-    function setListItems(list, items) {
-        list.innerHTML = '';
-        items.forEach(item => {
-            const li = document.createElement('li');
-            const span = document.createElement('span');
-            span.innerText = item;
-            span.contentEditable = characterSheet.name.contentEditable;
-            li.appendChild(span);
-
-            const removeButton = document.createElement('button');
-            removeButton.innerText = 'Remove';
-            removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ms-2');
-            removeButton.onclick = function() {
-                list.removeChild(li);
-            };
-            li.appendChild(removeButton);
-
-            list.appendChild(li);
-        });
-    }
-
-    function addToList(listId) {
-        const list = document.getElementById(`${listId}-list`);
-        const li = document.createElement('li');
-        const span = document.createElement('span');
-        span.contentEditable = characterSheet.name.contentEditable;
-        span.innerText = 'New Item';
-        li.appendChild(span);
-
-        const removeButton = document.createElement('button');
-        removeButton.innerText = 'Remove';
-        removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ms-2');
-        removeButton.onclick = function() {
-            list.removeChild(li);
-        };
-        li.appendChild(removeButton);
-
-        list.appendChild(li);
-    }
-
-    function confirmResetCharSheet() {
-        if (confirm("Are you sure you want to reset the character sheet?")) {
-            resetCharSheet();
+    
+    // 6. Load active character
+    try {
+      const characters = await LonerDB.getCharacters();
+      if (characters && characters.length > 0) {
+        const activeChar = characters.find(c => c.isActive);
+        if (activeChar) {
+          currentCharacterId = activeChar.id;
+          CharacterManager.displayActiveCharacter(activeChar);
         }
+      }
+    } catch (error) {
+      console.warn('Could not load active character:', error);
+    }
+    
+    // 7. Start auto-save
+    Editor.startAutoSave();
+    
+    console.log('✅ App initialized successfully!');
+    
+  } catch (error) {
+    console.error('❌ Error initializing app:', error);
+    UI.showAlert('App started with errors. Check console (F12).', 'error');
+  }
+
+    
+    // Campaign functions
+    if (window.CampaignManager) {
+    window.showNewCampaignForm = CampaignManager.showNewCampaignForm;
+    window.createNewCampaign = CampaignManager.createNewCampaign;
+    window.loadCampaignsList = CampaignManager.loadCampaignsList;
+    window.selectCampaign = CampaignManager.selectCampaign;
+    window.viewCampaignDetails = CampaignManager.viewCampaignDetails;
+    window.editCampaign = CampaignManager.editCampaign;
+    window.saveCampaignEdit = CampaignManager.saveCampaignEdit;
+    window.deleteCampaignConfirm = CampaignManager.deleteCampaignConfirm;
     }
 
-    function resetCharSheet() {
-        localStorage.removeItem('characterSheet');
-        characterSheet.name.innerText = 'Character Name';
-        characterSheet.concept.innerText = 'Concept';
-        characterSheet.skillsList.innerHTML = '';
-        characterSheet.frailtyList.innerHTML = '';
-        characterSheet.gearList.innerHTML = '';
-        characterSheet.goalMotive.innerText = 'Goal and Motive';
-        characterSheet.nemesis.innerText = 'Nemesis';
+    // Character functions
+    if (window.CharacterManager) {
+    window.showNewCharacterForm = CharacterManager.showNewCharacterForm;
+    window.createNewCharacter = CharacterManager.createNewCharacter;
+    window.loadCharactersList = CharacterManager.loadCharactersList;
+    window.viewCharacterDetails = CharacterManager.viewCharacterDetails;
+    window.editCharacter = CharacterManager.editCharacter;
+    window.saveCharacterEdit = CharacterManager.saveCharacterEdit;
+    window.deleteCharacterConfirm = CharacterManager.deleteCharacterConfirm;
     }
 
-    characterSheet.editButton.addEventListener('click', toggleEdit);
-    characterSheet.saveButton.addEventListener('click', saveCharSheet);
-    characterSheet.resetButton.addEventListener('click', confirmResetCharSheet);
+    // NPC functions
+    if (window.NPCManager) {
+    window.showNPCPanel = NPCManager.showNPCPanel;
+    window.showNewNPCForm = NPCManager.showNewNPCForm;
+    window.createNewNPC = NPCManager.createNewNPC;
+    window.viewNPCDetails = NPCManager.viewNPCDetails;
+    window.editNPC = NPCManager.editNPC;
+    window.saveNPCEdit = NPCManager.saveNPCEdit;
+    window.deleteNPCConfirm = NPCManager.deleteNPCConfirm;
+    window.loadNPCsList = NPCManager.loadNPCsList;
+    }
 
-    document.querySelectorAll('.btn-secondary').forEach(button => {
-        button.addEventListener('click', function() {
-            const listId = button.getAttribute('onclick').match(/'(\w+)'/)[1];
-            addToList(listId);
-        });
-    });
+    // Location functions
+    if (window.LocationManager) {
+    window.showLocationPanel = LocationManager.showLocationPanel;
+    window.showNewLocationForm = LocationManager.showNewLocationForm;
+    window.createNewLocation = LocationManager.createNewLocation;
+    window.viewLocationDetails = LocationManager.viewLocationDetails;
+    window.markLocationVisited = LocationManager.markLocationVisited;
+    window.markLocationVisitedAndClose = LocationManager.markLocationVisitedAndClose;
+    window.editLocation = LocationManager.editLocation;
+    window.saveLocationEdit = LocationManager.saveLocationEdit;
+    window.deleteLocationConfirm = LocationManager.deleteLocationConfirm;
+    window.loadLocationsList = LocationManager.loadLocationsList;
+    }
 
-    loadCharSheet();
+    // Thread functions
+    if (window.ThreadManager) {
+    window.showThreadPanel = ThreadManager.showThreadPanel;
+    window.showNewThreadForm = ThreadManager.showNewThreadForm;
+    window.createNewThread = ThreadManager.createNewThread;
+    window.viewThreadDetails = ThreadManager.viewThreadDetails;
+    window.resolveThreadAndClose = ThreadManager.resolveThreadAndClose;
+    window.editThread = ThreadManager.editThread;
+    window.saveThreadEdit = ThreadManager.saveThreadEdit;
+    window.deleteThreadConfirm = ThreadManager.deleteThreadConfirm;
+    window.loadThreadsList = ThreadManager.loadThreadsList;
+    }
+
+    // Event functions
+    if (window.EventManager) {
+    window.showEventPanel = EventManager.showEventPanel;
+    window.showNewEventForm = EventManager.showNewEventForm;
+    window.createNewEvent = EventManager.createNewEvent;
+    window.loadEventTimeline = EventManager.loadEventTimeline;
+    window.deleteEventConfirm = EventManager.deleteEventConfirm;
+    window.exportSessionRecap = EventManager.exportSessionRecap;
+    }
+
+    // Oracle functions
+    if (window.OracleSystem) {
+    window.rollOracle = OracleSystem.rollOracle;
+    window.rollScene = OracleSystem.rollScene;
+    window.getInspired = OracleSystem.getInspired;
+    window.resetTwistCounter = OracleSystem.resetTwistCounter;
+    window.startConflict = OracleSystem.startConflict;
+    window.rollConflict = OracleSystem.rollConflict;
+    window.endConflict = OracleSystem.endConflict;
+    }
+
+    // Editor functions
+    if (window.Editor) {
+    window.saveNotes = Editor.saveNotes;
+    }
+
 });
 
-
-
-// Funzione per inizializzare la pagina
-function initPage() {
-  loadCharSheet();
-  toggleEdit(); // Disabilita la modifica all'avvio della pagina
+/**
+ * Load the last active campaign
+ */
+async function loadLastCampaign() {
+  const campaigns = await LonerDB.getAllCampaigns();
+  
+  if (campaigns.length > 0) {
+    // Load the most recently played campaign
+    const lastCampaign = campaigns[0];
+    currentCampaignId = lastCampaign.id;
+    
+    // Update UI
+    CampaignManager.displayCurrentCampaign(lastCampaign);
+    
+    // Load last session for this campaign
+    const sessions = await LonerDB.getSessionsForCampaign(lastCampaign.id);
+    if (sessions.length > 0) {
+      await Editor.loadSession(sessions[0].id);
+      currentSessionId = sessions[0].id;
+    } else {
+      const sessionId = await LonerDB.createSession(lastCampaign.id, 'Session 1');
+      await Editor.loadSession(sessionId);
+      currentSessionId = sessionId;
+    }
+    
+    saveAppState();
+    console.log('📚 Loaded campaign:', lastCampaign.name);
+  } else {
+    console.log('ℹ️ No campaigns found');
+  }
 }
 
-initPage(); // Chiamata alla funzione di inizializzazione
+/**
+ * Placeholder functions (to be implemented later)
+ */
+function showNPCPanel() {
+  NPCManager.showNPCPanel();
+}
 
+function showLocationPanel() {
+  LocationManager.showLocationPanel();
+}
+
+function showThreadPanel() {
+  ThreadManager.showThreadPanel();
+}
+/**
+ * Theme switching
+ */
+function toggleTheme() {
+  const body = document.body;
+  const themeIcon = document.querySelector('.theme-icon');
   
+  if (body.classList.contains('dark-theme')) {
+    body.classList.remove('dark-theme');
+    themeIcon.textContent = '🌙';
+    localStorage.setItem('theme', 'light');
+  } else {
+    body.classList.add('dark-theme');
+    themeIcon.textContent = '☀️';
+    localStorage.setItem('theme', 'dark');
+  }
+}
 
-document.getElementById("char-luck").innerHTML = renderLuck(luck);
-document.getElementById("opponent-luck").innerHTML = renderLuck(opponentLuck);
-document.getElementById("twist-counter").innerHTML = twistCounter;
-//document.getElementById("luck").innerHTML = '<strong>' + luck + '</strong>';
-
-// get random icon from icon folder
-const iconpath = 'assets/icons/';
-var myModal = document.getElementById("story-dice");
-var myModalBody = document.getElementById("story-dice-body");
-
-//$('.el').append("<img src='"+path+imgs[i]+"'>").hide().fadeIn(2000);
-
-// function generateStoryDice() {
-
-// }
-
-myModal.addEventListener('show.bs.modal', function () {
-    let n = document.getElementById("story-dice-n").value
-    myModalBody.innerHTML = "";
-    for (i = 0; i < n; i++) {
-        let icon = getRandomArrayElement(icons);
-        let div = document.createElement('div');
-        div.className = "col-4 my-1";
-        console.log(div);
-        div.innerHTML = '<img src="' + iconpath + icon + '" width="100">'
-        myModalBody.appendChild(div);
-        //<div class="col-md-4"><img src="assets/icons/whale-tail.svg" alt=""></div>
+function loadThemePreference() {
+  const savedTheme = localStorage.getItem('theme');
+  const themeIcon = document.querySelector('.theme-icon');
+  
+  if (themeIcon) {
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-theme');
+      themeIcon.textContent = '☀️';
+    } else {
+      themeIcon.textContent = '🌙';
     }
-})
+  }
+}
+
+/**
+ * Toggle Quick Link Panel
+ */
+function toggleQuickLink(panelId) {
+  const panel = document.getElementById(panelId);
+  if (!panel) return;
+  
+  if (panel.classList.contains('hidden')) {
+    // Open this panel
+    panel.classList.remove('hidden');
+    
+    // Load content based on panel type
+    switch(panelId) {
+      case 'npcs-panel':
+        if (typeof showNPCPanel === 'function') showNPCPanel();
+        break;
+      case 'locations-panel':
+        if (typeof showLocationPanel === 'function') showLocationPanel();
+        break;
+      case 'threads-panel':
+        if (typeof showThreadPanel === 'function') showThreadPanel();
+        break;
+      case 'events-panel':
+        if (typeof showEventPanel === 'function') showEventPanel();
+        break;
+    }
+  } else {
+    // Close this panel
+    panel.classList.add('hidden');
+  }
+}
+
+/**
+ * Close Quick Link Panel
+ */
+function closeQuickLink(panelId) {
+  const panel = document.getElementById(panelId);
+  if (!panel) return;
+  
+  panel.classList.add('hidden');
+}
+
+/**
+ * Close all Quick Link Panels
+ */
+function closeAllQuickLinks() {
+  const panels = document.querySelectorAll('.quick-link-panel');
+  panels.forEach(panel => panel.classList.add('hidden'));
+}
+
+// Export App interface
+window.App = {
+  getState,
+  setCurrentCampaign,
+  clearCurrentCampaign,
+  setCurrentCharacter,
+  clearCurrentCharacter,
+  saveAppState,
+  loadAppState
+};
+
+// Make functions available globally for onclick handlers
+window.showView = UI.showView;
+window.closeModal = UI.closeModal;
+window.toggleTheme = toggleTheme;
+window.toggleQuickLink = toggleQuickLink;        // ← ADD
+window.closeQuickLink = closeQuickLink;          // ← ADD
+window.closeAllQuickLinks = closeAllQuickLinks;  // ← ADD
+
+// Debug helper
+window.LonerDebug = {
+  getCurrentState: () => ({
+    ...getState(),
+    hasEditor: !!Editor.getEditor(),
+    dbVersion: LonerDB.db.verno
+  }),
+  getCampaigns: () => LonerDB.getAllCampaigns(),
+  getSessions: (campaignId) => LonerDB.getSessionsForCampaign(campaignId || currentCampaignId),
+  getCharacters: () => LonerDB.getCharacters(),
+  testSave: () => Editor.saveNotes(),
+  saveState: () => saveAppState(),
+  loadState: () => loadAppState(),
+  clearState: () => {
+    localStorage.removeItem('lonerAppState');
+    console.log('✅ State cleared');
+  },
+  clearAll: async () => {
+    if (confirm('This will DELETE ALL DATA. Are you sure?')) {
+      localStorage.clear();
+      await LonerDB.db.delete();
+      console.log('✅ All data cleared. Refreshing...');
+      location.reload();
+    }
+  }
+};
+
+console.log('💡 Debug tools available:');
+console.log('  LonerDebug.getCurrentState() - Check app state');
+console.log('  LonerDebug.clearAll() - Delete everything and start fresh');
+console.log('  LonerDebug.clearState() - Clear saved state only');
