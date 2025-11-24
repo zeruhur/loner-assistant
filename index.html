@@ -142,6 +142,7 @@
                             <h2>Session Notes</h2>
                             <div class="session-controls">
                                 <button class="btn btn-sm" onclick="saveNotes()" title="Save Notes (Alt+S)">💾 Save</button>
+                                <button class="btn btn-sm" onclick="HelpSystem.show('play')" title="Show help for Play view">ℹ️ Help</button>
                                 <button class="btn btn-sm" onclick="ShortcutsSystem.showHelp()" title="Show Keyboard Shortcuts (Alt+?)">⌨️ Shortcuts</button>
                                 <span class="save-indicator" id="save-status">Auto-saved</span>
                             </div>
@@ -346,7 +347,10 @@
         <!-- CAMPAIGNS VIEW -->
         <div id="view-campaigns" class="view">
             <div class="view-header">
-                <h2>Campaigns</h2>
+                <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                    <h2 style="margin: 0;">Campaigns</h2>
+                    <button class="help-button" onclick="HelpSystem.show('campaigns')" title="Show help for Campaigns">?</button>
+                </div>
                 <button class="btn btn-primary" onclick="showNewCampaignForm()">
                     + New Campaign
                 </button>
@@ -357,7 +361,10 @@
         <!-- CHARACTERS VIEW -->
         <div id="view-characters" class="view">
             <div class="view-header">
-                <h2>Characters</h2>
+                <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                    <h2 style="margin: 0;">Characters</h2>
+                    <button class="help-button" onclick="HelpSystem.show('characters')" title="Show help for Characters">?</button>
+                </div>
                 <button class="btn btn-primary" onclick="showNewCharacterForm()">
                     + New Character
                 </button>
@@ -369,7 +376,10 @@
         <!-- TOOLS VIEW (Roll Tables, etc.) -->
         <div id="view-tools" class="view">
             <div class="view-header">
-                <h2>Tools & Tables</h2>
+                <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                    <h2 style="margin: 0;">Tools & Tables</h2>
+                    <button class="help-button" onclick="HelpSystem.show('tools')" title="Show help for Tools">?</button>
+                </div>
             </div>
             <div id="tools-grid" class="tools-grid">
                 <!-- Content will be dynamically rendered by TableManager -->
@@ -379,7 +389,10 @@
         <!-- NPCs VIEW -->
         <div id="view-npcs" class="view">
           <div class="view-header">
-            <h2>NPCs</h2>
+            <div style="display: flex; align-items: center; gap: var(--space-sm);">
+              <h2 style="margin: 0;">NPCs</h2>
+              <button class="help-button" onclick="HelpSystem.show('npcs')" title="Show help for NPCs">?</button>
+            </div>
             <button class="btn btn-primary" onclick="showNewNPCForm()">
               + New NPC
             </button>
@@ -390,7 +403,10 @@
         <!-- LOCATIONS VIEW -->
         <div id="view-locations" class="view">
           <div class="view-header">
-            <h2>Locations</h2>
+            <div style="display: flex; align-items: center; gap: var(--space-sm);">
+              <h2 style="margin: 0;">Locations</h2>
+              <button class="help-button" onclick="HelpSystem.show('locations')" title="Show help for Locations">?</button>
+            </div>
             <button class="btn btn-primary" onclick="showNewLocationForm()">
               + New Location
             </button>
@@ -401,7 +417,10 @@
         <!-- THREADS VIEW -->
         <div id="view-threads" class="view">
           <div class="view-header">
-            <h2>Narrative Threads</h2>
+            <div style="display: flex; align-items: center; gap: var(--space-sm);">
+              <h2 style="margin: 0;">Narrative Threads</h2>
+              <button class="help-button" onclick="HelpSystem.show('threads')" title="Show help for Threads">?</button>
+            </div>
             <button class="btn btn-primary" onclick="showNewThreadForm()">
               + New Thread
             </button>
@@ -414,7 +433,10 @@
     <!-- EVENTS VIEW -->
     <div id="view-events" class="view">
       <div class="view-header">
-        <h2>Event Timeline</h2>
+        <div style="display: flex; align-items: center; gap: var(--space-sm);">
+          <h2 style="margin: 0;">Event Timeline</h2>
+          <button class="help-button" onclick="HelpSystem.show('events')" title="Show help for Events">?</button>
+        </div>
         <div style="display: flex; gap: 0.5rem;">
           <button class="btn btn-outline" onclick="EventManager.exportSessionRecap()">
             📥 Export Recap
@@ -467,6 +489,7 @@
     <script src="js/table-manager.js"></script>          <!-- 7b. Table manager -->
     <script src="data/tables/supplements/sample-encounters.js"></script>
     <script src="js/shortcuts.js"></script>              <!-- 8. Keyboard shortcuts system -->
+    <script src="js/onboarding.js"></script>             <!-- 8b. Help system & onboarding -->
     <script src="js/main.js"></script>                   <!-- 9. Main initialization (LAST) -->
 
 </body>

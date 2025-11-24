@@ -186,6 +186,12 @@ document.addEventListener('DOMContentLoaded', async function() {
       console.log('✅ Keyboard shortcuts initialized');
     }
 
+    // 9. Initialize help system
+    if (typeof HelpSystem !== 'undefined') {
+      HelpSystem.init();
+      console.log('✅ Help system initialized');
+    }
+
     console.log('✅ App initialized successfully!');
     
   } catch (error) {
@@ -280,6 +286,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Editor functions
     if (window.Editor) {
     window.saveNotes = Editor.saveNotes;
+    }
+
+    // Help System functions
+    if (typeof HelpSystem !== 'undefined') {
+    window.showHelp = HelpSystem.show;
+    window.closeHelp = HelpSystem.close;
+    window.toggleHelp = HelpSystem.toggle;
     }
 
 });

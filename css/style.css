@@ -2005,3 +2005,204 @@ select:focus {
     margin-right: 0.2rem !important;
   }
 }
+
+/* ==================== HELP SYSTEM ==================== */
+
+/* Help button (?) in view headers */
+.help-button {
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius);
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.help-button:hover {
+  background: var(--bg-tertiary);
+  transform: scale(1.1);
+}
+
+.help-button:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Help modal overlay */
+.help-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-md);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.help-modal.hidden {
+  display: none;
+}
+
+/* Help modal content */
+.help-modal-content {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  animation: slideInUp 0.3s ease-out;
+}
+
+.help-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.help-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.help-modal-header .btn-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  transition: all 0.2s;
+}
+
+.help-modal-header .btn-close:hover {
+  background: var(--bg-tertiary);
+  color: var(--text);
+}
+
+.help-description {
+  padding: var(--space-md) var(--space-lg) 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 0 0 var(--space-md) 0;
+}
+
+/* Help sections container */
+.help-sections {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 var(--space-lg);
+}
+
+/* Individual help section */
+.help-section {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border);
+}
+
+.help-section:last-child {
+  border-bottom: none;
+  margin-bottom: var(--space-md);
+}
+
+.help-section h4 {
+  margin: 0 0 var(--space-sm) 0;
+  font-size: 1rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.help-section p {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+/* Modal footer */
+.help-modal-footer {
+  padding: var(--space-lg);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.help-modal-footer .btn {
+  min-width: 120px;
+}
+
+/* Responsive help modal */
+@media (max-width: 768px) {
+  .help-modal {
+    padding: var(--space-sm);
+  }
+
+  .help-modal-content {
+    max-width: 100%;
+    max-height: 90vh;
+  }
+
+  .help-modal-header {
+    padding: var(--space-md);
+  }
+
+  .help-modal-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .help-sections {
+    padding: 0 var(--space-md);
+  }
+
+  .help-modal-footer {
+    padding: var(--space-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .help-modal-content {
+    border-radius: var(--radius);
+  }
+
+  .help-modal-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .help-description {
+    font-size: 0.85rem;
+  }
+
+  .help-section h4 {
+    font-size: 0.95rem;
+  }
+
+  .help-section p {
+    font-size: 0.8rem;
+  }
+  }
+}
