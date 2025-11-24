@@ -1,9 +1,9 @@
 /**
  * LONER ASSISTANT v2.0 - Database Setup
- * 
+ *
  * This file handles ALL data storage using Dexie.js (IndexedDB wrapper)
  * Think of it like localStorage, but WAY more powerful
- * 
+ *
  * Before using: Include Dexie in your HTML:
  * <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.min.js"></script>
  */

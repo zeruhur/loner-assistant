@@ -57,6 +57,7 @@ function getState() {
   };
 }
 
+
 /**
  * Set current campaign and session
  */
@@ -174,7 +175,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // 7. Start auto-save
     Editor.startAutoSave();
-    
+
+    // 8. Initialize keyboard shortcuts
+    if (typeof ShortcutsSystem !== 'undefined') {
+      ShortcutsSystem.init();
+      console.log('✅ Keyboard shortcuts initialized');
+    }
+
     console.log('✅ App initialized successfully!');
     
   } catch (error) {

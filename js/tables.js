@@ -323,7 +323,7 @@ const TableSystem = {
    * Log table roll to database
    */
   async logTableRoll(tableName, supplementId, result) {
-    const state = App.getState();
+    const state = getState();
     if (!state.sessionId) return;
     
     await db.tableRolls.add({
@@ -339,7 +339,7 @@ const TableSystem = {
    * Get table roll history for current session
    */
   async getSessionRollHistory() {
-    const state = App.getState();
+    const state = getState();
     if (!state.sessionId) return [];
     
     return await db.tableRolls
@@ -365,9 +365,4 @@ const TableSystem = {
   }
 };
 
-// Initialize on app load
-if (typeof App !== 'undefined') {
-  App.addInitHook(async () => {
-    await TableSystem.init();
-  });
-}
+// Note: TableSystem.init() is called in main.js during app initialization

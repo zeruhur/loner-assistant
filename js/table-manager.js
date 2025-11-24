@@ -9,7 +9,7 @@ const TableManager = {
    * Show the table browser
    */
   show() {
-    App.switchView('tools');
+    showView('tools');
     this.render();
   },
   
@@ -24,10 +24,10 @@ const TableManager = {
       <div class="table-manager">
         <!-- Quick Actions -->
         <div class="quick-actions">
-          <button class="btn btn-large btn-primary" onclick="TableManager.rollAdventureMaker()">
+          <button class="btn btn-large btn-primary" onclick="TableManager.rollAdventureMaker()" title="Roll Adventure Maker (Alt+T)">
             🎭 Roll Adventure Maker
           </button>
-          <button class="btn btn-large btn-secondary" onclick="TableManager.rollGetInspired()">
+          <button class="btn btn-large btn-secondary" onclick="TableManager.rollGetInspired()" title="Get Inspired (Alt+T)">
             ✨ Get Inspired
           </button>
         </div>
@@ -482,7 +482,7 @@ showRandomTablesPanel() {
     UI.closeModal();
     
     // Refresh any displays if needed
-    if (App.getState().sessionId) {
+    if (getState().sessionId) {
       this.loadRollHistory();
     }
   },

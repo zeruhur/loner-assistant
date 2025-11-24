@@ -8,7 +8,7 @@
 let currentTwistCounter = 0;
 
 function loadTwistCounter() {
-  const state = App.getState();
+  const state = getState();
   if (state.sessionId) {
     LonerDB.getSession(state.sessionId).then(session => {
       if (session && session.twistCounter !== undefined) {
@@ -190,7 +190,7 @@ function updateTwistCounter() {
   }
   
   // SAVE to database
-  const state = App.getState();
+  const state = getState();
   if (state.sessionId) {
     LonerDB.updateTwistCounter(state.sessionId, currentTwistCounter);
   }

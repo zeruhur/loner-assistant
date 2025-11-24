@@ -43,16 +43,72 @@ Every Loner supplement has its custom version of the Get Inspired tables, we sho
 
 **Why this?** Use all the amazing random generators from the Loner rulebook.
 
-### **Phase 5: Polishing**
+### **Phase 5: Polishing & UX Enhancements** (Current Phase)
 
-#### **Polish & UX Improvements**
-- Add keyboard shortcuts
-- Better mobile responsiveness
-- Drag-and-drop reordering
-- More visual feedback
-- Tutorial/onboarding
+Prioritized approach to refine the application for smooth, responsive gameplay.
 
-**Why this?** Make the app feel more polished and professional.
+#### **Priority 1: Keyboard Shortcuts** (High Impact, Low Effort)
+Quick access to frequent actions during play sessions:
+- `Alt+O` - Roll Oracle
+- `Alt+T` - Roll Table
+- `Alt+N` - Create new note entry
+- `Alt+W` - Mark twist event
+- Others as appropriate per section
+
+**Why first?** Low complexity, high value for play experience. During active gameplay, keyboard shortcuts dramatically improve flow by reducing mouse dependency.
+
+#### **Priority 2: Mobile Responsiveness** (High Impact, Medium Effort)
+Ensure playable on tablets/phones during sessions:
+- Oracle roller - full functionality on mobile
+- Notes editor - readable and editable on small screens
+- Table roller - accessible two-step selection
+- Focus on tablet as baseline (iPad, large phones)
+- Desktop-first implementation, mobile-friendly enhancements
+
+**Why?** Players may want to use this tool in the field or away from desk. Tablet support especially valuable.
+
+#### **Priority 3: Visual Feedback & Polish** (Medium Impact, Medium Effort)
+Improve responsiveness perception:
+- Loading states for rolls and database saves
+- Toast notifications for success/error messages
+- Subtle animations (button feedback, panel transitions, smooth scrolling)
+- Better empty states ("No sessions yet — create one to get started")
+- Improved hover effects and focus states for accessibility
+- Consistent visual hierarchy and spacing
+
+**Why?** Makes the app feel reactive and professional. Small details add up to better UX.
+
+#### **Priority 4: Drag-and-Drop Reordering** (Lower Priority, Higher Effort)
+Nice-to-have for organizing content:
+- Reorder NPCs, threads, events
+- Save new order to database
+- Consider if this is actually needed vs. create/delete/re-sort by date
+
+**Why it's lower?** Not critical to gameplay. Evaluate whether worth the complexity.
+
+#### **Priority 5: Tutorial/Onboarding** (Conditional)
+Only implement if tool will be used by others:
+- First-run walkthrough (optional)
+- Help panels or "?" buttons per section
+- Introductory tooltips for unfamiliar UI
+
+**Why conditional?** If this is just for Roberto's solo use, may not justify effort. Reassess based on actual audience.
+
+---
+
+## Phase 5 Strategy Notes
+
+**Implementation Approach:**
+1. Start with keyboard shortcuts - quick wins that improve daily usage
+2. Test responsiveness as you go (resize browser, inspect on phone)
+3. Add visual feedback incrementally (one notification system covers many cases)
+4. Skip drag-and-drop unless explicitly requested
+5. Evaluate tutorial/onboarding after collecting feedback
+
+**Key Questions Before Starting:**
+- Is this tool for solo use or will others use it?
+- Which gameplay actions feel most friction-heavy?
+- Is mobile support "nice to have" or not a priority?
 
 ## ** Project Structure**
 

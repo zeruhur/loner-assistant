@@ -136,7 +136,8 @@
                         <div class="panel-header">
                             <h2>Session Notes</h2>
                             <div class="session-controls">
-                                <button class="btn btn-sm" onclick="saveNotes()">💾 Save</button>
+                                <button class="btn btn-sm" onclick="saveNotes()" title="Save Notes (Alt+S)">💾 Save</button>
+                                <button class="btn btn-sm" onclick="ShortcutsSystem.showHelp()" title="Show Keyboard Shortcuts (Alt+?)">⌨️ Shortcuts</button>
                                 <span class="save-indicator" id="save-status">Auto-saved</span>
                             </div>
                         </div>
@@ -165,7 +166,7 @@
                                     Disadvantage
                                 </label>
                             </div>
-                            <button class="btn btn-large btn-primary" onclick="rollOracle()">
+                            <button class="btn btn-large btn-primary" onclick="rollOracle()" title="Roll Oracle (Alt+O)">
                                 🎲 Consult Oracle
                             </button>
                         </div>
@@ -179,8 +180,11 @@
                             <div class="counter-display">
                                 <span id="twist-count">0</span> / 3
                             </div>
+                            <button class="btn btn-sm btn-outline" onclick="triggerTwist()" title="Trigger Twist (Alt+W)">
+                                🎭 Force Twist
+                            </button>
                             <button class="btn btn-sm btn-outline" onclick="resetTwistCounter()">
-                                Reset
+                                ↻ Reset
                             </button>
                         </div>
                         <div id="twist-result" class="twist-result hidden"></div>
@@ -456,7 +460,8 @@
     <script src="js/tables.js"></script>                 <!-- 7. Roll tables -->
     <script src="js/table-manager.js"></script>          <!-- 7b. Table manager -->
     <script src="data/tables/supplements/sample-encounters.js"></script>
-    <script src="js/main.js"></script>                   <!-- 7. Main initialization (LAST) -->
+    <script src="js/shortcuts.js"></script>              <!-- 8. Keyboard shortcuts system -->
+    <script src="js/main.js"></script>                   <!-- 9. Main initialization (LAST) -->
 
 </body>
 </html>

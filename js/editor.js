@@ -70,7 +70,7 @@ async function loadSession(sessionId) {
  * Save current session notes
  */
 async function saveNotes() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.sessionId) {
     console.warn('No active session');
@@ -109,7 +109,7 @@ async function saveNotes() {
  */
 function startAutoSave() {
   setInterval(async () => {
-    const state = App.getState();
+    const state = getState();
     if (state.sessionId && quillEditor && quillEditor.getLength() > 1) {
       await saveNotes();
     }

@@ -60,7 +60,7 @@ const EVENT_TYPES = {
  */
 
 async function logEvent(type, description, metadata = {}) {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.campaignId || !state.sessionId) {
     console.warn('Cannot log event: no active campaign/session');
@@ -100,7 +100,7 @@ async function logEvent(type, description, metadata = {}) {
  * Show event panel in sidebar (recent events)
  */
 async function showEventPanel() {
-  const state = App.getState();
+  const state = getState();
   if (!state.sessionId) {
     document.getElementById('events-quick-list').innerHTML = '<p class="text-muted">No session active</p>';
     return;
@@ -175,7 +175,7 @@ async function createNewEvent() {
   }
   
   try {
-    const state = App.getState();
+    const state = getState();
     
     if (!state.campaignId || !state.sessionId) {
       UI.showAlert('Please create or select a campaign and session first!', 'error');
@@ -308,7 +308,7 @@ async function deleteEventConfirm(eventId) {
  * Export session recap
  */
 async function exportSessionRecap() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.sessionId) {
     UI.showAlert('No active session', 'error');
@@ -355,7 +355,7 @@ async function exportSessionRecap() {
  * Load and display full event timeline
  */
 async function loadEventTimeline() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.sessionId) {
     const container = document.getElementById('events-timeline');
@@ -399,7 +399,7 @@ async function loadEventTimeline() {
  * Show quick events in Play Panel
  */
 async function showQuickEvents() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.sessionId) {
     const container = document.getElementById('quick-events');

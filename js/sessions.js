@@ -27,7 +27,7 @@ function displayCurrentSession(session) {
  * Show session list modal
  */
 async function showSessionList() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.campaignId) {
     UI.showAlert('No active campaign', 'error');
@@ -112,7 +112,7 @@ function showNewSessionForm() {
  * Create a new session
  */
 async function createNewSession() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.campaignId) {
     UI.showAlert('No active campaign', 'error');
@@ -132,7 +132,7 @@ async function createNewSession() {
     const sessionId = await LonerDB.createSession(state.campaignId, name);
     
     // Switch to the new session
-    App.setCurrentCampaign(state.campaignId, sessionId);
+    setCurrentCampaign(state.campaignId, sessionId);
     
     // Load into editor
     await Editor.loadSession(sessionId);
@@ -157,7 +157,7 @@ async function createNewSession() {
  * Switch to a different session
  */
 async function switchToSession(sessionId) {
-  const state = App.getState();
+  const state = getState();
   
   try {
     // Save current session notes first
@@ -167,7 +167,7 @@ async function switchToSession(sessionId) {
     await Editor.loadSession(sessionId);
     
     // Update state
-    App.setCurrentCampaign(state.campaignId, sessionId);
+    setCurrentCampaign(state.campaignId, sessionId);
     
     // Update display
     const session = await LonerDB.getSession(sessionId);
@@ -219,7 +219,7 @@ async function renameSession(sessionId) {
           await LonerDB.db.sessions.update(sessionId, { name: newName });
           
           // Update display if this is the current session
-          const state = App.getState();
+          const state = getState();
           if (sessionId === state.sessionId) {
             const session = await LonerDB.getSession(sessionId);
             displayCurrentSession(session);
@@ -241,7 +241,7 @@ async function renameSession(sessionId) {
  * Delete session with confirmation
  */
 async function deleteSessionConfirm(sessionId) {
-  const state = App.getState();
+  const state = getState();
   const session = await LonerDB.getSession(sessionId);
   
   // Don't allow deleting the only session

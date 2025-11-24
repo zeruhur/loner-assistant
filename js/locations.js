@@ -8,7 +8,7 @@
  * Display Location quick reference in sidebar
  */
 async function showLocationPanel() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.campaignId) {
     UI.showAlert('Select a campaign first!', 'error');
@@ -119,7 +119,7 @@ async function createNewLocation() {
   }
   
   try {
-    const state = App.getState();
+    const state = getState();
     
     if (!state.campaignId) {
       UI.showAlert('Please create or select a campaign first!', 'error');
@@ -340,7 +340,7 @@ async function deleteLocationConfirm(locationId) {
  * Load locations list view
  */
 async function loadLocationsList() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.campaignId) {
     const container = document.getElementById('locations-list');
@@ -389,7 +389,7 @@ async function loadLocationsList() {
 }
 
 async function showLocationPanel() {
-  const state = App.getState();
+  const state = getState();
   if (!state.campaignId) {
     document.getElementById('locations-quick-list').innerHTML = '<p class="text-muted">No campaign selected</p>';
     return;

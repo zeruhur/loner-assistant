@@ -8,7 +8,7 @@
  * Display Threads quick reference in sidebar
  */
 async function showThreadPanel() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.campaignId) {
     UI.showAlert('Select a campaign first!', 'error');
@@ -125,7 +125,7 @@ async function createNewThread() {
   }
   
   try {
-    const state = App.getState();
+    const state = getState();
     
     if (!state.campaignId) {
       UI.showAlert('Please create or select a campaign first!', 'error');
@@ -340,7 +340,7 @@ async function deleteThreadConfirm(threadId) {
  * Load threads list view
  */
 async function loadThreadsList() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.campaignId) {
     const container = document.getElementById('threads-list');
@@ -419,7 +419,7 @@ function renderThreadCard(thread) {
 }
 
 async function showThreadPanel() {
-  const state = App.getState();
+  const state = getState();
   if (!state.campaignId) {
     document.getElementById('threads-quick-list').innerHTML = '<p class="text-muted">No campaign selected</p>';
     return;

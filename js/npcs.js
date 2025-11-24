@@ -8,7 +8,7 @@
  * Display NPC quick reference in sidebar
  */
 async function showNPCPanel() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.campaignId) {
     UI.showAlert('Select a campaign first!', 'error');
@@ -134,7 +134,7 @@ async function createNewNPC() {
   }
   
   try {
-    const state = App.getState();
+    const state = getState();
     
     if (!state.campaignId) {
       UI.showAlert('Please create or select a campaign first!', 'error');
@@ -330,7 +330,7 @@ async function deleteNPCConfirm(npcId) {
  * Load NPCs list view
  */
 async function loadNPCsList() {
-  const state = App.getState();
+  const state = getState();
   
   if (!state.campaignId) {
     const container = document.getElementById('npcs-list');
@@ -383,7 +383,7 @@ async function loadNPCsList() {
 }
 
 async function showNPCPanel() {
-  const state = App.getState();
+  const state = getState();
   if (!state.campaignId) {
     document.getElementById('npcs-quick-list').innerHTML = '<p class="text-muted">No campaign selected</p>';
     return;

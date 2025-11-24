@@ -84,7 +84,7 @@ async function createNewCampaign() {
     console.log('Session created with ID:', sessionId);
     
     // Set as active and save state
-    App.setCurrentCampaign(campaignId, sessionId);
+    setCurrentCampaign(campaignId, sessionId);
     
     // Close modal
     UI.closeModal();
@@ -127,7 +127,7 @@ async function loadCampaignsList() {
     return;
   }
   
-  const state = App.getState();
+  const state = getState();
   const activeCampaignId = state.campaignId;
   
     container.innerHTML = campaigns.map(campaign => {
@@ -312,7 +312,7 @@ async function saveCampaignEdit(campaignId) {
     await loadCampaignsList();
     
     // If this was the active campaign, update display
-    const state = App.getState();
+    const state = getState();
     if (campaignId === state.campaignId) {
       const campaign = await LonerDB.getCampaign(campaignId);
       displayCurrentCampaign(campaign);
@@ -346,7 +346,7 @@ async function setAsActiveCampaign(campaignId) {
     }
     
     // Set as active and save state
-    App.setCurrentCampaign(campaignId, sessionId);
+    setCurrentCampaign(campaignId, sessionId);
     
     // Update sidebar display
     displayCurrentCampaign(campaign);
@@ -414,7 +414,7 @@ async function selectCampaign(campaignId) {
     }
     
     // Set as active and save state
-    App.setCurrentCampaign(campaignId, sessionId);
+    setCurrentCampaign(campaignId, sessionId);
     
     // Load session into editor
     await Editor.loadSession(sessionId);
@@ -451,9 +451,9 @@ async function deleteCampaignConfirm(campaignId) {
       await loadCampaignsList();
       
       // If this was the active campaign, clear it
-      const state = App.getState();
+      const state = getState();
       if (state.campaignId === campaignId) {
-        App.setState({ campaignId: null });
+        clearCurrentCampaign();
       }
     } catch (error) {
       console.error('Error deleting campaign:', error);

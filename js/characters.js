@@ -104,7 +104,7 @@ async function createNewCharacter() {
   }
   
   try {
-    const state = App.getState();
+    const state = getState();
 
     if (!state.campaignId) {
       UI.showAlert('Please create or select a campaign first!', 'error');
@@ -351,7 +351,7 @@ async function saveCharacterEdit(characterId) {
     await loadCharactersList();
     
     // If this was the active character, update display
-    const state = App.getState();
+    const state = getState();
     if (characterId === state.characterId) {
       await selectCharacter(characterId);
     }
@@ -366,7 +366,7 @@ async function saveCharacterEdit(characterId) {
  * Select an active character
  */
 async function selectCharacter(characterId) {
-  App.setCurrentCharacter(characterId);
+  setCurrentCharacter(characterId);
   
   const character = await LonerDB.getCharacter(characterId);
   displayActiveCharacter(character);
@@ -396,9 +396,9 @@ async function deleteCharacterConfirm(characterId) {
     await loadCharactersList();
     
     // If this was the active character, clear it
-    const state = App.getState();
+    const state = getState();
     if (characterId === state.characterId) {
-      App.clearCurrentCharacter();
+      clearCurrentCharacter();
       document.getElementById('active-character-info').innerHTML = '<p class="text-muted">No character selected</p>';
     }
   }
