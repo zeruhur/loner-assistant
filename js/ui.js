@@ -1,9 +1,39 @@
 /**
  * LONER ASSISTANT v2.0 - UI Helper Functions
- * 
+ *
  * Simple functions for showing/hiding views, modals, etc.
  * No fancy frameworks - just plain JavaScript!
  */
+
+/**
+ * Toggle mobile navigation menu
+ */
+function toggleNavMenu() {
+  const navMenu = document.getElementById('nav-menu');
+  const hamburgerBtn = document.querySelector('.hamburger-menu');
+
+  if (navMenu) {
+    navMenu.classList.toggle('open');
+  }
+  if (hamburgerBtn) {
+    hamburgerBtn.classList.toggle('active');
+  }
+}
+
+/**
+ * Close mobile navigation menu when a nav button is clicked
+ */
+function closeNavMenu() {
+  const navMenu = document.getElementById('nav-menu');
+  const hamburgerBtn = document.querySelector('.hamburger-menu');
+
+  if (navMenu) {
+    navMenu.classList.remove('open');
+  }
+  if (hamburgerBtn) {
+    hamburgerBtn.classList.remove('active');
+  }
+}
 
 /**
  * Show a specific view and hide others
@@ -12,16 +42,19 @@
  * Show a specific view
  */
 function showView(viewName) {
+  // Close mobile nav menu when view is selected
+  closeNavMenu();
+
   // Hide all views
   const views = document.querySelectorAll('.view');
   views.forEach(view => view.classList.remove('active'));
-  
+
   // Show selected view
   const targetView = document.getElementById(`view-${viewName}`);
   if (targetView) {
     targetView.classList.add('active');
   }
-  
+
   // Update navigation buttons
   const navButtons = document.querySelectorAll('.nav-btn');
   navButtons.forEach(btn => {
