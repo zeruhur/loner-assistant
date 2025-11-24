@@ -71,36 +71,36 @@ async function loadSession(sessionId) {
  */
 async function saveNotes() {
   const state = getState();
-  
+
   if (!state.sessionId) {
     console.warn('No active session');
-    UI.showAlert('No active session. Create a campaign first!', 'error');
+    NotificationSystem.error('No active session. Create a campaign first!');
     return;
   }
-  
-  // ADD THIS CHECK:
+
   if (!quillEditor) {
     console.error('Editor not initialized');
-    UI.showAlert('Editor not ready. Please refresh the page.', 'error');
+    NotificationSystem.error('Editor not ready. Please refresh the page.');
     return;
   }
-  
+
   try {
     const contents = quillEditor.getContents();
     const json = JSON.stringify(contents);
-    
+
     await LonerDB.updateSessionNotes(state.sessionId, json);
-    
+
     const saveStatus = document.getElementById('save-status');
     if (saveStatus) {
       saveStatus.textContent = `Saved at ${UI.formatTime(new Date())}`;
       saveStatus.style.color = 'var(--success)';
     }
-    
+
+    NotificationSystem.success('Notes saved');
     console.log('✅ Notes saved');
   } catch (error) {
     console.error('Error saving notes:', error);
-    UI.showAlert('Error saving notes: ' + error.message, 'error');
+    NotificationSystem.error('Error saving notes: ' + error.message);
   }
 }
 

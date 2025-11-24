@@ -477,6 +477,302 @@ body {
   50% { opacity: 0.6; }
 }
 
+/* ==================== ANIMATIONS & TRANSITIONS ==================== */
+
+/* Smooth transitions for interactive elements */
+button,
+a,
+input,
+textarea,
+select {
+  transition: all 0.2s ease;
+}
+
+/* Button feedback animation */
+button:active {
+  transform: scale(0.98);
+}
+
+/* Subtle scale on hover for cards */
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.panel:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Slide in from right */
+@keyframes slideInRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Slide in from left */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Bounce animation for emphasis */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* ==================== TOAST NOTIFICATIONS ==================== */
+
+.toast-container {
+  position: fixed;
+  top: var(--space-lg);
+  right: var(--space-lg);
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-width: 400px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  background: var(--bg);
+  border-left: 4px solid var(--border);
+  pointer-events: auto;
+  animation: slideInRight 0.3s ease;
+  min-width: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.toast.show {
+  animation: slideInRight 0.3s ease;
+}
+
+.toast:not(.show) {
+  animation: slideInRight 0.3s ease reverse forwards;
+}
+
+/* Success toast */
+.toast-success {
+  background: #d1fae5;
+  border-color: var(--success);
+  color: #065f46;
+}
+
+.toast-success .toast-icon {
+  color: var(--success);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+/* Error toast */
+.toast-error {
+  background: #fee2e2;
+  border-color: var(--danger);
+  color: #991b1b;
+}
+
+.toast-error .toast-icon {
+  color: var(--danger);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+/* Info toast */
+.toast-info {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1e40af;
+}
+
+.toast-info .toast-icon {
+  color: #3b82f6;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+/* Warning toast */
+.toast-warning {
+  background: #fef3c7;
+  border-color: var(--warning);
+  color: #92400e;
+}
+
+.toast-warning .toast-icon {
+  color: var(--warning);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.toast-message {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  color: currentColor;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+/* ==================== LOADING STATES ==================== */
+
+.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.loading::after {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-left: var(--space-sm);
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  vertical-align: -2px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==================== EMPTY STATES ==================== */
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-xl) var(--space-lg);
+  color: var(--text-muted);
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-sm);
+}
+
+.empty-state-message {
+  font-size: 0.95rem;
+  margin-bottom: var(--space-lg);
+  line-height: 1.6;
+}
+
+.empty-state-action {
+  display: inline-block;
+}
+
+/* ==================== ACCESSIBILITY IMPROVEMENTS ==================== */
+
+/* Focus states for keyboard navigation */
+button:focus,
+a:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  border-color: var(--primary);
+}
+
+/* Better focus ring for dark theme */
+body.dark-theme button:focus,
+body.dark-theme a:focus,
+body.dark-theme input:focus,
+body.dark-theme textarea:focus,
+body.dark-theme select:focus {
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+/* Enhanced hover states */
+button:not(:disabled):hover {
+  filter: brightness(1.05);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Improved link focus */
+a:focus {
+  text-decoration: underline;
+}
+
+/* Form input improvements */
+input:focus,
+textarea:focus,
+select:focus {
+  background: var(--bg);
+}
+
+/* ==================== SMOOTH PAGE TRANSITIONS ==================== */
+
+.view {
+  animation: fadeIn 0.3s ease;
+}
+
+.panel {
+  animation: fadeIn 0.4s ease;
+}
+
+/* Modal animation */
+.modal {
+  animation: fadeIn 0.3s ease;
+}
+
 .twist-result {
   margin-top: var(--space-md);
   padding: var(--space-md);

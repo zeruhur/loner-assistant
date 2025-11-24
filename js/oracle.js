@@ -56,9 +56,14 @@ async function rollOracle() {
   
   // Interpret result
   const result = interpretOracleRoll(chanceDice, riskDice);
-  
+
   // Display result
   displayOracleResult(result);
+
+  // Show notification
+  if (typeof NotificationSystem !== 'undefined') {
+    NotificationSystem.success(`🎲 Oracle: ${result.answer}`);
+  }
 
 // Auto-insert into notes
   const colorMap = {

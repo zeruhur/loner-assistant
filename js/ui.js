@@ -362,6 +362,28 @@ function hideLoading() {
   }
 }
 
+/**
+ * Show an empty state message in a container
+ * @param {string} containerId - ID of container to fill
+ * @param {string} icon - Emoji icon (e.g., "📋")
+ * @param {string} title - Title of empty state
+ * @param {string} message - Description message
+ * @param {string} actionHTML - Optional HTML for action button
+ */
+function showEmptyState(containerId, icon, title, message, actionHTML = '') {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-state-icon">${icon}</div>
+      <div class="empty-state-title">${title}</div>
+      <div class="empty-state-message">${message}</div>
+      ${actionHTML ? `<div class="empty-state-action">${actionHTML}</div>` : ''}
+    </div>
+  `;
+}
+
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
   // Ctrl/Cmd + O = Open Oracle

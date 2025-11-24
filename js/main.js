@@ -104,7 +104,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     UI.initializeNavigation();
     loadThemePreference();
     console.log('✅ UI initialized');
-    
+
+    // 1b. Initialize notifications
+    NotificationSystem.init();
+    console.log('✅ Notifications initialized');
+
     // 2. Initialize editor (doesn't need database)
     Editor.initializeEditor();
     console.log('✅ Editor initialized');
