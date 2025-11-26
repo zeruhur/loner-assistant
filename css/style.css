@@ -3,22 +3,25 @@
  * No Bootstrap! Just clean, simple CSS
  */
 
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Raleway:wght@600;700&display=swap');
+
 /* ==================== VARIABLES ==================== */
 :root {
   /* Colors */
-  --primary: #4f46e5;
-  --primary-dark: #4338ca;
-  --secondary: #6366f1;
+  --primary: #1D1D1B;
+  --primary-dark: #000000;
+  --secondary: #4b5563; /* Neutral gray for secondary actions */
   --success: #10b981;
   --danger: #ef4444;
   --warning: #f59e0b;
   
   --bg: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-tertiary: #f3f4f6;
+  --bg-secondary: #f3f4f6; /* Light gray for contrast */
+  --bg-tertiary: #e5e7eb;
   
-  --text: #111827;
-  --text-muted: #6b7280;
+  --text: #1D1D1B;
+  --text-muted: #4b5563;
   --text-light: #9ca3af;
   
   --border: #e5e7eb;
@@ -43,13 +46,20 @@
 }
 
 /* Dark theme */
+/* Dark theme */
 body.dark-theme {
-  --bg: #1f2937;
-  --bg-secondary: #111827;
+  --primary: #E5E5E5;
+  --primary-dark: #ffffff;
+  --secondary: #9ca3af;
+  
+  --bg: #121212;
+  --bg-secondary: #1f2937;
   --bg-tertiary: #374151;
-  --text: #f9fafb;
-  --text-muted: #d1d5db;
-  --text-light: #9ca3af;
+  
+  --text: #E5E5E5;
+  --text-muted: #9ca3af;
+  --text-light: #6b7280;
+  
   --border: #374151;
   --border-dark: #4b5563;
 }
@@ -62,7 +72,7 @@ body.dark-theme {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
                'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   line-height: 1.6;
@@ -91,6 +101,7 @@ body {
 }
 
 .nav-brand h1 {
+  font-family: 'Raleway', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
 }
@@ -321,8 +332,9 @@ body {
 }
 
 .panel h3 {
+  font-family: 'Raleway', sans-serif;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: var(--space-md);
   color: var(--text);
 }
@@ -386,8 +398,9 @@ body {
 }
 
 .panel-header h2 {
+  font-family: 'Raleway', sans-serif;
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .panel-highlight {
@@ -481,6 +494,7 @@ body {
 }
 
 .view-header h2 {
+  font-family: 'Raleway', sans-serif;
   font-size: 2rem;
   font-weight: 700;
 }
