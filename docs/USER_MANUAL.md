@@ -22,6 +22,10 @@ Welcome to the **Loner Assistant**, your digital companion for playing the Loner
     - [Adventure Maker](#adventure-maker)
     - [Get Inspired](#get-inspired)
     - [Random Tables](#random-tables)
+  - [Import/Export](#importexport)
+    - [Note Exporting](#note-exporting)
+    - [Exporting (Data Backup)](#exporting-data-backup)
+    - [Importing](#importing)
   - [Keyboard Shortcuts](#keyboard-shortcuts)
   - [Mobile Usage](#mobile-usage)
 
@@ -56,7 +60,8 @@ A **Campaign** is the container for your story. It holds all your sessions, char
 
 A **Session** represents a single sitting or chapter of your story.
 
-- In the **Play** view, use the "Manage Sessions" button to create or switch sessions.
+- In the **Play** view, the **Current Session Card** at the top displays your active session.
+- Use the "Manage Sessions" button to create or switch sessions.
 - **Session Notes** are auto-saved as you type.
 
 ### Characters
@@ -122,13 +127,36 @@ Located in the **Play** view sidebar (and Tools tab), this helps you generate a 
 
 Need a spark? Click **Random Prompt** in the Get Inspired panel for a two-word prompt (Verb + Noun).
 
+- **Flavor**: Use the ⚙️ icon to change the "flavor" of the prompts (e.g., Fantasy, Sci-Fi, Horror).
+
 ### Random Tables
 
 The **Table Manager** allows you to roll on any table from loaded supplements.
 
-1. Select a **Supplement** (e.g., Core Loner).
-2. Select a **Table**.
-3. The result is shown and can be pasted into your notes.
+1. Select a **Supplement** (e.g., Core Loner) from the dropdown.
+2. The available tables for that supplement will appear.
+3. Click on a **Table** button to roll.
+4. The result is shown and can be pasted into your notes.
+
+## Import/Export
+
+You can export and import your data to back it up or move it between devices.
+
+### Note Exporting
+You can export just the text content of your current session notes:
+- **Markdown**: Click **Export > Markdown** in the Session Notes header to download as a `.md` file.
+- **HTML**: Click **Export > HTML** in the Session Notes header to download as a `.html` file.
+
+### Exporting (Data Backup)
+- **Session**: In the Play view, click **Export** on the Current Session Card to save the current session data as a JSON file.
+- **Campaign**: In the Tools view, click **Export Campaign** to save the entire current campaign (including all sessions, NPCs, etc.).
+- **Full Backup**: In the Tools view, click **Export All Data** to save a complete backup of the entire database.
+
+### Importing
+- In the Tools view, click **Import Data**.
+- Select the type of import (Session, Campaign, or Full Database).
+- Choose the JSON file you previously exported.
+- **Warning**: Importing a Full Database backup will **replace** all existing data!
 
 ## Keyboard Shortcuts
 
