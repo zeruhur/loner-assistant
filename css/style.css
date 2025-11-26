@@ -11,6 +11,7 @@
   /* Colors */
   --primary: #1D1D1B;
   --primary-dark: #000000;
+  --primary-contrast: #ffffff;
   --secondary: #4b5563; /* Neutral gray for secondary actions */
   --success: #10b981;
   --danger: #ef4444;
@@ -50,6 +51,7 @@
 body.dark-theme {
   --primary: #E5E5E5;
   --primary-dark: #ffffff;
+  --primary-contrast: #121212;
   --secondary: #9ca3af;
   
   --bg: #121212;
@@ -138,7 +140,7 @@ body {
 
 .nav-btn.active {
   background: var(--primary);
-  color: white;
+  color: var(--primary-contrast);
 }
 
 .theme-toggle {
@@ -430,7 +432,7 @@ body {
 
 .btn-primary {
   background: var(--primary);
-  color: white;
+  color: var(--primary-contrast);
 }
 
 .btn-primary:hover {
