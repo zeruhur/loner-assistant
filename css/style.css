@@ -276,11 +276,8 @@ body {
   .layout-3col {
     grid-template-columns: 1fr;
   }
-  
-  .sidebar-left,
-  .sidebar-right {
-    display: none;
-  }
+
+  /* Sidebars now stack vertically - no need to hide them */
 }
 
 /* ==================== PANELS/CARDS ==================== */
