@@ -274,10 +274,39 @@ body {
 /* Responsive */
 @media (max-width: 1024px) {
   .layout-3col {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
   }
 
-  /* Sidebars now stack vertically - no need to hide them */
+  /* Make sidebars and main transparent containers so their children can be reordered */
+  .sidebar-left,
+  .sidebar-right,
+  .main-content {
+    display: contents;
+  }
+
+  /* Force all panels to be full-width on mobile */
+  .panel {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Apply mobile ordering based on data-mobile-order attribute */
+  [data-mobile-order="1"] { order: 1; }
+  [data-mobile-order="2"] { order: 2; }
+  [data-mobile-order="3"] { order: 3; }
+  [data-mobile-order="4"] { order: 4; }
+  [data-mobile-order="5"] { order: 5; }
+  [data-mobile-order="6"] { order: 6; }
+  [data-mobile-order="7"] { order: 7; }
+  [data-mobile-order="8"] { order: 8; }
+  [data-mobile-order="9"] { order: 9; }
+  [data-mobile-order="10"] { order: 10; }
+  [data-mobile-order="11"] { order: 11; }
+  [data-mobile-order="12"] { order: 12; }
+  [data-mobile-order="13"] { order: 13; }
+  [data-mobile-order="14"] { order: 14; }
 }
 
 /* ==================== PANELS/CARDS ==================== */
@@ -938,6 +967,13 @@ select:focus {
   gap: var(--space-lg);
 }
 
+/* Mobile: force single column */
+@media (max-width: 768px) {
+  .grid-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 .card {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -1117,6 +1153,13 @@ select:focus {
   gap: var(--space-lg);
 }
 
+/* Mobile: force single column */
+@media (max-width: 768px) {
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .tool-card {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -1156,6 +1199,13 @@ select:focus {
   gap: var(--space-md);
 }
 
+/* Mobile: force single column */
+@media (max-width: 768px) {
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 .table-categories {
   display: flex;
   flex-direction: column;
@@ -1174,6 +1224,13 @@ select:focus {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-md);
+}
+
+/* Mobile: force single column */
+@media (max-width: 768px) {
+  .table-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 .table-card {
@@ -1640,6 +1697,12 @@ select:focus {
     gap: var(--space-sm);
   }
 
+  /* Ensure panels are truly full-width */
+  .panel {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
   .nav-brand {
     width: 100%;
     margin-bottom: var(--space-xs);
@@ -1824,10 +1887,7 @@ select:focus {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Table list */
-  .table-list {
-    flex-direction: column;
-  }
+  /* Table list - already single column above */
 
   .table-btn {
     width: 100%;
