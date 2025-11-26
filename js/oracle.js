@@ -118,8 +118,12 @@ function interpretOracleRoll(chance, risk) {
   // Determine base answer
   if (chance > risk) {
     answer = 'Yes';
-  } else {
+  } 
+  else if (chance < risk) {
     answer = 'No';
+  }
+  else {
+    answer = 'Yes';
   }
   
   // Determine modifier
