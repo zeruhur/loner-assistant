@@ -393,11 +393,30 @@ function togglePanel(panelId) {
   if (!panel) return;
 
   // Toggle collapsed class
+  const wasCollapsed = panel.classList.contains('collapsed');
   panel.classList.toggle('collapsed');
 
   // Save state to localStorage
   const isCollapsed = panel.classList.contains('collapsed');
   savePanelState(panelId, isCollapsed);
+
+  // Load content when expanding certain panels
+  if (wasCollapsed && !isCollapsed) {
+    switch(panelId) {
+      case 'npcs':
+        if (typeof showNPCPanel === 'function') showNPCPanel();
+        break;
+      case 'locations':
+        if (typeof showLocationPanel === 'function') showLocationPanel();
+        break;
+      case 'threads':
+        if (typeof showThreadPanel === 'function') showThreadPanel();
+        break;
+      case 'events':
+        if (typeof showEventPanel === 'function') showEventPanel();
+        break;
+    }
+  }
 }
 
 /**

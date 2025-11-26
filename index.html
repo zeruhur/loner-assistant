@@ -59,76 +59,87 @@
                 
                 <!-- LEFT SIDEBAR: Context -->
                 <aside class="sidebar-left">
-                    <div class="panel">
-                        <h3>Current Campaign</h3>
-                        <div id="current-campaign-info">
-                            <p class="text-muted">No campaign selected</p>
-                            <button class="btn btn-primary" onclick="showView('campaigns')">
-                                Select Campaign
-                            </button>
+                    <!-- Current Campaign -->
+                    <div class="panel" data-panel-id="current-campaign">
+                        <div class="panel-title" onclick="UI.togglePanel('current-campaign')">
+                            <h3>Current Campaign</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
                         </div>
-                    </div>
-                    
-                    <div class="panel">
-                        <h3>Active Character</h3>
-                        <div id="active-character-info">
-                            <p class="text-muted">No character selected</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Quick Links -->
-                    
-                        <h3>Quick Links</h3>
-                        <div class="quick-links">
-                        <button class="btn btn-sm btn-outline" onclick="toggleQuickLink('npcs-panel')">👥 NPCs</button>
-                        <button class="btn btn-sm btn-outline" onclick="toggleQuickLink('locations-panel')">📍 Locations</button>
-                        <button class="btn btn-sm btn-outline" onclick="toggleQuickLink('threads-panel')">🧵 Threads</button>
-                        <button class="btn btn-sm btn-outline" onclick="toggleQuickLink('events-panel')">📅 Events</button>
-
-                        <div id="npcs-panel" class="quick-link-panel hidden">
-                            <div class="panel-header">
-                                <h4>NPCs</h4>
-                                <div class="panel-actions">
-                                    <button class="btn-icon" onclick="showNewNPCForm()" title="Add NPC">+</button>
-                                    <button class="btn-close" onclick="closeQuickLink('npcs-panel')" title="Close">×</button>
-                                </div>
+                        <div class="panel-content">
+                            <div id="current-campaign-info">
+                                <p class="text-muted">No campaign selected</p>
+                                <button class="btn btn-primary" onclick="showView('campaigns')">
+                                    Select Campaign
+                                </button>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Character -->
+                    <div class="panel collapsed" data-panel-id="active-character">
+                        <div class="panel-title" onclick="UI.togglePanel('active-character')">
+                            <h3>Active Character</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
+                            <div id="active-character-info">
+                                <p class="text-muted">No character selected</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NPCs -->
+                    <div class="panel collapsed" data-panel-id="npcs">
+                        <div class="panel-title" onclick="UI.togglePanel('npcs')">
+                            <h3>👥 NPCs</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
+                            <button class="btn btn-sm btn-primary" onclick="showNewNPCForm()" style="width: 100%; margin-bottom: var(--space-sm);">
+                                + Add NPC
+                            </button>
                             <div id="npcs-quick-list"></div>
                         </div>
-                        
+                    </div>
 
-                        <div id="locations-panel" class="quick-link-panel hidden">
-                            <div class="panel-header">
-                                <h4>Locations</h4>
-                                <div class="panel-actions">
-                                    <button class="btn-icon" onclick="showNewLocationForm()" title="Add Location">+</button>
-                                    <button class="btn-close" onclick="closeQuickLink('locations-panel')" title="Close">×</button>
-                                </div>
-                            </div>
+                    <!-- Locations -->
+                    <div class="panel collapsed" data-panel-id="locations">
+                        <div class="panel-title" onclick="UI.togglePanel('locations')">
+                            <h3>📍 Locations</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
+                            <button class="btn btn-sm btn-primary" onclick="showNewLocationForm()" style="width: 100%; margin-bottom: var(--space-sm);">
+                                + Add Location
+                            </button>
                             <div id="locations-quick-list"></div>
                         </div>
-                        
+                    </div>
 
-                        <div id="threads-panel" class="quick-link-panel hidden">
-                            <div class="panel-header">
-                                <h4>Threads</h4>
-                                <div class="panel-actions">
-                                    <button class="btn-icon" onclick="showNewThreadForm()" title="Add Thread">+</button>
-                                    <button class="btn-close" onclick="closeQuickLink('threads-panel')" title="Close">×</button>
-                                </div>
-                            </div>
+                    <!-- Threads -->
+                    <div class="panel collapsed" data-panel-id="threads">
+                        <div class="panel-title" onclick="UI.togglePanel('threads')">
+                            <h3>🧵 Threads</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
+                            <button class="btn btn-sm btn-primary" onclick="showNewThreadForm()" style="width: 100%; margin-bottom: var(--space-sm);">
+                                + Add Thread
+                            </button>
                             <div id="threads-quick-list"></div>
                         </div>
-                        
+                    </div>
 
-                        <div id="events-panel" class="quick-link-panel hidden">
-                            <div class="panel-header">
-                                <h4>Recent Events</h4>
-                                <div class="panel-actions">
-                                    <button class="btn-icon" onclick="showNewEventForm()" title="Log Event">+</button>
-                                    <button class="btn-close" onclick="closeQuickLink('events-panel')" title="Close">×</button>
-                                </div>
-                            </div>
+                    <!-- Events -->
+                    <div class="panel collapsed" data-panel-id="events">
+                        <div class="panel-title" onclick="UI.togglePanel('events')">
+                            <h3>📅 Events</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
+                            <button class="btn btn-sm btn-primary" onclick="showNewEventForm()" style="width: 100%; margin-bottom: var(--space-sm);">
+                                + Log Event
+                            </button>
                             <div id="events-quick-list"></div>
                         </div>
                     </div>

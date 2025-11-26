@@ -1108,11 +1108,7 @@ select:focus {
 .mb-3 { margin-bottom: var(--space-lg); }
 
 /* ==================== QUICK LINKS ==================== */
-.quick-links {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-sm);
-}
+/* Quick links now use standard collapsible panels */
 
 /* ==================== TOOLS GRID ==================== */
 .tools-grid {
@@ -1145,32 +1141,7 @@ select:focus {
   margin: 0;
 }
 
-.quick-links-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-@media (max-width: 768px) {
-  .quick-links-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.quick-link-card .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.quick-link-card .card-header h4 {
-  margin: 0;
-  font-size: 1rem;
-}
+/* Old quick-links-grid removed - now using standard collapsible panels */
 
 /* ==================== TABLE MANAGER ==================== */
 .table-manager {
@@ -1290,35 +1261,13 @@ select:focus {
 }
 
 /* ==================== QUICK LINKS PANELS ==================== */
-.quick-link-panel {
-  margin-top: var(--space-xs);
-  margin-bottom: var(--space-md);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: var(--space-sm);
+/* Quick link list containers */
+#npcs-quick-list,
+#locations-quick-list,
+#threads-quick-list,
+#events-quick-list {
   max-height: 300px;
   overflow-y: auto;
-}
-
-.quick-link-panel.hidden {
-  display: none;
-}
-
-.quick-link-panel .panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-sm);
-  padding-bottom: var(--space-xs);
-  border-bottom: 1px solid var(--border);
-}
-
-.quick-link-panel .panel-header h4 {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text);
 }
 
 .btn-close {
@@ -1348,35 +1297,13 @@ select:focus {
 }
 
 /* ==================== QUICK LINKS PANELS ==================== */
-.quick-link-panel {
-  margin-top: var(--space-xs);
-  margin-bottom: var(--space-md);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: var(--space-sm);
+/* Quick link list containers */
+#npcs-quick-list,
+#locations-quick-list,
+#threads-quick-list,
+#events-quick-list {
   max-height: 300px;
   overflow-y: auto;
-}
-
-.quick-link-panel.hidden {
-  display: none;
-}
-
-.quick-link-panel .panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-sm);
-  padding-bottom: var(--space-xs);
-  border-bottom: 1px solid var(--border);
-}
-
-.quick-link-panel .panel-header h4 {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text);
 }
 
 .panel-actions {
@@ -1440,30 +1367,35 @@ select:focus {
 
 /* Quick link list items */
 .quick-link-item {
-  padding: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
   margin-bottom: var(--space-xs);
-  background: var(--bg-tertiary);
+  background: var(--bg-secondary);
   border-radius: var(--radius);
   cursor: pointer;
   transition: all 0.2s;
   font-size: 0.85rem;
+  border-left: 3px solid transparent;
 }
 
 .quick-link-item:hover {
-  background: var(--bg-primary);
-  border-left: 3px solid var(--primary);
-  padding-left: calc(var(--space-xs) + 3px);
+  background: var(--bg-tertiary);
+  border-left-color: var(--primary);
+  transform: translateX(2px);
 }
 
 .quick-link-item:last-child {
   margin-bottom: 0;
 }
 
-/* Empty state in quick links */
-.quick-link-panel .text-muted {
+/* Empty state in quick link lists */
+#npcs-quick-list .text-muted,
+#locations-quick-list .text-muted,
+#threads-quick-list .text-muted,
+#events-quick-list .text-muted {
   font-size: 0.85rem;
   text-align: center;
-  padding: var(--space-sm) 0;
+  padding: var(--space-md) 0;
+  color: var(--text-muted);
 }
 
 /* ==================== EVENT TIMELINE ==================== */
@@ -1883,23 +1815,13 @@ select:focus {
     padding: 0.75rem;
   }
 
-  /* Quick panels */
-  .quick-link-panel {
-    position: static;
-    width: 100%;
-    max-height: 300px;
-    overflow-y: auto;
+  /* Quick link lists on mobile */
+  #npcs-quick-list,
+  #locations-quick-list,
+  #threads-quick-list,
+  #events-quick-list {
+    max-height: 250px;
     -webkit-overflow-scrolling: touch;
-  }
-
-  .panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .panel-header h4 {
-    font-size: 0.9rem;
   }
 
   /* Table list */
