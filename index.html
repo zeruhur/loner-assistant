@@ -157,7 +157,16 @@
                         <div class="panel-header">
                             <h2>Session Notes</h2>
                             <div class="session-controls">
-                                <button class="btn btn-sm btn-outline" onclick="ExportImportSystem.exportSession()" title="Export current session">📥 Export</button>
+                                <div class="dropdown" style="display: inline-block; position: relative;">
+                                    <button class="btn btn-sm btn-outline" onclick="toggleExportMenu(event)" title="Export notes">
+                                        📄 Export ▾
+                                    </button>
+                                    <div id="export-menu" class="dropdown-menu" style="display: none;">
+                                        <button onclick="Editor.exportNotesAsMarkdown(); hideExportMenu()">📝 Markdown</button>
+                                        <button onclick="Editor.exportNotesAsHTML(); hideExportMenu()">🌐 HTML</button>
+                                        <button onclick="ExportImportSystem.exportSession(); hideExportMenu()">📦 Full Session (JSON)</button>
+                                    </div>
+                                </div>
                                 <button class="btn btn-sm" onclick="saveNotes()" title="Save Notes (Alt+S)">💾 Save</button>
                                 <button class="btn btn-sm" onclick="HelpSystem.show('play')" title="Show help for Play view">ℹ️ Help</button>
                                 <button class="btn btn-sm" onclick="ShortcutsSystem.showHelp()" title="Show Keyboard Shortcuts (Alt+?)">⌨️ Shortcuts</button>

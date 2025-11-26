@@ -392,10 +392,29 @@ window.App = {
   loadAppState
 };
 
+// Export menu toggle functions
+function toggleExportMenu(event) {
+  event.stopPropagation();
+  const menu = document.getElementById('export-menu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+function hideExportMenu() {
+  const menu = document.getElementById('export-menu');
+  menu.style.display = 'none';
+}
+
+// Close export menu when clicking outside
+document.addEventListener('click', () => {
+  hideExportMenu();
+});
+
 // Make functions available globally for onclick handlers
 window.showView = UI.showView;
 window.closeModal = UI.closeModal;
 window.toggleTheme = toggleTheme;
+window.toggleExportMenu = toggleExportMenu;
+window.hideExportMenu = hideExportMenu;
 
 // Debug helper
 window.LonerDebug = {

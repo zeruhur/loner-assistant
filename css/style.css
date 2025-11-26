@@ -2237,3 +2237,46 @@ select:focus {
   }
   }
 }
+/* ==================== DROPDOWN MENUS ==================== */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  margin-top: 0.25rem;
+  min-width: 200px;
+  z-index: 1000;
+}
+
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 1rem;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.dropdown-menu button:hover {
+  background: var(--bg-secondary);
+}
+
+.dropdown-menu button:first-child {
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.dropdown-menu button:last-child {
+  border-radius: 0 0 var(--radius) var(--radius);
+}
