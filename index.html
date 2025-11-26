@@ -40,17 +40,22 @@
         <div id="view-play" class="view active">
             
             <!-- ADD THIS: Current Session Card (Full Width) -->
-            <div class="panel" style="margin-bottom: var(--space-lg);">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="panel" style="margin-bottom: var(--space-lg);" data-mobile-order="0">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm);">
                     <div>
                         <h3 style="margin: 0 0 0.5rem 0;">Current Session</h3>
                         <div id="current-session-info">
                             <p class="text-muted" style="margin: 0;">No session loaded</p>
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="showSessionList()" style="white-space: nowrap;">
-                        ⚡ Manage Sessions
-                    </button>
+                    <div style="display: flex; gap: var(--space-sm);">
+                        <button class="btn btn-sm btn-outline" onclick="ExportImportSystem.exportSession()" title="Export current session">
+                            📥 Export
+                        </button>
+                        <button class="btn btn-primary" onclick="showSessionList()" style="white-space: nowrap;">
+                            ⚡ Manage Sessions
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -152,6 +157,7 @@
                         <div class="panel-header">
                             <h2>Session Notes</h2>
                             <div class="session-controls">
+                                <button class="btn btn-sm btn-outline" onclick="ExportImportSystem.exportSession()" title="Export current session">📥 Export</button>
                                 <button class="btn btn-sm" onclick="saveNotes()" title="Save Notes (Alt+S)">💾 Save</button>
                                 <button class="btn btn-sm" onclick="HelpSystem.show('play')" title="Show help for Play view">ℹ️ Help</button>
                                 <button class="btn btn-sm" onclick="ShortcutsSystem.showHelp()" title="Show Keyboard Shortcuts (Alt+?)">⌨️ Shortcuts</button>
@@ -427,6 +433,26 @@
                     <button class="help-button" onclick="HelpSystem.show('tools')" title="Show help for Tools">?</button>
                 </div>
             </div>
+
+            <!-- Data Management Section -->
+            <div class="panel" style="margin-bottom: var(--space-xl);">
+                <h3>📦 Data Management</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md);">
+                    <button class="btn btn-primary" onclick="ExportImportSystem.exportDatabase()" title="Export full database backup">
+                        📤 Export All Data
+                    </button>
+                    <button class="btn btn-primary" onclick="ExportImportSystem.exportCampaign()" title="Export current campaign">
+                        📤 Export Campaign
+                    </button>
+                    <button class="btn btn-secondary" onclick="ExportImportSystem.showImportDialog()" title="Import session, campaign, or database">
+                        📥 Import Data
+                    </button>
+                </div>
+                <p class="text-muted" style="margin-top: var(--space-md); font-size: 0.85rem;">
+                    Export your data for backup or sharing. Import previously exported sessions, campaigns, or full database backups.
+                </p>
+            </div>
+
             <div id="tools-grid" class="tools-grid">
                 <!-- Content will be dynamically rendered by TableManager -->
             </div>
@@ -536,6 +562,7 @@
     <script src="data/tables/supplements/sample-encounters.js"></script>
     <script src="js/shortcuts.js"></script>              <!-- 8. Keyboard shortcuts system -->
     <script src="js/onboarding.js"></script>             <!-- 8b. Help system & onboarding -->
+    <script src="js/export-import.js"></script>          <!-- 8c. Export/Import system -->
     <script src="js/main.js"></script>                   <!-- 9. Main initialization (LAST) -->
 
 </body>
