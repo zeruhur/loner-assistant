@@ -2280,3 +2280,97 @@ select:focus {
 .dropdown-menu button:last-child {
   border-radius: 0 0 var(--radius) var(--radius);
 }
+
+/* ==================== USER MANUAL ==================== */
+.modal-large .modal-content {
+  max-width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.manual-content {
+  line-height: 1.6;
+}
+
+.manual-content h1 {
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.manual-content h2 {
+  color: var(--text);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.manual-content h3 {
+  color: var(--text);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.manual-content ul, .manual-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.manual-content li {
+  margin-bottom: 0.5rem;
+}
+
+.manual-content kbd {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.2rem 0.4rem;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.manual-content table {
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.manual-content table th,
+.manual-content table td {
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+}
+
+.manual-content a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.manual-content a:hover {
+  color: var(--primary-dark);
+}
+
+/* ==================== FOOTER ==================== */
+.app-footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  padding: var(--space-lg);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: auto;
+}
+
+.app-footer p {
+  margin: 0;
+}
+
+.app-footer a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.app-footer a:hover {
+  text-decoration: underline;
+}

@@ -10,7 +10,7 @@
     <!-- Top Navigation -->
     <nav class="navbar">
         <div class="nav-brand">
-            <h1>🎲 Loner Assistant</h1>
+            <h1>Loner Assistant</h1>
             <span class="version">v2.0</span>
         </div>
         <button class="hamburger-menu" onclick="toggleNavMenu()" title="Toggle menu">
@@ -19,6 +19,7 @@
           <span></span>
         </button>
         <div class="nav-links" id="nav-menu">
+          <a href="https://loner.zotiquestgames.com" target="_blank" rel="noopener" class="nav-btn" style="text-decoration: none;">Home</a>
           <button class="nav-btn active" data-view="play">Play</button>
           <button class="nav-btn" data-view="campaigns">Campaigns</button>
           <button class="nav-btn" data-view="characters">Characters</button>
@@ -456,6 +457,9 @@
                     <button class="btn btn-secondary" onclick="ExportImportSystem.showImportDialog()" title="Import session, campaign, or database">
                         📥 Import Data
                     </button>
+                    <button class="btn btn-outline" onclick="ManualSystem.show()" title="View user manual">
+                        📖 User Manual
+                    </button>
                 </div>
                 <p class="text-muted" style="margin-top: var(--space-md); font-size: 0.85rem;">
                     Export your data for backup or sharing. Import previously exported sessions, campaigns, or full database backups.
@@ -530,6 +534,14 @@
       <div id="events-timeline"></div>
     </div>
 
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>
+            <strong>Loner</strong> © 2021-2025 Roberto Bisceglie.
+            This app is licensed under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.
+        </p>
+    </footer>
+
     <!-- Modal Template (for forms, etc.) -->
     <div id="modal" class="modal hidden">
         <div class="modal-backdrop" onclick="UI.closeModal()"></div>
@@ -572,6 +584,7 @@
     <script src="js/shortcuts.js"></script>              <!-- 8. Keyboard shortcuts system -->
     <script src="js/onboarding.js"></script>             <!-- 8b. Help system & onboarding -->
     <script src="js/export-import.js"></script>          <!-- 8c. Export/Import system -->
+    <script src="js/manual.js"></script>                 <!-- 8d. User manual system -->
     <script src="js/main.js"></script>                   <!-- 9. Main initialization (LAST) -->
 
 </body>
