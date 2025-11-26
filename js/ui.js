@@ -384,6 +384,59 @@ function showEmptyState(containerId, icon, title, message, actionHTML = '') {
   `;
 }
 
+/**
+ * Toggle panel collapse state
+ * @param {string} panelId - The panel ID to toggle
+ */
+function togglePanel(panelId) {
+  const panel = document.querySelector(`[data-panel-id="${panelId}"]`);
+  if (!panel) return;
+
+  // Toggle collapsed class
+  panel.classList.toggle('collapsed');
+
+  // Save state to localStorage
+  const isCollapsed = panel.classList.contains('collapsed');
+  savePanelState(panelId, isCollapsed);
+}
+
+/**
+ * Save panel collapsed state to localStorage
+ * @param {string} panelId - The panel ID
+ * @param {boolean} isCollapsed - Whether panel is collapsed
+ */
+function savePanelState(panelId, isCollapsed) {
+  try {
+    const panelStates = JSON.parse(localStorage.getItem('panelStates') || '{}');
+    panelStates[panelId] = isCollapsed;
+    localStorage.setItem('panelStates', JSON.stringify(panelStates));
+  } catch (error) {
+    console.error('Error saving panel state:', error);
+  }
+}
+
+/**
+ * Restore panel collapsed states from localStorage
+ */
+function restorePanelStates() {
+  try {
+    const panelStates = JSON.parse(localStorage.getItem('panelStates') || '{}');
+
+    Object.keys(panelStates).forEach(panelId => {
+      const panel = document.querySelector(`[data-panel-id="${panelId}"]`);
+      if (panel) {
+        if (panelStates[panelId]) {
+          panel.classList.add('collapsed');
+        } else {
+          panel.classList.remove('collapsed');
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error restoring panel states:', error);
+  }
+}
+
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
   // Ctrl/Cmd + O = Open Oracle
@@ -428,5 +481,8 @@ window.UI = {
   renderCardList,
   createCard,
   showLoading,
-  hideLoading
+  hideLoading,
+  togglePanel,
+  savePanelState,
+  restorePanelStates
 };

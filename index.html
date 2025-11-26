@@ -153,10 +153,14 @@
 
                 <!-- RIGHT SIDEBAR: Game Tools -->
                 <aside class="sidebar-right">
-                    
+
                     <!-- Oracle -->
-                    <div class="panel panel-highlight">
-                        <h3>🔮 Oracle</h3>
+                    <div class="panel panel-highlight" data-panel-id="oracle">
+                        <div class="panel-title" onclick="UI.togglePanel('oracle')">
+                            <h3>🔮 Oracle</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
                         <div class="oracle-controls">
                             <div class="modifier-selector">
                                 <label>
@@ -177,11 +181,16 @@
                             </button>
                         </div>
                         <div id="oracle-result" class="oracle-result hidden"></div>
+                        </div>
                     </div>
 
                     <!-- Twist Counter -->
-                    <div class="panel">
-                        <h3>Twist Counter</h3>
+                    <div class="panel" data-panel-id="twist">
+                        <div class="panel-title" onclick="UI.togglePanel('twist')">
+                            <h3>Twist Counter</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
                         <div class="twist-counter">
                             <div class="counter-display">
                                 <span id="twist-count">0</span> / 3
@@ -194,20 +203,30 @@
                             </button>
                         </div>
                         <div id="twist-result" class="twist-result hidden"></div>
+                        </div>
                     </div>
 
                     <!-- Scene Management -->
-                    <div class="panel">
-                        <h3>Scene</h3>
+                    <div class="panel collapsed" data-panel-id="scene">
+                        <div class="panel-title" onclick="UI.togglePanel('scene')">
+                            <h3>Scene</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
                         <button class="btn btn-secondary" onclick="rollScene()">
                             🎬 Next Scene
                         </button>
                         <div id="scene-result" class="scene-result"></div>
+                        </div>
                     </div>
 
                     <!-- Conflict System -->
-                    <div class="panel panel-danger" id="conflict-panel">
-                        <h3>⚔️ Conflict</h3>
+                    <div class="panel panel-danger collapsed" id="conflict-panel" data-panel-id="conflict">
+                        <div class="panel-title" onclick="UI.togglePanel('conflict')">
+                            <h3>⚔️ Conflict</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
                         
                         <div id="conflict-setup" class="conflict-setup">
                             <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 1rem;">
@@ -267,11 +286,16 @@
                                 </button>
                             </div>
                         </div>
+                        </div>
                     </div>
 
                     <!-- Get Inspired -->
-                    <div class="panel">
-                        <h3>Get Inspired</h3>
+                    <div class="panel collapsed" data-panel-id="inspired">
+                        <div class="panel-title" onclick="UI.togglePanel('inspired')">
+                            <h3>Get Inspired</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
                         <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
                             <button class="btn btn-secondary" onclick="TableManager.rollGetInspired()" style="flex: 1;">
                                 ✨ Random Prompt
@@ -281,11 +305,16 @@
                             </button>
                         </div>
                         <div id="inspiration-result"></div>
+                        </div>
                     </div>
 
                     <!-- Adventure Maker -->
-                     <div class="panel">
-                        <h3>🎭 Adventure Tables</h3>
+                     <div class="panel collapsed" data-panel-id="adventure">
+                        <div class="panel-title" onclick="UI.togglePanel('adventure')">
+                            <h3>🎭 Adventure Tables</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                             <button class="btn btn-sm btn-secondary" onclick="TableManager.rollTable('core-loner', 'settings')">
                                 🌍 Setting
@@ -308,11 +337,16 @@
                                 🎲 Roll Complete Adventure
                             </button>
                         </div>
+                        </div>
                     </div>
 
                     <!-- Random Tables - TWO-STEP INTERFACE -->
-                    <div class="panel">
-                        <h3>📋 Random Tables</h3>
+                    <div class="panel collapsed" data-panel-id="random-tables">
+                        <div class="panel-title" onclick="UI.togglePanel('random-tables')">
+                            <h3>📋 Random Tables</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
                         
                         <!-- Step 1: Select Supplement -->
                         <div id="supplement-selector">
@@ -337,6 +371,7 @@
                             <button class="btn btn-sm btn-outline" onclick="showView('tools')" style="width: 100%;">
                                 📚 Browse All Tables
                             </button>
+                        </div>
                         </div>
                     </div>
 

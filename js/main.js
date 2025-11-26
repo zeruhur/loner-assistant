@@ -105,6 +105,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     loadThemePreference();
     console.log('✅ UI initialized');
 
+    // 1a. Restore panel collapsed states
+    UI.restorePanelStates();
+    console.log('✅ Panel states restored');
+
     // 1b. Initialize notifications
     NotificationSystem.init();
     console.log('✅ Notifications initialized');
