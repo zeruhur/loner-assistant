@@ -62,12 +62,21 @@ window.TableRegistry = {
       description: 'Cozy Fantasy supplemental adventure tables'
     },
     {
+      id: 'kwaidan-inspired',
+      name: 'Kwaidan Inspiration',
+      file: 'data/tables/flavors/kwaidan-inspired.js',
+      version: '1.0',
+      enabled: true,
+      flavorOf: 'get-inspired',
+      description: 'Get Inspired flavor themed for kwaidan adventures'
+    },    
+    {
       id: 'kwaidan-adventure-tables',
       name: 'Kwaidan Adventure Tables',
       file: 'data/tables/supplements/kwaidan.js',
       version: '1.0',
       enabled: true,
-      description: 'Cozy Fantasy supplemental adventure tables'
+      description: 'Kwaidan supplemental adventure tables'
     }
     // Template for adding new supplements:
     // {

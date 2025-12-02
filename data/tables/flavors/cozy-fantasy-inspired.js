@@ -1,9 +1,4 @@
-/**
- * SPACE OPERA GET INSPIRED
- * A Get Inspired flavor themed for space opera adventures
- */
-
-window.SpaceOperaInspired = {
+window.CozyFantasyInspired = {
     supplement: {
       id: 'cozy-fantasy-inspired',
       name: 'Cozy Fantasy Inspiration',
