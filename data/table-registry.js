@@ -65,7 +65,7 @@ window.TableRegistry = {
       id: 'kwaidan-inspired',
       name: 'Kwaidan Inspiration',
       file: 'data/tables/flavors/kwaidan-inspired.js',
-      version: '1.0',
+      version: '2.0',
       enabled: true,
       flavorOf: 'get-inspired',
       description: 'Get Inspired flavor themed for kwaidan adventures'
@@ -74,7 +74,7 @@ window.TableRegistry = {
       id: 'kwaidan-adventure-tables',
       name: 'Kwaidan Adventure Tables',
       file: 'data/tables/supplements/kwaidan.js',
-      version: '1.0',
+      version: '2.0',
       enabled: true,
       description: 'Kwaidan supplemental adventure tables'
     }
