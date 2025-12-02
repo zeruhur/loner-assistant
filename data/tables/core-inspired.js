@@ -3,7 +3,7 @@
  * Open-ended prompts for inspiration from Loner 2nd Edition
  */
 
-const CoreInspiredTables = {
+window.CoreInspiredTables = {
   supplement: {
     id: 'core-inspired',
     name: 'Core Get Inspired',

@@ -3,7 +3,7 @@
  * Adventure Maker tables from Loner 2nd Edition
  */
 
-const CoreLonerTables = {
+window.CoreLonerTables = {
   supplement: {
     id: 'core-loner',
     name: 'Loner Core Rules',

@@ -3,7 +3,7 @@
  * Example of supplemental adventure tables
  */
 
-const SampleRandomTables = {
+window.SampleRandomTables = {
   supplement: {
     id: 'sample-random',
     name: 'Sample Random Tables',

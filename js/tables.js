@@ -18,24 +18,21 @@ const TableSystem = {
   async init() {
     console.log('🎲 Initializing Table System...');
 
-    // Register core supplements if they exist
-    if (typeof CoreLonerTables !== 'undefined') {
-      this.registerSupplement(CoreLonerTables);
+    // Register all enabled supplements from the central registry
+    if (typeof TableRegistry !== 'undefined') {
+      for (const suppMeta of TableRegistry.supplements) {
+        if (suppMeta.enabled) {
+          const supplement = this.findSupplementInWindow(suppMeta.id);
+          if (supplement) {
+            this.registerSupplement(supplement);
+            console.log(`✅ Registered: ${suppMeta.name}`);
+          } else {
+            console.warn(`⚠️ ${suppMeta.name} not loaded (file missing: ${suppMeta.file})`);
+          }
+        }
+      }
     } else {
-      console.warn('⚠️ CoreLonerTables not loaded');
-    }
-
-    if (typeof CoreInspiredTables !== 'undefined') {
-      this.registerSupplement(CoreInspiredTables);
-    } else {
-      console.warn('⚠️ CoreInspiredTables not loaded');
-    }
-
-    // Register sample random tables
-    if (typeof SampleRandomTables !== 'undefined') {
-      this.registerSupplement(SampleRandomTables);
-    } else {
-      console.warn('⚠️ SampleRandomTables not loaded (optional)');
+      console.warn('⚠️ TableRegistry not found');
     }
 
     // Load custom tables from database
@@ -60,6 +57,44 @@ const TableSystem = {
 
     console.log('✅ Table System initialized');
     console.log('📋 Registered supplements:', Object.keys(this.registry));
+  },
+
+  /**
+   * Find a supplement in the global window by ID
+   * First tries naming convention, then scans if needed
+   */
+  findSupplementInWindow(id) {
+    // Try naming convention first (faster)
+    // e.g., 'core-loner' → 'CoreLonerTables'
+    const conventionalName = id
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join('') + 'Tables';
+
+    if (typeof window[conventionalName] !== 'undefined') {
+      const obj = window[conventionalName];
+      if (obj && obj.supplement && obj.supplement.id === id && obj.tables) {
+        return obj;
+      }
+    }
+
+    // Fallback: scan window for matching supplement.id (slower but flexible)
+    try {
+      for (const key in window) {
+        try {
+          const obj = window[key];
+          if (obj && typeof obj === 'object' && obj.supplement && obj.supplement.id === id && obj.tables) {
+            return obj;
+          }
+        } catch (e) {
+          // Skip properties that throw errors on access
+        }
+      }
+    } catch (e) {
+      console.warn('Error scanning window for supplements:', e);
+    }
+
+    return null;
   },
   
   /**
