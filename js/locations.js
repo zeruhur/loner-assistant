@@ -136,13 +136,10 @@ async function createNewLocation() {
     
     UI.closeModal();
     UI.showAlert('Location created!', 'success');
-    
-    // Refresh the quick panel if it's open
-    const panel = document.getElementById('locations-panel');
-    if (panel && !panel.classList.contains('hidden')) {
-      await showLocationPanel();
-    }
-    
+
+    // Always refresh the quick panel
+    await showLocationPanel();
+
     // Reload locations list if on Locations view
     if (document.getElementById('view-locations').classList.contains('active')) {
       await loadLocationsList();
@@ -296,13 +293,10 @@ async function saveLocationEdit(locationId) {
     
     UI.closeModal();
     UI.showAlert('Location updated!', 'success');
-    
-    // Refresh displays
-    const panel = document.getElementById('location-panel-container');
-    if (panel) {
-      await showLocationPanel();
-    }
-    
+
+    // Always refresh displays
+    await showLocationPanel();
+
     if (document.getElementById('view-locations')?.classList.contains('active')) {
       await loadLocationsList();
     }

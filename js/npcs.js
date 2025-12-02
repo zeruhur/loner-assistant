@@ -155,13 +155,10 @@ async function createNewNPC() {
     
     UI.closeModal();
     UI.showAlert('NPC created!', 'success');
-    
-    // Refresh the quick panel if it's open
-    const panel = document.getElementById('npcs-panel');
-    if (panel && !panel.classList.contains('hidden')) {
-      await showNPCPanel();
-    }
-    
+
+    // Always refresh the quick panel
+    await showNPCPanel();
+
     // Reload NPCs list if on NPCs view
     if (document.getElementById('view-npcs').classList.contains('active')) {
       await loadNPCsList();
@@ -286,13 +283,10 @@ async function saveNPCEdit(npcId) {
     
     UI.closeModal();
     UI.showAlert('NPC updated!', 'success');
-    
-    // Refresh displays
-    const panel = document.getElementById('npc-panel-container');
-    if (panel) {
-      await showNPCPanel();
-    }
-    
+
+    // Always refresh displays
+    await showNPCPanel();
+
     if (document.getElementById('view-npcs')?.classList.contains('active')) {
       await loadNPCsList();
     }

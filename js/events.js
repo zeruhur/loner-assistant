@@ -105,16 +105,16 @@ async function showEventPanel() {
     document.getElementById('events-quick-list').innerHTML = '<p class="text-muted">No session active</p>';
     return;
   }
-  
+
   const events = await LonerDB.getEventsForSession(state.sessionId);
   const container = document.getElementById('events-quick-list');
-  
+
   if (events.length === 0) {
     container.innerHTML = '<p class="text-muted">No events yet</p>';
     return;
   }
-  
-  container.innerHTML = events.slice(0, 5).map(event => `
+
+  container.innerHTML = events.reverse().slice(0, 5).map(event => `
     <div class="quick-link-item">
       <strong>${event.type}</strong>
       <div style="font-size: 0.75rem; opacity: 0.7;">${UI.escapeHtml(event.description)}</div>
@@ -168,40 +168,37 @@ function showNewEventForm() {
  */
 async function createNewEvent() {
   const descriptionInput = document.getElementById('event-description');
-  
+
   if (!descriptionInput || !descriptionInput.value.trim()) {
     UI.showAlert('Please enter an event description', 'error');
     return;
   }
-  
+
   try {
     const state = getState();
-    
+
     if (!state.campaignId || !state.sessionId) {
       UI.showAlert('Please create or select a campaign and session first!', 'error');
       UI.closeModal();
       return;
     }
-    
+
     const description = descriptionInput.value.trim();
     const type = document.getElementById('event-type').value;
-    
+
     await LonerDB.logEvent(state.campaignId, state.sessionId, type, description);
-    
+
     UI.closeModal();
     UI.showAlert('Event logged!', 'success');
-    
-    // Refresh the quick panel if it's open
-    const panel = document.getElementById('events-panel');
-    if (panel && !panel.classList.contains('hidden')) {
-      await showEventPanel();
-    }
-    
+
+    // Always refresh displays
+    await showEventPanel();
+
     // Reload events timeline if on Events view
     if (document.getElementById('view-events').classList.contains('active')) {
       await loadEventTimeline();
     }
-    
+
   } catch (error) {
     console.error('Error logging event:', error);
     UI.showAlert('Error logging event: ' + error.message, 'error');
@@ -356,7 +353,7 @@ async function exportSessionRecap() {
  */
 async function loadEventTimeline() {
   const state = getState();
-  
+
   if (!state.sessionId) {
     const container = document.getElementById('events-timeline');
     if (container) {
@@ -364,12 +361,12 @@ async function loadEventTimeline() {
     }
     return;
   }
-  
+
   const events = await LonerDB.getEventsForSession(state.sessionId);
   const container = document.getElementById('events-timeline');
-  
+
   if (!container) return;
-  
+
   if (events.length === 0) {
     container.innerHTML = '<p class="text-muted text-center">No events yet. Events will be logged automatically as you play.</p>';
     return;

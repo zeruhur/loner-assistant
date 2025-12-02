@@ -2,25 +2,27 @@
  * Central Registry of Table Supplements
  *
  * This is the SINGLE SOURCE OF TRUTH for all table supplements.
+ * Scripts are loaded dynamically from this registry - no manual HTML edits needed!
+ *
  * To add a new supplement:
  *
  * 1. Create your supplement file (e.g., data/tables/flavors/my-flavor.js)
  *    - Must define a global constant with proper naming:
  *      MyFlavorTables = { supplement: {...}, tables: {...} }
  *
- * 2. Add script tag in index.html to load it
+ * 2. Add entry below with enabled: true
+ *    - The script will load automatically on app startup
  *
- * 3. Add entry below with enabled: true
- *
- * 4. Done! The table system will auto-register it on startup
+ * That's it! No HTML changes needed.
  *
  * Fields:
  * - id: unique identifier (kebab-case)
  * - name: human-readable name
- * - file: path to the file (for documentation)
+ * - file: path to the file (REQUIRED - used for dynamic loading)
  * - version: semantic version
  * - enabled: boolean (set to false to disable without removing)
  * - flavorOf: (optional) 'get-inspired' to make it a Get Inspired flavor
+ * - description: (optional) what this supplement provides
  */
 
 window.TableRegistry = {
@@ -43,21 +45,29 @@ window.TableRegistry = {
       description: 'Action, adjective, and noun prompts for inspiration'
     },
     {
-      id: 'space-opera-inspired',
-      name: 'Space Opera Inspiration',
-      file: 'data/tables/flavors/space-opera-inspired.js',
+      id: 'cozy-fantasy-inspired',
+      name: 'Cozy Fantasy Inspiration',
+      file: 'data/tables/flavors/cozy-fantasy-inspired.js',
       version: '1.0',
       enabled: true,
       flavorOf: 'get-inspired',
-      description: 'Get Inspired flavor themed for space opera adventures'
+      description: 'Get Inspired flavor themed for cozy fantasy adventures'
     },
     {
-      id: 'sample-random',
-      name: 'Sample Random Tables',
-      file: 'data/tables/supplements/sample-encounters.js',
+      id: 'cozy-fantasy-adventure',
+      name: 'Cozy Fantasy Adventure Tables',
+      file: 'data/tables/supplements/cozy-fantasy.js',
       version: '1.0',
       enabled: true,
-      description: 'Example random encounter tables'
+      description: 'Cozy Fantasy supplemental adventure tables'
+    },
+    {
+      id: 'kwaidan-adventure-tables',
+      name: 'Kwaidan Adventure Tables',
+      file: 'data/tables/supplements/kwaidan.js',
+      version: '1.0',
+      enabled: true,
+      description: 'Cozy Fantasy supplemental adventure tables'
     }
     // Template for adding new supplements:
     // {

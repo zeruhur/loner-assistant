@@ -4,12 +4,13 @@ This guide explains how to add new tables to the Loner Assistant system.
 
 ## Overview
 
-The table system uses a **central registry** (`data/table-registry.js`) as the single source of truth. To add new tables:
+The table system uses a **central registry** (`data/table-registry.js`) as the single source of truth. Scripts are loaded **automatically** from the registry - no HTML edits needed!
+
+To add new tables:
 
 1. **Create a data file** with your tables
-2. **Add a script tag** to `index.html`
-3. **Register in `table-registry.js`**
-4. Done! Tables are auto-discovered on startup
+2. **Register in `table-registry.js`**
+3. Done! Tables are auto-loaded and auto-discovered on startup
 
 ## Adding a New Get Inspired Flavor
 
@@ -75,21 +76,7 @@ window.YourFlavorNameTables = {
 };
 ```
 
-### Step 2: Add Script Tag to index.html
-
-In `index.html`, find the table supplements section (around line 603) and add your script tag:
-
-```html
-<!-- Phase 4: Table Supplements (MUST load before table-registry.js) -->
-<script src="data/tables/core-loner.js"></script>
-<script src="data/tables/flavors/space-opera-inspired.js"></script>
-<script src="data/tables/core-inspired.js"></script>
-<script src="data/tables/flavors/your-flavor-name.js"></script>  <!-- Add this -->
-<script src="data/tables/supplements/sample-encounters.js"></script>
-<script src="data/table-registry.js"></script>
-```
-
-### Step 3: Register in table-registry.js
+### Step 2: Register in table-registry.js
 
 In `data/table-registry.js`, add an entry to the `supplements` array:
 
@@ -110,7 +97,7 @@ window.TableRegistry = {
 };
 ```
 
-### Step 4: Done!
+### Step 3: Done!
 
 Refresh the app. Your new flavor will:
 - ✅ Appear in the "Get Inspired Flavor" picker (Tools view)
@@ -193,21 +180,7 @@ window.YourSupplementNameTables = {
 };
 ```
 
-### Step 2: Add Script Tag to index.html
-
-In `index.html`, add your script tag before `table-registry.js`:
-
-```html
-<!-- Phase 4: Table Supplements -->
-<script src="data/tables/core-loner.js"></script>
-<script src="data/tables/flavors/space-opera-inspired.js"></script>
-<script src="data/tables/core-inspired.js"></script>
-<script src="data/tables/supplements/sample-encounters.js"></script>
-<script src="data/tables/supplements/your-supplement-name.js"></script>  <!-- Add this -->
-<script src="data/table-registry.js"></script>
-```
-
-### Step 3: Register in table-registry.js
+### Step 2: Register in table-registry.js
 
 In `data/table-registry.js`, add an entry to the `supplements` array:
 
@@ -222,7 +195,7 @@ In `data/table-registry.js`, add an entry to the `supplements` array:
 }
 ```
 
-### Step 4: Done!
+### Step 3: Done!
 
 Refresh the app. Your tables will:
 - ✅ Appear in the Tools view under their category
@@ -367,26 +340,28 @@ window.SpaceWesternInspiredTables = {
 ## Testing Your Tables
 
 1. **Refresh the browser** (Ctrl+F5 or Cmd+Shift+R)
-2. **Check the browser console** - should see:
+2. **Check the browser console** (F12) - should see:
    ```
+   🎲 Initializing Table System...
+   📦 Loading: Your Supplement Display Name from data/tables/...
    ✅ Registered: Your Supplement Display Name
    ```
 3. **Open Tools view** - your tables should appear
 4. **Try rolling** - click any table and verify results appear
 
 If tables don't appear:
-- Check browser console for errors
-- Verify `window.YourVariableNameHere` is defined
-- Confirm script tag was added to `index.html`
+- Check browser console for errors - should see "📦 Loading: ..." and "✅ Registered: ..."
+- Verify `window.YourVariableNameHere` is defined in your supplement file
 - Confirm entry was added to `table-registry.js` with `enabled: true`
+- Make sure the `file:` path in registry matches your actual file location
 
 ## Quick Reference: Common Mistakes
 
 | Problem | Solution |
 |---------|----------|
-| Tables don't appear | Check console for errors, verify `window.VarName` exists |
+| Tables don't appear | Check console for "📦 Loading" and "✅ Registered" messages; verify `enabled: true` in registry |
 | Variable name error | Use PascalCase + "Tables" (e.g., `MyTablesName` → `window.MyTablesNameTables`) |
-| Script doesn't load | Verify script tag in `index.html` is before `table-registry.js` |
+| File path error | Check registry `file:` path matches your actual file location |
 | 1d6 table has wrong entries | Must have exactly 6 entries |
 | 2d6 table has wrong entries | Must be 6 arrays, each with 6 entries |
-| Flavor not in picker | Verify `flavorOf: 'get-inspired'` in supplement object |
+| Flavor not in picker | Verify `flavorOf: 'get-inspired'` in supplement object in registry |

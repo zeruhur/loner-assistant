@@ -13,21 +13,45 @@ const TableSystem = {
   activeSupplements: [],
   
   /**
+   * Load a script dynamically
+   */
+  async loadScript(filePath) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = filePath;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  },
+
+  /**
    * Initialize the table system
    */
   async init() {
     console.log('🎲 Initializing Table System...');
 
-    // Register all enabled supplements from the central registry
+    // Load and register all enabled supplements from the central registry
     if (typeof TableRegistry !== 'undefined') {
       for (const suppMeta of TableRegistry.supplements) {
         if (suppMeta.enabled) {
-          const supplement = this.findSupplementInWindow(suppMeta.id);
-          if (supplement) {
-            this.registerSupplement(supplement);
-            console.log(`✅ Registered: ${suppMeta.name}`);
-          } else {
-            console.warn(`⚠️ ${suppMeta.name} not loaded (file missing: ${suppMeta.file})`);
+          try {
+            // Load the script if not already loaded
+            if (typeof window[this.getGlobalNameFromId(suppMeta.id)] === 'undefined') {
+              console.log(`📦 Loading: ${suppMeta.name} from ${suppMeta.file}`);
+              await this.loadScript(suppMeta.file);
+            }
+
+            // Now try to register it
+            const supplement = this.findSupplementInWindow(suppMeta.id);
+            if (supplement) {
+              this.registerSupplement(supplement);
+              console.log(`✅ Registered: ${suppMeta.name}`);
+            } else {
+              console.warn(`⚠️ ${suppMeta.name} loaded but not valid (check file: ${suppMeta.file})`);
+            }
+          } catch (error) {
+            console.warn(`⚠️ Failed to load ${suppMeta.name}:`, error);
           }
         }
       }
@@ -96,7 +120,18 @@ const TableSystem = {
 
     return null;
   },
-  
+
+  /**
+   * Convert supplement ID to global variable name
+   * e.g., 'core-loner' → 'CoreLonerTables'
+   */
+  getGlobalNameFromId(id) {
+    return id
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join('') + 'Tables';
+  },
+
   /**
    * Load the table registry
    */

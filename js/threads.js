@@ -142,13 +142,10 @@ async function createNewThread() {
     
     UI.closeModal();
     UI.showAlert('Thread created!', 'success');
-    
-    // Refresh the quick panel if it's open
-    const panel = document.getElementById('threads-panel');
-    if (panel && !panel.classList.contains('hidden')) {
-      await showThreadPanel();
-    }
-    
+
+    // Always refresh the quick panel
+    await showThreadPanel();
+
     // Reload threads list if on Threads view
     if (document.getElementById('view-threads').classList.contains('active')) {
       await loadThreadsList();
@@ -296,13 +293,10 @@ async function saveThreadEdit(threadId) {
     
     UI.closeModal();
     UI.showAlert('Thread updated!', 'success');
-    
-    // Refresh displays
-    const panel = document.getElementById('thread-panel-container');
-    if (panel) {
-      await showThreadPanel();
-    }
-    
+
+    // Always refresh displays
+    await showThreadPanel();
+
     if (document.getElementById('view-threads')?.classList.contains('active')) {
       await loadThreadsList();
     }
@@ -323,13 +317,10 @@ async function deleteThreadConfirm(threadId) {
     await LonerDB.deleteThread(threadId);
     UI.closeModal();
     UI.showAlert('Thread deleted', 'success');
-    
-    // Refresh displays
-    const panel = document.getElementById('thread-panel-container');
-    if (panel) {
-      await showThreadPanel();
-    }
-    
+
+    // Always refresh displays
+    await showThreadPanel();
+
     if (document.getElementById('view-threads')?.classList.contains('active')) {
       await loadThreadsList();
     }

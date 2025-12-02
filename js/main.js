@@ -342,17 +342,22 @@ async function loadLastCampaign() {
 /**
  * Placeholder functions (to be implemented later)
  */
-function showNPCPanel() {
-  NPCManager.showNPCPanel();
+async function showNPCPanel() {
+  await NPCManager.showNPCPanel();
 }
 
-function showLocationPanel() {
-  LocationManager.showLocationPanel();
+async function showLocationPanel() {
+  await LocationManager.showLocationPanel();
 }
 
-function showThreadPanel() {
-  ThreadManager.showThreadPanel();
+async function showThreadPanel() {
+  await ThreadManager.showThreadPanel();
 }
+
+async function showEventPanel() {
+  await EventManager.showEventPanel();
+}
+
 /**
  * Theme switching
  */
