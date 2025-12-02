@@ -404,6 +404,29 @@
                         </div>
                     </div>
 
+                    <!-- Custom Tables -->
+                    <div class="panel collapsed" data-panel-id="custom-tables" data-mobile-order="15">
+                        <div class="panel-title" onclick="UI.togglePanel('custom-tables')">
+                            <h3>📋 My Tables</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
+                            <button class="btn btn-sm btn-primary" onclick="CustomTables.showCreateForm()" style="width: 100%; margin-bottom: var(--space-sm);">
+                                + New Table
+                            </button>
+                            <div id="custom-tables-quick-list">
+                                <p class="text-muted" style="font-size: 0.85rem; text-align: center;">
+                                    No custom tables yet
+                                </p>
+                            </div>
+                            <div style="margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--border);">
+                                <button class="btn btn-sm btn-outline" onclick="CustomTables.show()" style="width: 100%;">
+                                    ⚙️ Manage Tables
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                 </aside>
             </div>
         </div>
@@ -582,6 +605,7 @@
     <script src="data/table-registry.js"></script>       <!-- Table registry -->
     <script src="js/tables.js"></script>                 <!-- 7. Roll tables -->
     <script src="js/table-manager.js"></script>          <!-- 7b. Table manager -->
+    <script src="js/custom-tables.js"></script>          <!-- 7c. Custom tables manager -->
     <script src="data/tables/supplements/sample-encounters.js"></script>
     <script src="js/shortcuts.js"></script>              <!-- 8. Keyboard shortcuts system -->
     <script src="js/onboarding.js"></script>             <!-- 8b. Help system & onboarding -->

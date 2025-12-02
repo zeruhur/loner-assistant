@@ -573,14 +573,30 @@ async function getCustomTables() {
   return await db.customTables.toArray();
 }
 
-async function createCustomTable(name, category, entries) {
+async function createCustomTable(name, category, entries, rollType = 'random') {
   const id = await db.customTables.add({
     name: name,
     category: category,
     entries: entries,
+    rollType: rollType,
     createdAt: new Date()
   });
   return id;
+}
+
+async function getCustomTable(id) {
+  return await db.customTables.get(id);
+}
+
+async function updateCustomTable(id, data) {
+  const table = await db.customTables.get(id);
+  if (!table) throw new Error('Table not found');
+
+  await db.customTables.update(id, {
+    ...table,
+    ...data,
+    updatedAt: new Date()
+  });
 }
 
 async function deleteCustomTable(id) {
@@ -676,7 +692,9 @@ window.LonerDB = {
 
   // Custom tables
   getCustomTables,
+  getCustomTable,
   createCustomTable,
+  updateCustomTable,
   deleteCustomTable,
   
   // User preferences

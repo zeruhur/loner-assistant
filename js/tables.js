@@ -15,35 +15,40 @@ const TableSystem = {
   /**
    * Initialize the table system
    */
-/**
- * Initialize the table system
- */
-/**
- * Initialize the table system
- */
   async init() {
     console.log('🎲 Initializing Table System...');
-    
+
     // Register core supplements if they exist
     if (typeof CoreLonerTables !== 'undefined') {
       this.registerSupplement(CoreLonerTables);
     } else {
       console.warn('⚠️ CoreLonerTables not loaded');
     }
-    
+
     if (typeof CoreInspiredTables !== 'undefined') {
       this.registerSupplement(CoreInspiredTables);
     } else {
       console.warn('⚠️ CoreInspiredTables not loaded');
     }
-    
-    // Register sample random tables - CHANGE THIS LINE
+
+    // Register sample random tables
     if (typeof SampleRandomTables !== 'undefined') {
       this.registerSupplement(SampleRandomTables);
     } else {
       console.warn('⚠️ SampleRandomTables not loaded (optional)');
     }
-    
+
+    // Load custom tables from database
+    try {
+      const customTables = await LonerDB.getCustomTables();
+      customTables.forEach(table => this.registerCustomTable(table));
+      if (customTables.length > 0) {
+        console.log(`✅ Loaded ${customTables.length} custom table(s)`);
+      }
+    } catch (error) {
+      console.warn('⚠️ Error loading custom tables:', error);
+    }
+
     // Load user preferences
     const activeFlavorStored = localStorage.getItem('loner-inspired-flavor');
     if (activeFlavorStored && this.registry[activeFlavorStored]) {
@@ -52,7 +57,7 @@ const TableSystem = {
       // Default to core-inspired
       localStorage.setItem('loner-inspired-flavor', 'core-inspired');
     }
-    
+
     console.log('✅ Table System initialized');
     console.log('📋 Registered supplements:', Object.keys(this.registry));
   },
@@ -90,7 +95,18 @@ const TableSystem = {
         tables: {}
       };
     }
-    this.registry['custom'].tables[table.id] = table;
+
+    // Ensure table has required fields for rolling
+    const registeredTable = {
+      id: `custom-${table.id}`,
+      name: table.name,
+      category: 'custom',
+      rollType: table.rollType || 'random',
+      entries: table.entries || [],
+      description: table.description || ''
+    };
+
+    this.registry['custom'].tables[registeredTable.id] = registeredTable;
   },
   
   /**

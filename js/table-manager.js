@@ -30,6 +30,9 @@ const TableManager = {
           <button class="btn btn-large btn-secondary" onclick="TableManager.rollGetInspired()" title="Get Inspired (Alt+T)">
             ✨ Get Inspired
           </button>
+          <button class="btn btn-large btn-outline" onclick="CustomTables.show()" title="Create and manage custom tables">
+            📋 Custom Tables
+          </button>
         </div>
         
         <!-- Get Inspired Flavor Selector -->
@@ -101,7 +104,7 @@ const TableManager = {
    */
   renderTablesInCategory(category) {
     const tables = [];
-    
+
     for (const [suppId, supplement] of Object.entries(TableSystem.registry)) {
       for (const [tableId, table] of Object.entries(supplement.tables)) {
         if (table.category === category) {
@@ -114,19 +117,27 @@ const TableManager = {
         }
       }
     }
-    
+
     if (tables.length === 0) {
+      if (category === 'custom') {
+        return '<p class="text-muted">No custom tables yet. <a href="#" onclick="CustomTables.showCreateForm(); return false;">Create one</a></p>';
+      }
       return '<p class="text-muted">No tables available</p>';
     }
-    
+
     return tables.map(table => `
       <div class="table-card">
         <div class="table-card-header">
           <h4>${table.name}</h4>
-          <button class="btn btn-sm btn-secondary" 
-                  onclick="TableManager.rollTable('${table.supplementId}', '${table.tableId}')">
-            🎲 Roll
-          </button>
+          ${category === 'custom'
+            ? `<button class="btn btn-sm btn-secondary"
+                      onclick="TableManager.rollCustomTable('${table.tableId}')">
+                🎲 Roll
+              </button>`
+            : `<button class="btn btn-sm btn-secondary"
+                      onclick="TableManager.rollTable('${table.supplementId}', '${table.tableId}')">
+                🎲 Roll
+              </button>`}
         </div>
         ${table.description ? `<p class="text-muted">${table.description}</p>` : ''}
       </div>
@@ -388,10 +399,10 @@ showRandomTablesPanel() {
    */
   async rollTable(supplementId, tableId) {
     const result = await TableSystem.roll(supplementId, tableId);
-    
+
     // Log to database
     await TableSystem.logTableRoll(result.table, supplementId, result.result);
-    
+
     // Insert to notes
     if (typeof Editor !== 'undefined') {
       Editor.insertBlock(
@@ -401,7 +412,7 @@ showRandomTablesPanel() {
         '#6366f1'
       );
     }
-    
+
     // Log event
     if (typeof EventManager !== 'undefined') {
       await EventManager.logEvent('table-roll', `${result.table}: ${result.result}`, {
@@ -409,9 +420,43 @@ showRandomTablesPanel() {
         rolls: result.rolls
       });
     }
-    
+
     UI.showAlert(`Rolled: ${result.result}`, 'success');
     this.loadRollHistory();
+  },
+
+  /**
+   * Roll a custom table
+   */
+  async rollCustomTable(tableId) {
+    try {
+      const result = await TableSystem.roll('custom', tableId);
+
+      // Log to database
+      await TableSystem.logTableRoll(result.table, 'custom', result.result);
+
+      // Insert to notes
+      if (typeof Editor !== 'undefined') {
+        Editor.insertBlock(
+          '🎲',
+          result.table,
+          result.result,
+          '#ec4899'
+        );
+      }
+
+      // Log event
+      if (typeof EventManager !== 'undefined') {
+        await EventManager.logEvent('custom-table-roll', `${result.table}: ${result.result}`, {
+          rolls: result.rolls
+        });
+      }
+
+      UI.showAlert(`Rolled: ${result.result}`, 'success');
+      this.loadRollHistory();
+    } catch (error) {
+      UI.showAlert('Error rolling table: ' + error.message, 'error');
+    }
   },
   
   /**

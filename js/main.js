@@ -127,6 +127,12 @@ document.addEventListener('DOMContentLoaded', async function() {
       console.log('✅ Table System initialized');
     }
 
+    // Initialize Custom Tables
+    if (typeof CustomTables !== 'undefined') {
+      await CustomTables.init();
+      console.log('✅ Custom Tables initialized');
+    }
+
     // Load random tables panel
     if (typeof TableManager !== 'undefined') {
       TableManager.showRandomTablesPanel();
