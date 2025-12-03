@@ -77,6 +77,23 @@ window.TableRegistry = {
       version: '2.0',
       enabled: true,
       description: 'Kwaidan supplemental adventure tables'
+    },
+    {
+      id: 'cog-compass-inspired',
+      name: 'Cog & Compass Inspiration',
+      file: 'data/tables/flavors/cog-compass-inspired.js',
+      version: '1.0',
+      enabled: true,
+      flavorOf: 'get-inspired',
+      description: 'Get Inspired flavor themed for Cog & Compass adventures'
+    },     
+    {
+      id: 'cog-compass-adventure',
+      name: 'Cog & Compass Adventure Tables',
+      file: 'data/tables/supplements/cog-compass.js',
+      version: '1.0',
+      enabled: true,
+      description: 'Cog & Compass supplemental adventure tables'
     }
     // Template for adding new supplements:
     // {
