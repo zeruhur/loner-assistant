@@ -54,12 +54,12 @@ export async function rollOracle() {
   displayOracleResult(result);
 
   // Show notification
-  showAlert(`🎲 Oracle: ${result.answer}`, 'success');
+  showAlert(`Oracle: ${result.answer}`, 'success');
 
   // Auto-insert into notes
   const colorMap = {
-    'Yes': '#10b981',
-    'No': '#ef4444'
+    'Yes': 'var(--accent-yes)',
+    'No': 'var(--accent-no)'
   };
 
   Editor.insertBlock(
@@ -255,7 +255,7 @@ export async function triggerTwist() {
   // Display twist
   const twistResult = document.getElementById('twist-result');
   twistResult.innerHTML = `
-    <strong>🌀 TWIST!</strong><br>
+    <strong>TWIST!</strong><br>
     ${subject} + ${action}
     <div style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.8;">
       Rolled: ${die1}, ${die2}
@@ -267,7 +267,7 @@ export async function triggerTwist() {
   Editor.insertBlock(
     'TWIST',
     `${subject} → ${action}`,
-    '#f59e0b'
+    'var(--accent-no)'
   );
 
   // LOG EVENT
@@ -476,18 +476,18 @@ export async function rollConflict() {
   Editor.insertBlock(
     'Conflict',
     damageText,
-    targetIsCharacter ? '#ef4444' : '#10b981'
+    targetIsCharacter ? 'var(--accent-no)' : 'var(--accent-yes)'
   );
 
   // Check for defeat
   if (characterLuck <= 0) {
     // Insert defeat into notes
-    Editor.insertBlock('Conflict Ended', 'You have been defeated!', '#ef4444');
+    Editor.insertBlock('Conflict Ended', 'You have been defeated!', 'var(--accent-no)');
     showAlert('You have been defeated!', 'error');
     setTimeout(() => endConflict(), 2000);
   } else if (opponentLuck <= 0) {
     // Insert victory into notes
-    Editor.insertBlock('Conflict Ended', `${opponentName} defeated!`, '#10b981');
+    Editor.insertBlock('Conflict Ended', `${opponentName} defeated!`, 'var(--accent-yes)');
     showAlert(`${opponentName} defeated!`, 'success');
     setTimeout(() => endConflict(), 2000);
   }

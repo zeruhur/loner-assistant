@@ -15,47 +15,38 @@ import { openFormModal } from './crud/modal-form.js';
 const EVENT_TYPES = {
   oracle: {
     label: 'Oracle Roll',
-    icon: '🎲',
     color: 'var(--primary)'
   },
   twist: {
     label: 'Twist',
-    icon: '⚡',
     color: 'var(--warning)'
   },
   conflict: {
     label: 'Conflict',
-    icon: '⚔️',
     color: 'var(--danger)'
   },
   scene: {
     label: 'Scene',
-    icon: '🎬',
-    color: 'var(--info)'
+    color: 'var(--text-muted)'
   },
   npc: {
     label: 'NPC Encounter',
-    icon: '👤',
     color: 'var(--success)'
   },
   location: {
     label: 'Location',
-    icon: '📍',
-    color: 'var(--info)'
+    color: 'var(--text-muted)'
   },
   thread: {
     label: 'Thread Update',
-    icon: '🧵',
     color: 'var(--primary)'
   },
   revelation: {
     label: 'Revelation',
-    icon: '💡',
     color: 'var(--warning)'
   },
   custom: {
     label: 'Custom Event',
-    icon: '📝',
     color: 'var(--text-muted)'
   }
 };
@@ -132,7 +123,7 @@ export async function showEventPanel() {
 export function showNewEventForm() {
   const typeOptions = Object.entries(EVENT_TYPES)
     .map(([key, config]) => `
-      <option value="${key}">${config.icon} ${config.label}</option>
+      <option value="${key}">${config.label}</option>
     `).join('');
 
   const formHTML = `
@@ -225,15 +216,12 @@ function renderEventCard(event) {
   const config = EVENT_TYPES[event.type] || EVENT_TYPES.custom;
 
   return `
-    <div class="card" style="border-left: 4px solid ${config.color};">
+    <div class="card" style="border-left: var(--border-w-heavy) solid ${config.color};">
       <div style="display: flex; align-items: start; gap: 1rem;">
-        <div style="font-size: 2rem; line-height: 1;">
-          ${config.icon}
-        </div>
         <div style="flex: 1;">
           <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
             <div>
-              <span style="background: ${config.color}; color: white; padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">
+              <span style="background: ${config.color}; color: var(--text-on-ink); padding: 0.2rem 0.6rem; border-radius: var(--radius-sm); font-family: var(--font-ui); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: var(--tracking-caps);">
                 ${config.label}
               </span>
             </div>
@@ -323,7 +311,7 @@ export async function exportSessionRecap() {
 
     events.forEach(event => {
       const config = EVENT_TYPES[event.type] || EVENT_TYPES.custom;
-      markdown += `**${UI.formatTime(event.timestamp)}** - ${config.icon} ${config.label}\n`;
+      markdown += `**${UI.formatTime(event.timestamp)}** - ${config.label}\n`;
       markdown += `${event.description}\n\n`;
     });
   }
@@ -416,9 +404,8 @@ export async function showQuickEvents() {
   container.innerHTML = recentEvents.map(event => {
     const config = EVENT_TYPES[event.type] || EVENT_TYPES.custom;
     return `
-      <div style="padding: 0.5rem; background: var(--bg-secondary); border-radius: 0.25rem; margin-bottom: 0.5rem; border-left: 3px solid ${config.color};">
+      <div style="padding: 0.5rem; background: var(--bg-secondary); border-radius: var(--radius-sm); margin-bottom: 0.5rem; border-left: var(--border-w-heavy) solid ${config.color};">
         <div style="display: flex; align-items: start; gap: 0.5rem;">
-          <span style="font-size: 1rem;">${config.icon}</span>
           <div style="flex: 1; min-width: 0;">
             <div style="font-size: 0.75rem; color: var(--text-muted);">
               ${UI.formatTime(event.timestamp)}

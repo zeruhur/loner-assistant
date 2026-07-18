@@ -57,7 +57,7 @@ export const CustomTables = {
             <button class="btn btn-sm btn-secondary"
                     onclick="TableManager.rollCustomTable('custom-${table.id}')"
                     title="${this.getRollTypeLabel(table.rollType)}">
-              🎲 ${table.name}
+              ${table.name}
             </button>
           `).join('')}
         </div>
@@ -100,7 +100,6 @@ export const CustomTables = {
   renderEmptyState() {
     return `
       <div class="panel" style="text-align: center; padding: var(--space-lg);">
-        <p style="font-size: 3rem; margin: 0 0 var(--space-md) 0;">📋</p>
         <h3>No Custom Tables Yet</h3>
         <p class="text-muted">Create your first custom table to get started. You can use any of the built-in roll types (1d6, 2d6, random) to build your own tools.</p>
         <button class="btn btn-primary" onclick="CustomTables.showCreateForm()" style="margin-top: var(--space-md);">
@@ -149,13 +148,13 @@ export const CustomTables = {
         </div>
         <div class="card-footer" style="display: flex; gap: var(--space-sm);">
           <button class="btn btn-sm btn-secondary" onclick="CustomTables.showTestRoll(${table.id})">
-            🎲 Test Roll
+            Test Roll
           </button>
           <button class="btn btn-sm btn-outline" onclick="CustomTables.showEditForm(${table.id})">
-            ✏️ Edit
+            Edit
           </button>
           <button class="btn btn-sm btn-danger" onclick="CustomTables.deleteTable(${table.id})" title="Delete this table">
-            🗑️
+            Delete
           </button>
         </div>
       </div>
@@ -401,9 +400,6 @@ export const CustomTables = {
 
       showModal(`Test Roll: ${table.name}`, `
         <div style="text-align: center; padding: var(--space-lg);">
-          <div style="font-size: 2rem; color: var(--primary); margin-bottom: var(--space-md);">
-            🎲
-          </div>
           <div style="font-size: 1.1rem; margin-bottom: var(--space-md);">
             <strong>${result.result}</strong>
           </div>

@@ -273,8 +273,8 @@ export async function loadLocationsList() {
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
         <h3 style="margin: 0;">${UI.escapeHtml(loc.name)}</h3>
-        <span style="background: ${loc.visited ? 'var(--success)' : 'var(--text-muted)'}; color: white; padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">
-          ${loc.visited ? '✓ VISITED' : 'UNVISITED'}
+        <span class="status-badge" style="background: ${loc.visited ? 'var(--accent-yes)' : 'var(--text-muted)'};">
+          ${loc.visited ? '✓ Visited' : 'Unvisited'}
         </span>
       </div>
       <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">

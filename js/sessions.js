@@ -68,10 +68,10 @@ export async function showSessionList() {
                   </button>
                 ` : ''}
                 <button class="btn btn-sm btn-outline" onclick="renameSession(${session.id})" title="Rename">
-                  ✏️
+                  Rename
                 </button>
                 <button class="btn btn-sm btn-danger" onclick="deleteSessionConfirm(${session.id})" title="Delete">
-                  🗑️
+                  Delete
                 </button>
               </div>
             </div>

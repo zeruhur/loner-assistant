@@ -6,7 +6,7 @@
     <title>Loner Assistant v2.0</title>
     <meta name="description" content="A companion tool for the Loner solo RPG system">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1D1D1B">
+    <meta name="theme-color" content="#241f1a">
     <link rel="icon" href="assets/icons-pwa/icon-192.png">
     <link rel="apple-touch-icon" href="assets/icons-pwa/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -36,8 +36,8 @@
           <button class="nav-btn" data-view="threads">Threads</button>
           <button class="nav-btn" data-view="events">Events</button>
           <button class="nav-btn" data-view="tools">Tools</button>
-          <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light theme">
-            <span class="theme-icon">🌙</span>
+          <button class="theme-toggle" onclick="toggleTheme()" title="Toggle paper / ink theme">
+            <span class="theme-label">Ink Theme</span>
           </button>
         </div>
     </nav>
@@ -59,10 +59,10 @@
                     </div>
                     <div style="display: flex; gap: var(--space-sm);">
                         <button class="btn btn-sm btn-outline" onclick="ExportImportSystem.exportSession()" title="Export current session">
-                            📥 Export
+                            Export
                         </button>
                         <button class="btn btn-primary" onclick="showSessionList()" style="white-space: nowrap;">
-                            ⚡ Manage Sessions
+                            Manage Sessions
                         </button>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                     <!-- NPCs -->
                     <div class="panel collapsed" data-panel-id="npcs" data-mobile-order="8">
                         <div class="panel-title" onclick="UI.togglePanel('npcs')">
-                            <h3>👥 NPCs</h3>
+                            <h3>NPCs</h3>
                             <button class="collapse-toggle" title="Collapse/Expand">▼</button>
                         </div>
                         <div class="panel-content">
@@ -119,7 +119,7 @@
                     <!-- Locations -->
                     <div class="panel collapsed" data-panel-id="locations" data-mobile-order="9">
                         <div class="panel-title" onclick="UI.togglePanel('locations')">
-                            <h3>📍 Locations</h3>
+                            <h3>Locations</h3>
                             <button class="collapse-toggle" title="Collapse/Expand">▼</button>
                         </div>
                         <div class="panel-content">
@@ -133,7 +133,7 @@
                     <!-- Threads -->
                     <div class="panel collapsed" data-panel-id="threads" data-mobile-order="10">
                         <div class="panel-title" onclick="UI.togglePanel('threads')">
-                            <h3>🧵 Threads</h3>
+                            <h3>Threads</h3>
                             <button class="collapse-toggle" title="Collapse/Expand">▼</button>
                         </div>
                         <div class="panel-content">
@@ -147,7 +147,7 @@
                     <!-- Events -->
                     <div class="panel collapsed" data-panel-id="events" data-mobile-order="11">
                         <div class="panel-title" onclick="UI.togglePanel('events')">
-                            <h3>📅 Events</h3>
+                            <h3>Events</h3>
                             <button class="collapse-toggle" title="Collapse/Expand">▼</button>
                         </div>
                         <div class="panel-content">
@@ -168,17 +168,17 @@
                             <div class="session-controls">
                                 <div class="dropdown" style="display: inline-block; position: relative;">
                                     <button class="btn btn-sm btn-outline" onclick="toggleExportMenu(event)" title="Export notes">
-                                        📄 Export ▾
+                                        Export ▾
                                     </button>
                                     <div id="export-menu" class="dropdown-menu" style="display: none;">
-                                        <button onclick="Editor.exportNotesAsMarkdown(); hideExportMenu()">📝 Markdown</button>
-                                        <button onclick="Editor.exportNotesAsHTML(); hideExportMenu()">🌐 HTML</button>
-                                        <button onclick="ExportImportSystem.exportSession(); hideExportMenu()">📦 Full Session (JSON)</button>
+                                        <button onclick="Editor.exportNotesAsMarkdown(); hideExportMenu()">Markdown</button>
+                                        <button onclick="Editor.exportNotesAsHTML(); hideExportMenu()">HTML</button>
+                                        <button onclick="ExportImportSystem.exportSession(); hideExportMenu()">Full Session (JSON)</button>
                                     </div>
                                 </div>
-                                <button class="btn btn-sm" onclick="saveNotes()" title="Save Notes (Alt+S)">💾 Save</button>
-                                <button class="btn btn-sm" onclick="HelpSystem.show('play')" title="Show help for Play view">ℹ️ Help</button>
-                                <button class="btn btn-sm" onclick="ShortcutsSystem.showHelp()" title="Show Keyboard Shortcuts (Alt+?)">⌨️ Shortcuts</button>
+                                <button class="btn btn-sm" onclick="saveNotes()" title="Save Notes (Alt+S)">Save</button>
+                                <button class="btn btn-sm" onclick="HelpSystem.show('play')" title="Show help for Play view">Help</button>
+                                <button class="btn btn-sm" onclick="ShortcutsSystem.showHelp()" title="Show Keyboard Shortcuts (Alt+?)">Shortcuts</button>
                                 <span class="save-indicator" id="save-status">Auto-saved</span>
                             </div>
                         </div>
@@ -192,7 +192,7 @@
                     <!-- Oracle -->
                     <div class="panel panel-highlight" data-panel-id="oracle" data-mobile-order="3">
                         <div class="panel-title" onclick="UI.togglePanel('oracle')">
-                            <h3>🔮 Oracle</h3>
+                            <h3>Oracle</h3>
                             <button class="collapse-toggle" title="Collapse/Expand">▼</button>
                         </div>
                         <div class="panel-content">
@@ -212,7 +212,7 @@
                                 </label>
                             </div>
                             <button class="btn btn-large btn-primary" onclick="rollOracle()" title="Roll Oracle (Alt+O)">
-                                🎲 Consult Oracle
+                                Consult Oracle
                             </button>
                         </div>
                         <div id="oracle-result" class="oracle-result hidden"></div>
@@ -232,7 +232,7 @@
                             </div>
                             <div class="twist-controls">
                                 <button class="btn btn-sm btn-outline" onclick="triggerTwist()" title="Trigger Twist (Alt+W)">
-                                    🎭 Force Twist
+                                    Force Twist
                                 </button>
                                 <button class="btn btn-sm btn-outline" onclick="resetTwistCounter()">
                                     ↻ Reset
@@ -251,7 +251,7 @@
                         </div>
                         <div class="panel-content">
                         <button class="btn btn-secondary" onclick="rollScene()">
-                            🎬 Next Scene
+                            Next Scene
                         </button>
                         <div id="scene-result" class="scene-result"></div>
                         </div>
@@ -260,7 +260,7 @@
                     <!-- Conflict System -->
                     <div class="panel panel-danger collapsed" id="conflict-panel" data-panel-id="conflict" data-mobile-order="5">
                         <div class="panel-title" onclick="UI.togglePanel('conflict')">
-                            <h3>⚔️ Conflict</h3>
+                            <h3>Conflict</h3>
                             <button class="collapse-toggle" title="Collapse/Expand">▼</button>
                         </div>
                         <div class="panel-content">
@@ -316,7 +316,7 @@
                             
                             <div style="display: flex; gap: 0.5rem;">
                                 <button class="btn btn-danger" onclick="rollConflict()" style="flex: 1;">
-                                    🎲 Roll
+                                    Roll
                                 </button>
                                 <button class="btn btn-sm btn-outline" onclick="endConflict()">
                                     End
@@ -335,10 +335,10 @@
                         <div class="panel-content">
                         <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
                             <button class="btn btn-secondary" onclick="TableManager.rollGetInspired()" style="flex: 1;">
-                                ✨ Random Prompt
+                                Random Prompt
                             </button>
                             <button class="btn btn-sm btn-outline" onclick="TableManager.showFlavorPicker()" title="Change flavor">
-                                ⚙️
+                                Flavor
                             </button>
                         </div>
                         <div id="inspiration-result"></div>
@@ -348,30 +348,30 @@
                     <!-- Adventure Maker -->
                      <div class="panel collapsed" data-panel-id="adventure" data-mobile-order="13">
                         <div class="panel-title" onclick="UI.togglePanel('adventure')">
-                            <h3>🎭 Adventure Tables</h3>
+                            <h3>Adventure Tables</h3>
                             <button class="collapse-toggle" title="Collapse/Expand">▼</button>
                         </div>
                         <div class="panel-content">
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                             <button class="btn btn-sm btn-secondary" onclick="TableManager.rollTable('core-loner', 'settings')">
-                                🌍 Setting
+                                Setting
                             </button>
                             <button class="btn btn-sm btn-secondary" onclick="TableManager.rollTable('core-loner', 'tones')">
-                                🎨 Tone
+                                Tone
                             </button>
                             <button class="btn btn-sm btn-secondary" onclick="TableManager.rollTable('core-loner', 'things')">
-                                📦 Things
+                                Things
                             </button>
                             <button class="btn btn-sm btn-secondary" onclick="TableManager.rollTable('core-loner', 'opposition')">
-                                ⚔️ Opposition
+                                Opposition
                             </button>
                             <button class="btn btn-sm btn-secondary" onclick="TableManager.rollTable('core-loner', 'actions')">
-                                ⚡ Actions
+                                Actions
                             </button>
                         </div>
                         <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border);">
                             <button class="btn btn-sm btn-primary" onclick="TableManager.rollAdventureMaker()" style="width: 100%;">
-                                🎲 Roll Complete Adventure
+                                Roll Complete Adventure
                             </button>
                         </div>
                         </div>
@@ -380,7 +380,7 @@
                     <!-- Random Tables - TWO-STEP INTERFACE -->
                     <div class="panel collapsed" data-panel-id="random-tables" data-mobile-order="14">
                         <div class="panel-title" onclick="UI.togglePanel('random-tables')">
-                            <h3>📋 Random Tables</h3>
+                            <h3>Random Tables</h3>
                             <button class="collapse-toggle" title="Collapse/Expand">▼</button>
                         </div>
                         <div class="panel-content">
@@ -406,7 +406,7 @@
                         
                         <div style="margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--border);">
                             <button class="btn btn-sm btn-outline" onclick="showView('tools')" style="width: 100%;">
-                                📚 Browse All Tables
+                                Browse All Tables
                             </button>
                         </div>
                         </div>
@@ -415,7 +415,7 @@
                     <!-- Custom Tables -->
                     <div class="panel collapsed" data-panel-id="custom-tables" data-mobile-order="15">
                         <div class="panel-title" onclick="UI.togglePanel('custom-tables')">
-                            <h3>📋 My Tables</h3>
+                            <h3>My Tables</h3>
                             <button class="collapse-toggle" title="Collapse/Expand">▼</button>
                         </div>
                         <div class="panel-content">
@@ -429,7 +429,7 @@
                             </div>
                             <div style="margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--border);">
                                 <button class="btn btn-sm btn-outline" onclick="CustomTables.show()" style="width: 100%;">
-                                    ⚙️ Manage Tables
+                                    Manage Tables
                                 </button>
                             </div>
                         </div>
@@ -479,19 +479,19 @@
 
             <!-- Data Management Section -->
             <div class="panel" style="margin-bottom: var(--space-xl);">
-                <h3>📦 Data Management</h3>
+                <h3>Data Management</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md);">
                     <button class="btn btn-primary" onclick="ExportImportSystem.exportDatabase()" title="Export full database backup">
-                        📤 Export All Data
+                        Export All Data
                     </button>
                     <button class="btn btn-primary" onclick="ExportImportSystem.exportCampaign()" title="Export current campaign">
-                        📤 Export Campaign
+                        Export Campaign
                     </button>
                     <button class="btn btn-secondary" onclick="ExportImportSystem.showImportDialog()" title="Import session, campaign, or database">
-                        📥 Import Data
+                        Import Data
                     </button>
                     <button class="btn btn-outline" onclick="ManualSystem.show()" title="View user manual">
-                        📖 User Manual
+                        User Manual
                     </button>
                 </div>
                 <p class="text-muted" style="margin-top: var(--space-md); font-size: 0.85rem;">
@@ -555,7 +555,7 @@
             </div>
             <div style="display: flex; gap: 0.5rem;">
               <button class="btn btn-outline" onclick="EventManager.exportSessionRecap()">
-                📥 Export Recap
+                Export Recap
               </button>
               <button class="btn btn-primary" onclick="EventManager.showNewEventForm()">
                 + Log Event

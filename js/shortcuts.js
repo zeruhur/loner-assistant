@@ -91,7 +91,7 @@ export const ShortcutsSystem = {
         if (shortcut.category === 'gameplay') {
           const state = getState();
           if (!state || !state.sessionId) {
-            showAlert('❌ No active session. Create or select a campaign first!', 'error');
+            showAlert('No active session. Create or select a campaign first!', 'error');
             return;
           }
         }
@@ -183,7 +183,7 @@ export const ShortcutsSystem = {
     for (const [category, shortcuts] of Object.entries(categories)) {
       helpHTML += `
         <div class="shortcuts-category">
-          <h4>⌨️ ${category === 'gameplay' ? '🎮 Gameplay' : category === 'editing' ? '📝 Editing' : '❓ Help'}</h4>
+          <h4>${category === 'gameplay' ? 'Gameplay' : category === 'editing' ? 'Editing' : 'Help'}</h4>
       `;
 
       for (const shortcut of shortcuts) {

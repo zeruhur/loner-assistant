@@ -14,7 +14,7 @@
  * registerServiceWorker() nudges them to do, but only if this bumps).
  */
 
-const CACHE_VERSION = 'loner-v2';
+const CACHE_VERSION = 'loner-v3';
 const CACHE_NAME = `loner-cache-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
@@ -29,6 +29,13 @@ const PRECACHE_URLS = [
 
   './assets/fonts/montserrat-latin.woff2',
   './assets/fonts/raleway-latin.woff2',
+  './assets/fonts/raleway-extrabold.ttf',
+  './assets/fonts/raleway-black.ttf',
+  './assets/fonts/takota.otf',
+  './assets/fonts/oswald-bold.ttf',
+  './assets/fonts/dicier-round-dark.otf',
+  './assets/fonts/dicier-round-heavy.otf',
+  './assets/fonts/dicier-round-light.otf',
 
   './assets/icons-pwa/icon-192.png',
   './assets/icons-pwa/icon-512.png',

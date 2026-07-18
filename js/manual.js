@@ -17,7 +17,7 @@ export const ManualSystem = {
     const modalTitle = document.getElementById('modal-title');
     const modalBody = document.getElementById('modal-body');
 
-    modalTitle.textContent = '📖 User Manual';
+    modalTitle.textContent = 'User Manual';
     modalBody.innerHTML = `
       <div class="manual-content">
         ${manualHTML}
@@ -117,7 +117,7 @@ export const ManualSystem = {
         <h3 id="get-inspired">Get Inspired</h3>
         <p>Need a spark? Click <strong>Random Prompt</strong> in the Get Inspired panel for a two-word prompt (Verb + Noun).</p>
         <ul>
-        <li><strong>Flavor</strong>: Use the ⚙️ icon to change the "flavor" of the prompts (e.g., Fantasy, Sci-Fi, Horror).</li>
+        <li><strong>Flavor</strong>: Use the Flavor button to change the "flavor" of the prompts (e.g., Fantasy, Sci-Fi, Horror).</li>
         </ul>
         <h3 id="random-tables">Random Tables</h3>
         <p>The <strong>Table Manager</strong> allows you to roll on any table from loaded supplements.</p>

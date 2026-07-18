@@ -222,7 +222,7 @@ export const TableSystem = {
     Editor.insertBlock(
       'Adventure Maker',
       summary,
-      '#8b5cf6'
+      'var(--accent-no)'
     );
 
     // Log event
@@ -274,7 +274,7 @@ export const TableSystem = {
     Editor.insertBlock(
       'Inspiration',
       result.formatted,
-      '#10b981'
+      'var(--accent-yes)'
     );
 
     // Log event

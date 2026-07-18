@@ -268,8 +268,8 @@ export async function loadNPCsList() {
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
         <h3 style="margin: 0;">${UI.escapeHtml(npc.name)}</h3>
-        <span style="background: ${getRelationshipColor(npc.relationship)}; color: white; padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">
-          ${UI.escapeHtml(npc.relationship || 'neutral').toUpperCase()}
+        <span class="status-badge" style="background: ${getRelationshipColor(npc.relationship)};">
+          ${UI.escapeHtml(npc.relationship || 'neutral')}
         </span>
       </div>
       <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
@@ -278,9 +278,7 @@ export async function loadNPCsList() {
       ${npc.tags && npc.tags.length > 0 ? `
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
           ${npc.tags.map(tag => `
-            <span style="background: var(--bg-tertiary); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.85rem;">
-              ${UI.escapeHtml(tag)}
-            </span>
+            <span class="tag-chip">${UI.escapeHtml(tag)}</span>
           `).join('')}
         </div>
       ` : ''}

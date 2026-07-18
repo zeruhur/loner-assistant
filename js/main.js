@@ -158,29 +158,29 @@ document.addEventListener('DOMContentLoaded', async function () {
  */
 function toggleTheme() {
   const body = document.body;
-  const themeIcon = document.querySelector('.theme-icon');
+  const themeLabel = document.querySelector('.theme-label');
 
-  if (body.classList.contains('dark-theme')) {
-    body.classList.remove('dark-theme');
-    themeIcon.textContent = '🌙';
-    localStorage.setItem('theme', 'light');
+  if (body.classList.contains('ink-theme')) {
+    body.classList.remove('ink-theme');
+    themeLabel.textContent = 'Ink Theme';
+    localStorage.setItem('theme', 'paper');
   } else {
-    body.classList.add('dark-theme');
-    themeIcon.textContent = '☀️';
-    localStorage.setItem('theme', 'dark');
+    body.classList.add('ink-theme');
+    themeLabel.textContent = 'Paper Theme';
+    localStorage.setItem('theme', 'ink');
   }
 }
 
 function loadThemePreference() {
   const savedTheme = localStorage.getItem('theme');
-  const themeIcon = document.querySelector('.theme-icon');
+  const themeLabel = document.querySelector('.theme-label');
 
-  if (themeIcon) {
-    if (savedTheme === 'dark') {
-      document.body.classList.add('dark-theme');
-      themeIcon.textContent = '☀️';
+  if (themeLabel) {
+    if (savedTheme === 'ink' || savedTheme === 'dark') {
+      document.body.classList.add('ink-theme');
+      themeLabel.textContent = 'Paper Theme';
     } else {
-      themeIcon.textContent = '🌙';
+      themeLabel.textContent = 'Ink Theme';
     }
   }
 }

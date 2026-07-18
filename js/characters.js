@@ -29,9 +29,7 @@ export function displayActiveCharacter(character) {
         <strong>Skills:</strong><br>
         <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.25rem;">
           ${character.skills.map(skill => `
-            <span style="background: var(--bg-tertiary); padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.75rem;">
-              ${UI.escapeHtml(skill)}
-            </span>
+            <span class="tag-chip">${UI.escapeHtml(skill)}</span>
           `).join('')}
         </div>
       </div>
@@ -165,16 +163,14 @@ export async function loadCharactersList() {
     <div class="card character-card">
       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
         <h3 style="margin: 0;">${UI.escapeHtml(character.name)}</h3>
-        ${character.isActive ? '<span style="background: var(--success); color: white; padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">ACTIVE</span>' : ''}
+        ${character.isActive ? '<span class="status-badge" style="background: var(--accent-yes);">Active</span>' : ''}
       </div>
       <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
         ${UI.escapeHtml(character.concept || 'No concept')}
       </p>
       <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
         ${character.skills.map(skill => `
-          <span style="background: var(--bg-tertiary); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.85rem;">
-            ${UI.escapeHtml(skill)}
-          </span>
+          <span class="tag-chip">${UI.escapeHtml(skill)}</span>
         `).join('')}
       </div>
       <div class="card-footer">

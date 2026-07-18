@@ -33,13 +33,13 @@ export const TableManager = {
         <!-- Quick Actions -->
         <div class="quick-actions">
           <button class="btn btn-large btn-primary" onclick="TableManager.rollAdventureMaker()" title="Roll Adventure Maker (Alt+T)">
-            🎭 Roll Adventure Maker
+            Roll Adventure Maker
           </button>
           <button class="btn btn-large btn-secondary" onclick="TableManager.rollGetInspired()" title="Get Inspired (Alt+T)">
-            ✨ Get Inspired
+            Get Inspired
           </button>
           <button class="btn btn-large btn-outline" onclick="CustomTables.show()" title="Create and manage custom tables">
-            📋 Custom Tables
+            Custom Tables
           </button>
         </div>
 
@@ -140,11 +140,11 @@ export const TableManager = {
           ${category === 'custom'
             ? `<button class="btn btn-sm btn-secondary"
                       onclick="TableManager.rollCustomTable('${table.tableId}')">
-                🎲 Roll
+                Roll
               </button>`
             : `<button class="btn btn-sm btn-secondary"
                       onclick="TableManager.rollTable('${table.supplementId}', '${table.tableId}')">
-                🎲 Roll
+                Roll
               </button>`}
         </div>
         ${table.description ? `<p class="text-muted">${table.description}</p>` : ''}
@@ -216,7 +216,7 @@ export const TableManager = {
           </div>
           <div style="text-align: center; margin-top: 0.5rem;">
             <button class="btn btn-sm btn-outline" onclick="TableManager.rollAdventureMaker()">
-              🔄 Regenerate
+              Regenerate
             </button>
           </div>
         </div>
@@ -333,7 +333,7 @@ export const TableManager = {
         <button class="btn btn-sm btn-secondary random-table-btn"
                 onclick="TableManager.rollTableQuick('${supplementId}', '${table.id}')"
                 title="${table.description || ''}">
-          🎲 ${table.name}
+          ${table.name}
         </button>
       `).join('')}
     `;
@@ -352,7 +352,7 @@ export const TableManager = {
     Editor.insertBlock(
       result.table,
       result.result,
-      '#6366f1'
+      'var(--accent-no)'
     );
 
     // Log event
@@ -405,7 +405,7 @@ export const TableManager = {
     Editor.insertBlock(
       result.table,
       result.result,
-      '#6366f1'
+      'var(--accent-no)'
     );
 
     // Log event
@@ -434,7 +434,7 @@ export const TableManager = {
       Editor.insertBlock(
         result.table,
         result.result,
-        '#ec4899'
+        'var(--accent-no)'
       );
 
       // Log event

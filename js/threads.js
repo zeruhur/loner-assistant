@@ -316,8 +316,8 @@ function renderThreadCard(thread) {
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
         <h3 style="margin: 0;">${UI.escapeHtml(thread.title)}</h3>
-        <span style="background: ${getThreadStatusColor(thread.status)}; color: white; padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">
-          ${UI.escapeHtml(thread.status || 'active').toUpperCase()}
+        <span class="status-badge" style="background: ${getThreadStatusColor(thread.status)};">
+          ${UI.escapeHtml(thread.status || 'active')}
         </span>
       </div>
       <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">

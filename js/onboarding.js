@@ -12,7 +12,7 @@ export const HelpSystem = {
    */
   helpContent: {
     'play': {
-      title: '🎮 Play Session',
+      title: 'Play Session',
       description: 'Your main gameplay workspace. Roll the oracle, manage tables, and take notes.',
       sections: [
         {
@@ -58,7 +58,7 @@ export const HelpSystem = {
       ]
     },
     'campaigns': {
-      title: '🎭 Campaigns',
+      title: 'Campaigns',
       description: 'Create and manage campaign worlds. Each campaign is a separate story universe.',
       sections: [
         {
@@ -80,7 +80,7 @@ export const HelpSystem = {
       ]
     },
     'characters': {
-      title: '👤 Characters',
+      title: 'Characters',
       description: 'Create and manage player characters. Loner uses narrative tags instead of numeric stats.',
       sections: [
         {
@@ -102,7 +102,7 @@ export const HelpSystem = {
       ]
     },
     'npcs': {
-      title: '👥 NPCs',
+      title: 'NPCs',
       description: 'Track non-player characters and their relationships with your character.',
       sections: [
         {
@@ -119,12 +119,12 @@ export const HelpSystem = {
         },
         {
           title: 'Quick Access',
-          content: 'In the Play view, click "👥 NPCs" to quickly toggle a panel of all NPCs in the current campaign. Perfect for mid-session reference.'
+          content: 'In the Play view, click "NPCs" to quickly toggle a panel of all NPCs in the current campaign. Perfect for mid-session reference.'
         }
       ]
     },
     'locations': {
-      title: '📍 Locations',
+      title: 'Locations',
       description: 'Build your story world. Track locations your character discovers or visits.',
       sections: [
         {
@@ -141,12 +141,12 @@ export const HelpSystem = {
         },
         {
           title: 'Quick Access',
-          content: 'In Play view, click "📍 Locations" for a quick panel of locations. Add new locations mid-session or mark them visited from the quick panel.'
+          content: 'In Play view, click "Locations" for a quick panel of locations. Add new locations mid-session or mark them visited from the quick panel.'
         }
       ]
     },
     'threads': {
-      title: '🧵 Narrative Threads',
+      title: 'Narrative Threads',
       description: 'Track ongoing storylines, plot hooks, and unresolved questions.',
       sections: [
         {
@@ -163,12 +163,12 @@ export const HelpSystem = {
         },
         {
           title: 'Quick Panel',
-          content: 'In Play view, click "🧵 Threads" to see active threads. Resolved threads don\'t show in the quick panel—but stay in your history for reference.'
+          content: 'In Play view, click "Threads" to see active threads. Resolved threads don\'t show in the quick panel—but stay in your history for reference.'
         }
       ]
     },
     'events': {
-      title: '📅 Events & Timeline',
+      title: 'Events & Timeline',
       description: 'Log significant moments and build a chronological story record.',
       sections: [
         {
@@ -189,12 +189,12 @@ export const HelpSystem = {
         },
         {
           title: 'Quick Panel',
-          content: 'In Play view, click "📅 Events" to see recent events. Useful for remembering what just happened in your session.'
+          content: 'In Play view, click "Events" to see recent events. Useful for remembering what just happened in your session.'
         }
       ]
     },
     'tools': {
-      title: '🛠️ Tools & Tables',
+      title: 'Tools & Tables',
       description: 'Access all roll tables and random generators. Organize and customize table collections.',
       sections: [
         {
