@@ -8,6 +8,7 @@ import * as LonerDB from './db/database.js';
 import * as UI from './ui.js';
 import { getState, setCurrentCharacter, clearCurrentCharacter } from './state.js';
 import { openFormModal, confirmAndDelete } from './crud/modal-form.js';
+import { StatusTrackSystem } from './status-track.js';
 
 /**
  * Display active character in sidebar
@@ -201,6 +202,7 @@ export async function loadCharactersList() {
  */
 export async function viewCharacterSheet(characterId) {
   const character = await LonerDB.getCharacter(characterId);
+  const statusTag = await StatusTrackSystem.getActiveTag(characterId);
 
   const sheetHTML = `
     <div class="character-sheet">
@@ -235,6 +237,13 @@ export async function viewCharacterSheet(characterId) {
       <div class="form-group">
         <label>Luck</label>
         <div>${character.luck} / ${character.maxLuck}</div>
+      </div>
+      <div class="form-group">
+        <label>Status Track</label>
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+          ${statusTag ? `<span class="tag-chip">${UI.escapeHtml(statusTag)}</span>` : '<span class="text-muted" style="font-size: 0.85rem;">No lasting consequence</span>'}
+          ${statusTag ? `<button class="btn btn-sm btn-outline" onclick="StatusTrackSystem.recover(${characterId}).then(() => viewCharacterSheet(${characterId}))">Recover</button>` : ''}
+        </div>
       </div>
     </div>
   `;

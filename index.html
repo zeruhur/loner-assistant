@@ -161,6 +161,39 @@
 
                 <!-- CENTER: Main Play Area -->
                 <main class="main-content">
+                    <!-- Scene Frame (Loner 4e "Framing a Scene") -->
+                    <div class="panel" data-mobile-order="6">
+                        <div class="panel-title" onclick="UI.togglePanel('scene-frame')" data-panel-id="scene-frame">
+                            <h3>Scene Frame</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
+                            <p class="text-muted" style="font-size: 0.85rem; margin-bottom: var(--space-sm);">
+                                Before you roll anything: where is the Protagonist, who's present, and what's the goal for this scene?
+                            </p>
+                            <div class="form-group" style="margin-bottom: var(--space-sm);">
+                                <label>Where</label>
+                                <input type="text" id="frame-where" placeholder="A rain-slicked transit hub...">
+                            </div>
+                            <div class="form-group" style="margin-bottom: var(--space-sm);">
+                                <label>Who</label>
+                                <input type="text" id="frame-who" placeholder="Two enforcers closing from the south...">
+                            </div>
+                            <div class="form-group" style="margin-bottom: var(--space-sm);">
+                                <label>What (scene goal)</label>
+                                <input type="text" id="frame-what" placeholder="Lose the tail and find somewhere quiet...">
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-sm btn-primary" onclick="SceneSystem.saveSceneFrame()" style="flex: 1;">
+                                    Save Frame
+                                </button>
+                                <button class="btn btn-sm btn-outline" onclick="SceneSystem.showCloseScenePrompt()" style="flex: 1;">
+                                    Close Scene
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Session Notes Editor -->
                     <div class="panel" data-mobile-order="6">
                         <div class="panel-header">
@@ -240,6 +273,23 @@
                             </div>
                         </div>
                         <div id="twist-result" class="twist-result hidden"></div>
+                        </div>
+                    </div>
+
+                    <!-- Dead Ends -->
+                    <div class="panel collapsed" data-panel-id="dead-end" data-mobile-order="4">
+                        <div class="panel-title" onclick="UI.togglePanel('dead-end')">
+                            <h3>Dead End</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
+                            <p class="text-muted" style="font-size: 0.85rem; margin-bottom: var(--space-sm);">
+                                When a lead goes cold or a path closes entirely, stop questioning it and ask instead:
+                            </p>
+                            <button class="btn btn-sm btn-outline" onclick="rollDeadEnd()" style="width: 100%;">
+                                Does something or someone point toward a new way forward?
+                            </button>
+                            <div id="dead-end-result" class="hidden" style="margin-top: var(--space-sm);"></div>
                         </div>
                     </div>
 
@@ -326,6 +376,35 @@
                         </div>
                     </div>
 
+                    <!-- Leverage (optional module) -->
+                    <div class="panel collapsed" data-panel-id="leverage" data-mobile-order="12">
+                        <div class="panel-title" onclick="UI.togglePanel('leverage'); LeverageSystem.displayLeverage();">
+                            <h3>Leverage</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
+                            <div id="leverage-content">
+                                <p class="text-muted" style="font-size: 0.85rem;">No Leverage held. Bank a "Yes, and..." result to hold one.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Challenge Tracks (optional module) -->
+                    <div class="panel collapsed" data-panel-id="challenge-tracks" data-mobile-order="12">
+                        <div class="panel-title" onclick="UI.togglePanel('challenge-tracks'); ChallengeTracks.showChallengeTracksPanel();">
+                            <h3>Challenge Tracks</h3>
+                            <button class="collapse-toggle" title="Collapse/Expand">▼</button>
+                        </div>
+                        <div class="panel-content">
+                            <button class="btn btn-sm btn-primary" onclick="ChallengeTracks.showNewTrackForm()" style="width: 100%; margin-bottom: var(--space-sm);">
+                                + New Track
+                            </button>
+                            <div id="challenge-tracks-list">
+                                <p class="text-muted" style="font-size: 0.85rem; text-align: center;">No challenge tracks yet</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Get Inspired -->
                     <div class="panel collapsed" data-panel-id="inspired" data-mobile-order="12">
                         <div class="panel-title" onclick="UI.togglePanel('inspired')">
@@ -359,7 +438,7 @@
                             <button class="btn btn-sm btn-secondary" onclick="TableManager.rollTable('core-loner', 'tones')">
                                 Tone
                             </button>
-                            <button class="btn btn-sm btn-secondary" onclick="TableManager.rollTable('core-loner', 'things')">
+                            <button class="btn btn-sm btn-secondary" onclick="TableManager.rollThings()">
                                 Things
                             </button>
                             <button class="btn btn-sm btn-secondary" onclick="TableManager.rollTable('core-loner', 'opposition')">
@@ -369,9 +448,12 @@
                                 Actions
                             </button>
                         </div>
-                        <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+                        <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.5rem;">
                             <button class="btn btn-sm btn-primary" onclick="TableManager.rollAdventureMaker()" style="width: 100%;">
                                 Roll Complete Adventure
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="TableManager.rollBuildTheSetup()" style="width: 100%;" title="5W+H premise table (4th Edition)">
+                                Build the Setup
                             </button>
                         </div>
                         </div>
@@ -497,6 +579,17 @@
                 <p class="text-muted" style="margin-top: var(--space-md); font-size: 0.85rem;">
                     Export your data for backup or sharing. Import previously exported sessions, campaigns, or full database backups.
                 </p>
+            </div>
+
+            <!-- Build the Setup (4th Edition 5W+H premise table) -->
+            <div class="panel" style="margin-bottom: var(--space-xl);">
+                <h3>Build the Setup</h3>
+                <p class="text-muted" style="margin-bottom: var(--space-md); font-size: 0.85rem;">
+                    Roll the 5W+H table to assemble a mission premise before your first scene, as an alternative or companion to the Adventure Maker.
+                </p>
+                <button class="btn btn-primary" onclick="TableManager.rollBuildTheSetup()">
+                    Roll Build the Setup
+                </button>
             </div>
 
             <div id="tools-grid" class="tools-grid">

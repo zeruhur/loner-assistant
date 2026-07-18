@@ -1,16 +1,16 @@
 /**
  * LONER CORE TABLES
- * Adventure Maker tables from Loner 2nd Edition
+ * Adventure Maker + Build the Setup tables from Loner 4th Edition
  */
 
 export default {
   supplement: {
     id: 'core-loner',
     name: 'Loner Core Rules',
-    version: '2.0',
+    version: '4.0',
     enabled: true
   },
-  
+
   tables: {
     settings: {
       id: 'settings',
@@ -27,7 +27,7 @@ export default {
         ['Underwater Adventure and Exploration', 'Jungle-Covered Planet', 'Steampunk Victorian Era', 'Time Travel Paradoxes', 'Intergalactic Starfighter Battles', 'Survival in a Savage Land']
       ]
     },
-    
+
     tones: {
       id: 'tones',
       name: 'Tones',
@@ -43,10 +43,12 @@ export default {
         ['Eerie and paranormal', 'Unsettling and uncanny', 'Martial and disciplined', 'Cold and detached', 'Gracious and elegant', 'Ceremonial and ritualistic']
       ]
     },
-    
+
+    // Things Variant A. Per 4e: roll 1d6 to pick a variant (1-2 A, 3-4 B, 5-6 C),
+    // or just pick whichever variant fits your setting. See TableSystem.rollThings().
     things: {
       id: 'things',
-      name: 'Things',
+      name: 'Things (Variant A)',
       category: 'adventure-maker',
       description: 'Key elements that define the world',
       rollType: '2d6',
@@ -59,7 +61,39 @@ export default {
         ['Unpredictable twists', 'Dynamic characters', 'Different factions', 'Vast empires', 'Epic heroes', 'Legendary creatures']
       ]
     },
-    
+
+    thingsB: {
+      id: 'thingsB',
+      name: 'Things (Variant B)',
+      category: 'adventure-maker',
+      description: 'Key elements that define the world',
+      rollType: '2d6',
+      entries: [
+        ['Sealed bunker', 'Clockwork automaton', 'Dragon-infested skies', 'Haunted mansion', 'Corporate arcology', 'Intergalactic trade routes'],
+        ['Lost city of gold', 'Artificial intelligence', "Pirate's cove", 'Time-travel paradox', 'Espionage', 'Extraterrestrial beings'],
+        ['Submerged archive', 'Epic sea voyage', 'Superheroic powers', 'Time loops', 'Alternate realities', 'Virtual reality simulation'],
+        ['Intriguing mystery', 'Mutant uprising', 'Advanced biotechnology', 'Enforced hierarchy', 'Divergent bloodline', 'Underground network'],
+        ['Forbidden chronicle', 'Unstoppable virus', 'Enchanted forest', 'The unknown frontiers', 'Advanced robotics', 'Secrets of the universe'],
+        ['End of the world scenarios', 'Telekinetic abilities', 'Futuristic weapons', 'Dimension hopping', 'Techno-sorcery', 'Superpowered conflict']
+      ]
+    },
+
+    thingsC: {
+      id: 'thingsC',
+      name: 'Things (Variant C)',
+      category: 'adventure-maker',
+      description: 'Key elements that define the world',
+      rollType: '2d6',
+      entries: [
+        ['Lost civilization', 'Ruined district', 'Shadow cult', "Outlaw's cache", 'Futuristic cyberwarfare', 'Space exploration'],
+        ['Political uprising', 'Artificial lifeforms', 'Mercenaries and assassins', 'Time-traveling adventures', 'Espionage mission', 'Alien invasion'],
+        ['Underwater adventure', 'Epic siege', 'Magical abilities', 'Time anomalies', 'Alternate timeline', 'Virtual reality nightmare'],
+        ['Intriguing conspiracy', 'Mutant insurgency', 'Cybernetic enhancements', 'Enforced paradise', 'Suppressed history', 'Cyberpunk rebellion'],
+        ["Cartographer's journal", 'Unstoppable monster', 'Enchanted kingdom', 'The final frontier', 'Robotic revolution', 'Secrets of the ancients'],
+        ['End of the era scenarios', 'Psionic abilities', 'Futuristic battlefields', 'Interdimensional portals', 'Technomancy', 'Superpowered diplomacy']
+      ]
+    },
+
     opposition: {
       id: 'opposition',
       name: 'Opposition',
@@ -67,15 +101,15 @@ export default {
       description: 'The main antagonist or challenge',
       rollType: '2d6',
       entries: [
-        ['Powerful sorcerer', 'Corrupt politician', 'Ruthless warlord', 'Ancient evil', 'Rogue AI', 'Criminal syndicate'],
-        ['Rival faction', 'Natural disaster', 'Alien invasion', 'Supernatural entity', 'Corporate empire', 'Religious cult'],
-        ['Time paradox', 'Plague or disease', 'Rebel uprising', 'Dimensional threat', 'Mad scientist', 'Vengeful spirit'],
-        ['Internal conflict', 'Resource scarcity', 'Betrayal from within', 'Cosmic horror', 'Military dictatorship', 'Ancient curse'],
-        ['Rival hero', 'Mysterious organization', 'Environmental collapse', 'Technological singularity', 'Divine judgment', 'Criminal mastermind'],
-        ['Self-doubt', 'Social oppression', 'Moral dilemma', 'Unstoppable force', 'Hidden conspiracy', 'Personal demons']
+        ['Dark wizards', 'Savage beasts', 'Malevolent spirits', 'Arrogant noblemen', 'Dangerous traps', 'Ruthless bandits'],
+        ['Undead armies', 'Corrupt politicians', 'Sinister organizations', 'Vicious monsters', 'Treacherous terrain', 'Despotic rulers'],
+        ['Relentless hunters', 'Merciless assassins', 'Dangerous creatures', 'Ancient curses', 'Fanatical zealots', 'Arcane guardian'],
+        ['Ruthless mercenaries', 'Dark forces', 'Shadow broker', 'Insidious plots', 'Vicious predators', 'Unforgiving elements'],
+        ["Assassin's guild", 'Doom cult', 'Manipulative patron', 'Hex-wielding coven', 'Ruthless warlords', 'Spectral host'],
+        ['Terrible curses', 'Devious traps', 'Sinister conspiracies', 'Mind-warping entity', 'Malevolent entities', 'Ruthless factions']
       ]
     },
-    
+
     actions: {
       id: 'actions',
       name: 'Actions',
@@ -83,13 +117,65 @@ export default {
       description: 'What needs to be done',
       rollType: '2d6',
       entries: [
-        ['Destroy', 'Protect', 'Discover', 'Steal', 'Rescue', 'Escape'],
-        ['Infiltrate', 'Negotiate', 'Betray', 'Unite', 'Conquer', 'Survive'],
-        ['Investigate', 'Build', 'Repair', 'Sabotage', 'Transform', 'Purify'],
-        ['Awaken', 'Seal', 'Summon', 'Banish', 'Control', 'Free'],
-        ['Explore', 'Claim', 'Defend', 'Overthrow', 'Restore', 'Prevent'],
-        ['Uncover', 'Hide', 'Retrieve', 'Deliver', 'Prove', 'Challenge']
+        ['Cast', 'Battle', 'Free', 'Explore', 'Upgrade', 'Pilot'],
+        ['Decipher', 'Seek', 'Infiltrate', 'Complete', 'Join', 'Uncover'],
+        ['Find', 'Master', 'Tame', 'Harness', 'Win', 'Unravel'],
+        ['Interrogate', 'Navigate', 'Survive', 'Influence', 'Overthrow', 'Endure'],
+        ['Expose', 'Pursue', 'Resolve', 'Perform', 'Acquire', 'Embark'],
+        ['Anticipate', 'Develop', 'Ally', 'Expand', 'Become', 'Slay']
       ]
+    },
+
+    // Build the Setup: 5W+H premise table (new in 4th Edition). Roll 1d6 once
+    // per column and combine into a mission premise before the first scene.
+    // See TableSystem.rollBuildTheSetup().
+    setupWho: {
+      id: 'setupWho',
+      name: 'Build the Setup: Who?',
+      category: 'build-the-setup',
+      description: 'Who is driving the situation',
+      rollType: '1d6',
+      entries: ['Authority', 'Organization', 'Ally', 'Mentor', 'Help-seeker', 'Blackmailer']
+    },
+    setupWhat: {
+      id: 'setupWhat',
+      name: 'Build the Setup: What?',
+      category: 'build-the-setup',
+      description: 'What needs to happen',
+      rollType: '1d6',
+      entries: ['Rescue', 'Protection', 'Exploitation', 'Exploration', 'Escape', 'Pursuit']
+    },
+    setupWhen: {
+      id: 'setupWhen',
+      name: 'Build the Setup: When?',
+      category: 'build-the-setup',
+      description: 'When it needs to happen',
+      rollType: '1d6',
+      entries: ['Tonight', 'Within days', 'At a planned event', 'Before it closes', 'After a change', 'Right now']
+    },
+    setupWhere: {
+      id: 'setupWhere',
+      name: 'Build the Setup: Where?',
+      category: 'build-the-setup',
+      description: 'The target of the situation',
+      rollType: '1d6',
+      entries: ['Person', 'Group', 'Treasure', 'Location', 'McGuffin', 'Confession']
+    },
+    setupWhy: {
+      id: 'setupWhy',
+      name: 'Build the Setup: Why?',
+      category: 'build-the-setup',
+      description: 'Why the Protagonist cares',
+      rollType: '1d6',
+      entries: ['Aid', 'Fortune', 'Coercion', 'Impulse', 'Ambition', 'Revenge']
+    },
+    setupHow: {
+      id: 'setupHow',
+      name: 'Build the Setup: How?',
+      category: 'build-the-setup',
+      description: 'How the Protagonist gets drawn in',
+      rollType: '1d6',
+      entries: ['Chance encounter', 'Old connection', 'Rumor or message', 'Capture or threat', 'Mishap', 'Object delivered']
     }
   }
 };

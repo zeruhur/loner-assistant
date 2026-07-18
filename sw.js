@@ -14,7 +14,7 @@
  * registerServiceWorker() nudges them to do, but only if this bumps).
  */
 
-const CACHE_VERSION = 'loner-v3';
+const CACHE_VERSION = 'loner-v9';
 const CACHE_NAME = `loner-cache-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
@@ -48,6 +48,7 @@ const PRECACHE_URLS = [
   './js/ui.js',
   './js/shortcuts.js',
   './js/oracle.js',
+  './js/scenes.js',
   './js/editor.js',
   './js/tables.js',
   './js/table-manager.js',
@@ -62,6 +63,10 @@ const PRECACHE_URLS = [
   './js/threads.js',
   './js/events.js',
   './js/sessions.js',
+  './js/challenge-tracks.js',
+  './js/leverage.js',
+  './js/status-track.js',
+  './js/living-world.js',
   './js/db/database.js',
   './js/crud/modal-form.js',
 

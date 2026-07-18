@@ -45,6 +45,9 @@ export function showNewNPCForm() {
       <div class="form-group">
         <label>Tags (comma-separated)</label>
         <input type="text" id="npc-tags" placeholder="merchant, suspicious, helpful">
+        <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.25rem;">
+          Tags can describe traits or a relationship that's earned through play (e.g. Trusted Informant, Sworn Enemy) — both grant Advantage or Disadvantage the same way.
+        </p>
       </div>
       <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
         <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
@@ -313,11 +316,64 @@ export async function showNPCPanel() {
   }
 
   container.innerHTML = npcs.slice(0, 5).map(npc => `
-    <div class="quick-link-item" onclick="viewNPCDetails(${npc.id})">
-      <strong>${UI.escapeHtml(npc.name)}</strong>
-      ${npc.tags.length > 0 ? `<div style="font-size: 0.75rem; opacity: 0.7;">${npc.tags.join(', ')}</div>` : ''}
+    <div class="quick-link-item" style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+      <div onclick="viewNPCDetails(${npc.id})" style="cursor: pointer; flex: 1; min-width: 0;">
+        <strong>${UI.escapeHtml(npc.name)}</strong>
+        ${npc.tags.length > 0 ? `<div style="font-size: 0.75rem; opacity: 0.7;">${npc.tags.map(t => UI.escapeHtml(t)).join(', ')}</div>` : ''}
+      </div>
+      <button class="btn-icon" title="Update relationship tag" onclick="event.stopPropagation(); NPCManager.showRelationshipPrompt(${npc.id});">+</button>
     </div>
   `).join('');
+}
+
+/**
+ * Quick-action: add or replace a relationship tag on an NPC without
+ * leaving the Play view (Loner 4e "Relationships" - a relationship tag
+ * earned through play works exactly like any other tag).
+ */
+export async function showRelationshipPrompt(npcId) {
+  const state = getState();
+  const npcs = await LonerDB.getNPCsForCampaign(state.campaignId);
+  const npc = npcs.find(n => n.id === npcId);
+  if (!npc) return;
+
+  UI.showModal('Update Relationship', `
+    <p class="text-muted" style="margin-bottom: 1rem;">
+      A relationship with <strong>${UI.escapeHtml(npc.name)}</strong> that's been tested, strained, or deepened through play earns a tag, e.g. <em>Trusted Informant</em>, <em>Sworn Enemy</em>, <em>Uneasy Ally</em>.
+    </p>
+    ${npc.tags.length > 0 ? `<p style="font-size: 0.85rem; margin-bottom: 0.75rem;">Current tags: ${npc.tags.map(t => UI.escapeHtml(t)).join(', ')}</p>` : ''}
+    <div class="form-group">
+      <label>New relationship tag</label>
+      <input type="text" id="relationship-tag-input" placeholder="e.g., Useful Ambiguity">
+    </div>
+    <button class="btn btn-primary" onclick="NPCManager.addRelationshipTag(${npcId})" style="width: 100%;">
+      Add Tag
+    </button>
+  `);
+}
+
+/**
+ * Add the entered tag to the NPC and close the prompt
+ */
+export async function addRelationshipTag(npcId) {
+  const input = document.getElementById('relationship-tag-input');
+  const newTag = (input.value || '').trim();
+  if (!newTag) {
+    UI.showAlert('Enter a tag first', 'error');
+    return;
+  }
+
+  const state = getState();
+  const npcs = await LonerDB.getNPCsForCampaign(state.campaignId);
+  const npc = npcs.find(n => n.id === npcId);
+  if (!npc) return;
+
+  const tags = [...(npc.tags || []), newTag];
+  await LonerDB.updateNPC(npcId, { tags });
+
+  UI.closeModal();
+  UI.showAlert(`${npc.name}: ${newTag}`, 'success');
+  await showNPCPanel();
 }
 
 export const NPCManager = {
@@ -328,5 +384,7 @@ export const NPCManager = {
   editNPC,
   saveNPCEdit,
   deleteNPCConfirm,
+  showRelationshipPrompt,
+  addRelationshipTag,
   loadNPCsList
 };

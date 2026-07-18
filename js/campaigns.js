@@ -14,6 +14,8 @@ import { showNPCPanel } from './npcs.js';
 import { showLocationPanel } from './locations.js';
 import { showThreadPanel } from './threads.js';
 import { showEventPanel } from './events.js';
+import { showChallengeTracksPanel } from './challenge-tracks.js';
+import { displayLeverage } from './leverage.js';
 
 /**
  * Display current campaign info in sidebar
@@ -135,19 +137,22 @@ export async function loadCampaignsList() {
         <div class="card campaign-card">
         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
             <h3 style="margin: 0;">${UI.escapeHtml(campaign.name)}</h3>
-            ${campaignId === activeCampaignId ? '<span style="background: var(--success); color: white; padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">ACTIVE</span>' : ''}
+            ${campaignId === activeCampaignId ? '<span class="status-badge" style="background: var(--accent-yes);">Active</span>' : ''}
         </div>
         <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
             ${UI.escapeHtml(campaign.description || 'No description')}
         </p>
         <div class="card-footer">
             <span>Last played: ${UI.formatDate(campaign.lastPlayed)}</span>
-            <div style="display: flex; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <button class="btn btn-sm btn-outline" onclick="CampaignManager.viewCampaignDetails(${campaignId})">
                 View
             </button>
             <button class="btn btn-sm btn-outline" onclick="CampaignManager.editCampaign(${campaignId})">
                 Edit
+            </button>
+            <button class="btn btn-sm btn-outline" onclick="LivingWorld.showLivingWorldReview(${campaignId})" title="Post-adventure review: update NPCs, Locations, and Threads">
+                Living World
             </button>
             ${campaignId !== activeCampaignId ? `
                 <button class="btn btn-sm btn-primary" onclick="CampaignManager.setAsActiveCampaign(${campaignId})">
@@ -344,6 +349,8 @@ export async function setAsActiveCampaign(campaignId) {
     await showLocationPanel();
     await showThreadPanel();
     await showEventPanel();
+    await showChallengeTracksPanel();
+    await displayLeverage();
 
     // Refresh list to show new active state
     await loadCampaignsList();

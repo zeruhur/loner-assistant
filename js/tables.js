@@ -198,18 +198,28 @@ export const TableSystem = {
   },
 
   /**
+   * Roll on the Things table, picking a variant per 4e's own instruction:
+   * 1d6 of 1-2 -> Variant A, 3-4 -> Variant B, 5-6 -> Variant C.
+   */
+  rollThings() {
+    const variantDie = rollD6();
+    const tableId = variantDie <= 2 ? 'things' : variantDie <= 4 ? 'thingsB' : 'thingsC';
+    return this.roll('core-loner', tableId);
+  },
+
+  /**
    * Roll the complete Adventure Maker sequence
    */
   async rollAdventureMaker() {
     const results = {
       setting: this.roll('core-loner', 'settings'),
       tone: this.roll('core-loner', 'tones'),
-      thing1: this.roll('core-loner', 'things'),
-      thing2: this.roll('core-loner', 'things'),
+      thing1: this.rollThings(),
+      thing2: this.rollThings(),
       opposition: this.roll('core-loner', 'opposition'),
       action1: this.roll('core-loner', 'actions'),
       action2: this.roll('core-loner', 'actions'),
-      thing3: this.roll('core-loner', 'things')
+      thing3: this.rollThings()
     };
 
     // Format as a nice summary
@@ -245,6 +255,52 @@ export const TableSystem = {
       **Opposition:** ${results.opposition.result}
       **Actions:** ${results.action1.result} → ${results.action2.result}
       **Key Element:** ${results.thing3.result}
+          `.trim();
+  },
+
+  /**
+   * Roll the Build the Setup sequence (5W+H premise table, 4th Edition).
+   * Roll once on each of Who/What/When/Where/Why/How and combine into a
+   * mission premise, per Loner 4e's "Start Your Game" chapter.
+   */
+  async rollBuildTheSetup() {
+    const results = {
+      who: this.roll('core-loner', 'setupWho'),
+      what: this.roll('core-loner', 'setupWhat'),
+      when: this.roll('core-loner', 'setupWhen'),
+      where: this.roll('core-loner', 'setupWhere'),
+      why: this.roll('core-loner', 'setupWhy'),
+      how: this.roll('core-loner', 'setupHow')
+    };
+
+    const summary = this.formatBuildTheSetup(results);
+
+    await this.logTableRoll('build-the-setup', 'core-loner', summary);
+
+    Editor.insertBlock(
+      'Build the Setup',
+      summary,
+      'var(--accent-no)'
+    );
+
+    if (typeof window.EventManager !== 'undefined') {
+      await window.EventManager.logEvent('table-roll', 'Build the Setup generated', { results });
+    }
+
+    return results;
+  },
+
+  /**
+   * Format Build the Setup results
+   */
+  formatBuildTheSetup(results) {
+    return `
+      **Who:** ${results.who.result}
+      **What:** ${results.what.result}
+      **When:** ${results.when.result}
+      **Where:** ${results.where.result}
+      **Why:** ${results.why.result}
+      **How:** ${results.how.result}
           `.trim();
   },
 

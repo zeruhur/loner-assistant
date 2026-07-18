@@ -26,7 +26,7 @@
 
 - **[User Manual](docs/USER_MANUAL.md)**: Detailed guide on how to use the application features.
 - **[Developer Manual](docs/DEVELOPER_MANUAL.md)**: Architecture, code structure, and contribution guide.
-- **[Loner Rules](loner-en.md)**: The core rules of the Loner RPG system.
+- **[Loner Rules](loner-4e.md)**: The core rules of the Loner RPG system.
 
 ## ⌨️ Keyboard Shortcuts
 

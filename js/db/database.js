@@ -52,6 +52,29 @@ db.version(3).stores({
   customTables: '++id, name, category, entries, createdAt'
 });
 
+// Version 4: adds Challenge Tracks and Status Track (Loner 4e optional modules)
+db.version(4).stores({
+  campaigns: '++id, name, createdAt, lastPlayed, archived',
+  sessions: '++id, campaignId, name, date, notes',
+  characters: '++id, name, campaignId, concept, luck, isActive',
+  npcs: '++id, campaignId, name, tags',
+  locations: '++id, campaignId, name, visited',
+  events: '++id, campaignId, sessionId, timestamp, type, description',
+  threads: '++id, campaignId, title, status',
+  rollTables: '++id, supplementId, name, category',
+  supplements: '++id, name, enabled',
+  rollHistory: '++id, sessionId, timestamp, result',
+  tableRolls: '++id, sessionId, timestamp, tableName, supplementId, result',
+  userPreferences: 'key, value',
+  customTables: '++id, name, category, entries, createdAt',
+
+  // Challenge Tracks: progress trackers for goals spanning multiple scenes
+  challengeTracks: '++id, campaignId, name, size, filled, createdAt',
+
+  // Status Track: per-character 3-box lasting-consequence track
+  statusTracks: '++id, characterId, boxes, createdAt'
+});
+
 /**
  * ==============================================
  * CAMPAIGN FUNCTIONS
@@ -128,7 +151,9 @@ export async function createSession(campaignId, name) {
     date: new Date(),
     notes: '', // Will be rich text JSON from Quill
     sceneType: null,
-    twistCounter: 0
+    twistCounter: 0,
+    frame: null, // Current scene frame: { where, who, what } - Loner 4e "Framing a Scene"
+    leverage: null // Held Leverage: { description } - Loner 4e optional module, one at a time
   });
 
   // Update campaign's last played
@@ -160,6 +185,13 @@ export async function getSession(id) {
 export async function updateSessionNotes(sessionId, notesContent) {
   await db.sessions.update(sessionId, {
     notes: notesContent
+  });
+}
+
+// Update the current scene frame (Loner 4e "Framing a Scene": where/who/what)
+export async function updateSessionFrame(sessionId, frame) {
+  await db.sessions.update(sessionId, {
+    frame: frame
   });
 }
 
@@ -584,4 +616,101 @@ export async function getTableRollHistory(sessionId, limit = 50) {
     .reverse()
     .limit(limit)
     .toArray();
+}
+
+/**
+ * ==============================================
+ * CHALLENGE TRACKS (Loner 4e optional module)
+ * ==============================================
+ */
+
+export async function createChallengeTrack(campaignId, name, size = 4) {
+  const id = await db.challengeTracks.add({
+    campaignId: campaignId,
+    name: name,
+    size: size, // 4 for a standard arc, 6 for a longer one
+    filled: 0,
+    createdAt: new Date()
+  });
+  return id;
+}
+
+export async function getChallengeTracksForCampaign(campaignId) {
+  try {
+    return await db.challengeTracks
+      .where('campaignId')
+      .equals(campaignId)
+      .toArray();
+  } catch (error) {
+    console.error('Error fetching challenge tracks:', error);
+    return [];
+  }
+}
+
+// delta may be positive (mark boxes) or negative (erase boxes); clamped to [0, size]
+export async function updateChallengeTrackProgress(id, delta) {
+  const track = await db.challengeTracks.get(id);
+  if (!track) return;
+
+  const filled = Math.max(0, Math.min(track.size, track.filled + delta));
+  await db.challengeTracks.update(id, { filled });
+  return filled;
+}
+
+export async function deleteChallengeTrack(id) {
+  await db.challengeTracks.delete(id);
+}
+
+/**
+ * ==============================================
+ * STATUS TRACK (Loner 4e optional module)
+ * ==============================================
+ */
+
+// boxes is an array of up to 3 tag strings, in fill order (oldest first)
+export async function createStatusTrack(characterId) {
+  const id = await db.statusTracks.add({
+    characterId: characterId,
+    boxes: [],
+    createdAt: new Date()
+  });
+  return id;
+}
+
+export async function getStatusTrackForCharacter(characterId) {
+  return await db.statusTracks.where('characterId').equals(characterId).first();
+}
+
+export async function fillStatusTrackBox(characterId, tag) {
+  let track = await getStatusTrackForCharacter(characterId);
+  if (!track) {
+    const id = await createStatusTrack(characterId);
+    track = await db.statusTracks.get(id);
+  }
+  if (track.boxes.length >= 3) return track; // already overcome
+
+  const boxes = [...track.boxes, tag];
+  await db.statusTracks.update(track.id, { boxes });
+  return { ...track, boxes };
+}
+
+// Clear the most recently filled box (recovery), restoring the previous tag as active
+export async function clearStatusTrackBox(characterId) {
+  const track = await getStatusTrackForCharacter(characterId);
+  if (!track || track.boxes.length === 0) return track;
+
+  const boxes = track.boxes.slice(0, -1);
+  await db.statusTracks.update(track.id, { boxes });
+  return { ...track, boxes };
+}
+
+/**
+ * ==============================================
+ * LEVERAGE (Loner 4e optional module)
+ * ==============================================
+ */
+
+// leverage is { description } or null
+export async function updateSessionLeverage(sessionId, leverage) {
+  await db.sessions.update(sessionId, { leverage });
 }

@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Loner Assistant v2.0** is a comprehensive web-based companion tool for the Loner solo RPG system. It enables players to manage campaigns, characters, story content, and game mechanics entirely in a browser using client-side architecture with IndexedDB for persistent storage.
 
 ### Key Context
-- **What is Loner?** A minimalist, tag-based solo RPG with emergent storytelling. Rules are rules-light and narrative-focused (see `loner-en.md`).
+- **What is Loner?** A minimalist, tag-based solo RPG with emergent storytelling. Rules are rules-light and narrative-focused (see `loner-4e.md`).
 - **Architecture:** Vanilla JavaScript (no frameworks), Dexie.js for database, pure HTML/CSS for UI
 - **Status:** Phase 4 - Advanced features (roll tables, supplements, Get Inspired flavors) are implemented; Phases 1-3 (foundation, sessions, content management) are complete
 - **User:** Roberto, the creator. He has strong debugging skills, appreciates clean modular architecture, and favors simpler solutions over complex ones
@@ -268,4 +268,4 @@ Current focus is refinement within Phase 4 features and user experience improvem
 - Test database changes thoroughly - schema bugs can corrupt data
 - Use browser DevTools console heavily; check for any red errors or warnings
 - Mobile responsiveness is desired but desktop-first focus
-- Loner rulebook (`loner-en.md`) is authoritative for game mechanics; refer to it when implementing rules
+- Loner rulebook (`loner-4e.md`) is authoritative for game mechanics; refer to it when implementing rules

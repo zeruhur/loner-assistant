@@ -9,6 +9,7 @@ import * as UI from './ui.js';
 import { getState, setCurrentCampaign } from './state.js';
 import { openFormModal } from './crud/modal-form.js';
 import * as Editor from './editor.js';
+import { displayLeverage } from './leverage.js';
 
 /**
  * Display current session info in sidebar
@@ -168,6 +169,7 @@ export async function switchToSession(sessionId) {
     // Update display
     const session = await LonerDB.getSession(sessionId);
     displayCurrentSession(session);
+    await displayLeverage();
 
     UI.closeModal();
     UI.showAlert('Session switched!', 'success');

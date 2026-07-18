@@ -228,6 +228,44 @@ export const TableManager = {
   },
 
   /**
+   * Roll Build the Setup (5W+H premise table, 4th Edition)
+   */
+  async rollBuildTheSetup() {
+    const results = await TableSystem.rollBuildTheSetup();
+
+    showModal('Build the Setup', `
+      <div class="adventure-maker-results">
+        <div class="result-section">
+          <h4>Who?</h4>
+          <p><strong>${results.who.result}</strong></p>
+        </div>
+        <div class="result-section">
+          <h4>What?</h4>
+          <p><strong>${results.what.result}</strong></p>
+        </div>
+        <div class="result-section">
+          <h4>When?</h4>
+          <p><strong>${results.when.result}</strong></p>
+        </div>
+        <div class="result-section">
+          <h4>Where?</h4>
+          <p><strong>${results.where.result}</strong></p>
+        </div>
+        <div class="result-section">
+          <h4>Why?</h4>
+          <p><strong>${results.why.result}</strong></p>
+        </div>
+        <div class="result-section">
+          <h4>How?</h4>
+          <p><strong>${results.how.result}</strong></p>
+        </div>
+      </div>
+    `);
+
+    this.loadRollHistory();
+  },
+
+  /**
    * Initialize random tables panel - populate supplement selector
    */
   showRandomTablesPanel() {
@@ -409,6 +447,27 @@ export const TableManager = {
     );
 
     // Log event
+    if (typeof window.EventManager !== 'undefined') {
+      await window.EventManager.logEvent('table-roll', `${result.table}: ${result.result}`, {
+        supplement: result.supplement,
+        rolls: result.rolls
+      });
+    }
+
+    showAlert(`Rolled: ${result.result}`, 'success');
+    this.loadRollHistory();
+  },
+
+  /**
+   * Roll the Things table (auto-picks Variant A/B/C per 4e's own 1d6 instruction)
+   */
+  async rollThings() {
+    const result = TableSystem.rollThings();
+
+    await TableSystem.logTableRoll(result.table, 'core-loner', result.result);
+
+    Editor.insertBlock(result.table, result.result, 'var(--accent-no)');
+
     if (typeof window.EventManager !== 'undefined') {
       await window.EventManager.logEvent('table-roll', `${result.table}: ${result.result}`, {
         supplement: result.supplement,
