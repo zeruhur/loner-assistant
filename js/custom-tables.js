@@ -4,7 +4,17 @@
  * Allows users to create, edit, and manage their own roll tables
  */
 
-const CustomTables = {
+import {
+  getCustomTables,
+  getCustomTable,
+  createCustomTable,
+  updateCustomTable,
+  deleteCustomTable
+} from './db/database.js';
+import { showModal, closeModal, showAlert, showView } from './ui.js';
+import { TableSystem } from './tables.js';
+
+export const CustomTables = {
   currentEditId: null,
 
   /**
@@ -30,7 +40,7 @@ const CustomTables = {
     if (!container) return;
 
     try {
-      const tables = await LonerDB.getCustomTables();
+      const tables = await getCustomTables();
 
       if (tables.length === 0) {
         container.innerHTML = `
@@ -66,7 +76,7 @@ const CustomTables = {
    * Render custom tables list
    */
   async render() {
-    const tables = await LonerDB.getCustomTables();
+    const tables = await getCustomTables();
     const container = document.getElementById('tools-grid');
     if (!container) return;
 
@@ -170,7 +180,7 @@ const CustomTables = {
    */
   showCreateForm() {
     this.currentEditId = null;
-    UI.showModal('Create Custom Table', this.getFormHTML());
+    showModal('Create Custom Table', this.getFormHTML());
     this.attachFormHandlers();
   },
 
@@ -178,14 +188,14 @@ const CustomTables = {
    * Show edit table form
    */
   async showEditForm(tableId) {
-    const table = await LonerDB.getCustomTable(tableId);
+    const table = await getCustomTable(tableId);
     if (!table) {
-      UI.showAlert('Table not found', 'error');
+      showAlert('Table not found', 'error');
       return;
     }
 
     this.currentEditId = tableId;
-    UI.showModal('Edit Custom Table', this.getFormHTML(table));
+    showModal('Edit Custom Table', this.getFormHTML(table));
     this.attachFormHandlers(table);
   },
 
@@ -234,7 +244,7 @@ const CustomTables = {
           <button type="submit" class="btn btn-primary" style="flex: 1;">
             ${table ? 'Save Changes' : 'Create Table'}
           </button>
-          <button type="button" class="btn btn-outline" onclick="UI.closeModal()" style="flex: 1;">
+          <button type="button" class="btn btn-outline" onclick="closeModal()" style="flex: 1;">
             Cancel
           </button>
         </div>
@@ -325,22 +335,22 @@ const CustomTables = {
 
         if (this.currentEditId) {
           // Update existing
-          await LonerDB.updateCustomTable(this.currentEditId, {
+          await updateCustomTable(this.currentEditId, {
             name,
             rollType,
             entries
           });
-          UI.showAlert('Table updated successfully!', 'success');
+          showAlert('Table updated successfully!', 'success');
         } else {
           // Create new
-          const id = await LonerDB.createCustomTable(name, 'custom', entries, rollType);
-          UI.showAlert('Table created successfully!', 'success');
+          await createCustomTable(name, 'custom', entries, rollType);
+          showAlert('Table created successfully!', 'success');
         }
 
-        UI.closeModal();
+        closeModal();
 
         // Reload custom tables in the table system
-        const customTables = await LonerDB.getCustomTables();
+        const customTables = await getCustomTables();
         customTables.forEach(table => {
           TableSystem.registerCustomTable(table);
         });
@@ -351,7 +361,7 @@ const CustomTables = {
         // Re-render
         await this.render();
       } catch (error) {
-        UI.showAlert(error.message, 'error');
+        showAlert(error.message, 'error');
       }
     });
   },
@@ -360,9 +370,9 @@ const CustomTables = {
    * Show test roll
    */
   async showTestRoll(tableId) {
-    const table = await LonerDB.getCustomTable(tableId);
+    const table = await getCustomTable(tableId);
     if (!table) {
-      UI.showAlert('Table not found', 'error');
+      showAlert('Table not found', 'error');
       return;
     }
 
@@ -389,7 +399,7 @@ const CustomTables = {
 
       const result = TableSystem.roll('custom', tableKey);
 
-      UI.showModal(`Test Roll: ${table.name}`, `
+      showModal(`Test Roll: ${table.name}`, `
         <div style="text-align: center; padding: var(--space-lg);">
           <div style="font-size: 2rem; color: var(--primary); margin-bottom: var(--space-md);">
             🎲
@@ -406,7 +416,7 @@ const CustomTables = {
         </div>
       `);
     } catch (error) {
-      UI.showAlert('Error rolling table: ' + error.message, 'error');
+      showAlert('Error rolling table: ' + error.message, 'error');
     }
   },
 
@@ -419,18 +429,15 @@ const CustomTables = {
     }
 
     try {
-      await LonerDB.deleteCustomTable(tableId);
-      UI.showAlert('Table deleted', 'success');
+      await deleteCustomTable(tableId);
+      showAlert('Table deleted', 'success');
 
       // Update sidebar quick list
       await this.updateQuickList();
 
       await this.render();
     } catch (error) {
-      UI.showAlert('Error deleting table: ' + error.message, 'error');
+      showAlert('Error deleting table: ' + error.message, 'error');
     }
   }
 };
-
-// Make it available globally
-window.CustomTables = CustomTables;

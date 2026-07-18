@@ -3,7 +3,7 @@
  * D66 random tables
  */
 
-window.CogCompassAdventureTables = {
+export default {
   supplement: {
     id: 'cog-compass-adventure',
     name: 'Cog & Compass Adventure Tables',

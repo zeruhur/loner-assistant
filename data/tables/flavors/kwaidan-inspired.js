@@ -1,4 +1,4 @@
-window.KwaidanInspired = {
+export default {
     supplement: {
       id: 'kwaidan-inspired',
       name: 'Kwaidan Inspiration',

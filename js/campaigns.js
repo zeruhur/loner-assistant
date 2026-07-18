@@ -1,16 +1,27 @@
 /**
  * LONER ASSISTANT v2.0 - Campaign Management
- * 
+ *
  * All campaign-related functions
  */
+
+import * as LonerDB from './db/database.js';
+import * as UI from './ui.js';
+import { getState, setCurrentCampaign, clearCurrentCampaign } from './state.js';
+import { openFormModal, confirmAndDelete } from './crud/modal-form.js';
+import * as Editor from './editor.js';
+import { displayCurrentSession } from './sessions.js';
+import { showNPCPanel } from './npcs.js';
+import { showLocationPanel } from './locations.js';
+import { showThreadPanel } from './threads.js';
+import { showEventPanel } from './events.js';
 
 /**
  * Display current campaign info in sidebar
  */
-function displayCurrentCampaign(campaign) {
+export function displayCurrentCampaign(campaign) {
   const infoDiv = document.getElementById('current-campaign-info');
   if (!infoDiv) return;
-  
+
   infoDiv.innerHTML = `
     <h4 style="margin-bottom: 0.5rem;">${UI.escapeHtml(campaign.name)}</h4>
     <p style="font-size: 0.85rem; color: var(--text-muted);">
@@ -25,7 +36,7 @@ function displayCurrentCampaign(campaign) {
 /**
  * Show new campaign form
  */
-function showNewCampaignForm() {
+export function showNewCampaignForm() {
   const formHTML = `
     <form id="new-campaign-form">
       <div class="form-group">
@@ -42,71 +53,59 @@ function showNewCampaignForm() {
       </div>
     </form>
   `;
-  
-  UI.showModal('New Campaign', formHTML);
-  
-  // Attach event listener to form after it's in the DOM
-  setTimeout(() => {
-    const form = document.getElementById('new-campaign-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await createNewCampaign();
-      });
-    }
-  }, 100);
+
+  openFormModal('New Campaign', 'new-campaign-form', formHTML, () => createNewCampaign());
 }
 
 /**
  * Create a new campaign
  */
-async function createNewCampaign() {
+export async function createNewCampaign() {
   const nameInput = document.getElementById('campaign-name');
   const descInput = document.getElementById('campaign-desc');
-  
+
   if (!nameInput || !nameInput.value.trim()) {
     UI.showAlert('Please enter a campaign name', 'error');
     return;
   }
-  
+
   const name = nameInput.value.trim();
   const desc = descInput ? descInput.value.trim() : '';
-  
+
   try {
     console.log('Creating campaign:', name);
-    
+
     // Create campaign
     const campaignId = await LonerDB.createCampaign(name, desc);
     console.log('Campaign created with ID:', campaignId);
-    
+
     // Create first session
     const sessionId = await LonerDB.createSession(campaignId, 'Session 1');
     console.log('Session created with ID:', sessionId);
-    
+
     // Set as active and save state
     setCurrentCampaign(campaignId, sessionId);
-    
+
     // Close modal
     UI.closeModal();
-    
+
     // Show success message
     UI.showAlert('Campaign created!', 'success');
-    
+
     // Load the new campaign
     const campaign = await LonerDB.getCampaign(campaignId);
     displayCurrentCampaign(campaign);
-    
-    // ADD THESE LINES TO DISPLAY SESSION:
+
     const session = await LonerDB.getSession(sessionId);
-    SessionManager.displayCurrentSession(session);
-    
+    displayCurrentSession(session);
+
     // Load the session into editor
     await Editor.loadSession(sessionId);
-    
+
     // Refresh campaign list and switch to campaigns view
     await loadCampaignsList();
-    showView('campaigns');
-    
+    UI.showView('campaigns');
+
   } catch (error) {
     console.error('Error creating campaign:', error);
     UI.showAlert('Error creating campaign: ' + error.message, 'error');
@@ -116,21 +115,21 @@ async function createNewCampaign() {
 /**
  * Load and display campaigns list
  */
-async function loadCampaignsList() {
+export async function loadCampaignsList() {
   const campaigns = await LonerDB.getAllCampaigns();
-  
+
   const container = document.getElementById('campaigns-list');
   if (!container) return;
-  
+
   if (campaigns.length === 0) {
     container.innerHTML = '<p class="text-muted text-center">No campaigns yet. Create one!</p>';
     return;
   }
-  
+
   const state = getState();
   const activeCampaignId = state.campaignId;
-  
-    container.innerHTML = campaigns.map(campaign => {
+
+  container.innerHTML = campaigns.map(campaign => {
     const campaignId = campaign.id;
     return `
         <div class="card campaign-card">
@@ -162,48 +161,42 @@ async function loadCampaignsList() {
         </div>
         </div>
     `;
-    }).join('');
+  }).join('');
 }
 
 /**
  * View campaign details in a modal
  */
-/**
- * View campaign details in a modal
- */
-/**
- * View campaign details in a modal
- */
-async function viewCampaignDetails(campaignId) {
+export async function viewCampaignDetails(campaignId) {
   try {
     const campaign = await LonerDB.db.campaigns.get(campaignId);
-    
+
     if (!campaign) {
       UI.showAlert('Campaign not found', 'error');
       return;
     }
-    
+
     // Get related data
     const characters = await LonerDB.getCharacters(campaignId).catch(() => []);
     const sessions = await LonerDB.getSessionsForCampaign(campaignId).catch(() => []);
     const npcs = await LonerDB.getNPCsForCampaign(campaignId).catch(() => []);
     const locations = await LonerDB.getLocationsForCampaign(campaignId).catch(() => []);
     const threads = await LonerDB.getThreadsForCampaign(campaignId).catch(() => []);
-    
+
     const detailsHTML = `
       <div class="campaign-details">
         <div class="form-group">
           <label>Name</label>
           <div>${UI.escapeHtml(campaign.name)}</div>
         </div>
-        
+
         ${campaign.description ? `
           <div class="form-group">
             <label>Description</label>
             <div>${UI.escapeHtml(campaign.description)}</div>
           </div>
         ` : ''}
-        
+
         <div class="form-group">
           <label>Statistics</label>
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 0.5rem;">
@@ -229,21 +222,21 @@ async function viewCampaignDetails(campaignId) {
             </div>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label>Created</label>
           <div>${UI.formatDate(campaign.createdAt)}</div>
         </div>
-        
+
         <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem;">
           <button class="btn btn-outline" onclick="CampaignManager.editCampaign(${campaignId})">Edit</button>
           <button class="btn btn-danger" onclick="CampaignManager.deleteCampaignConfirm(${campaignId})">Delete</button>
         </div>
       </div>
     `;
-    
+
     UI.showModal(campaign.name, detailsHTML);
-    
+
   } catch (error) {
     console.error('Error viewing campaign details:', error);
     UI.showAlert('Error loading campaign details: ' + error.message, 'error');
@@ -253,9 +246,9 @@ async function viewCampaignDetails(campaignId) {
 /**
  * Edit campaign
  */
-async function editCampaign(campaignId) {
+export async function editCampaign(campaignId) {
   const campaign = await LonerDB.getCampaign(campaignId);
-  
+
   const formHTML = `
     <form id="edit-campaign-form">
       <div class="form-group">
@@ -272,52 +265,41 @@ async function editCampaign(campaignId) {
       </div>
     </form>
   `;
-  
-  UI.showModal('Edit Campaign', formHTML);
-  
-  // Attach event listener to form after it's in the DOM
-  setTimeout(() => {
-    const form = document.getElementById('edit-campaign-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await saveCampaignEdit(campaignId);
-      });
-    }
-  }, 100);
+
+  openFormModal('Edit Campaign', 'edit-campaign-form', formHTML, () => saveCampaignEdit(campaignId));
 }
 
 /**
  * Save campaign edits
  */
-async function saveCampaignEdit(campaignId) {
+export async function saveCampaignEdit(campaignId) {
   try {
     const name = document.getElementById('edit-campaign-name').value.trim();
     const description = document.getElementById('edit-campaign-desc').value.trim();
-    
+
     if (!name) {
       UI.showAlert('Campaign name is required', 'error');
       return;
     }
-    
+
     await LonerDB.db.campaigns.update(campaignId, {
       name: name,
       description: description
     });
-    
+
     UI.closeModal();
     UI.showAlert('Campaign updated!', 'success');
-    
+
     // Reload list
     await loadCampaignsList();
-    
+
     // If this was the active campaign, update display
     const state = getState();
     if (campaignId === state.campaignId) {
       const campaign = await LonerDB.getCampaign(campaignId);
       displayCurrentCampaign(campaign);
     }
-    
+
   } catch (error) {
     console.error('Error saving campaign:', error);
     UI.showAlert('Error saving campaign: ' + error.message, 'error');
@@ -327,58 +309,50 @@ async function saveCampaignEdit(campaignId) {
 /**
  * Set campaign as active
  */
-async function setAsActiveCampaign(campaignId) {
+export async function setAsActiveCampaign(campaignId) {
   try {
     // Load the campaign
     const campaign = await LonerDB.getCampaign(campaignId);
-    
+
     // Update last played
     await LonerDB.updateCampaignLastPlayed(campaignId);
-    
+
     // Get or create first session
     const sessions = await LonerDB.getSessionsForCampaign(campaignId);
     let sessionId;
-    
+
     if (sessions.length > 0) {
       sessionId = sessions[0].id;
     } else {
       sessionId = await LonerDB.createSession(campaignId, 'Session 1');
     }
-    
+
     // Set as active and save state
     setCurrentCampaign(campaignId, sessionId);
-    
+
     // Update sidebar display
     displayCurrentCampaign(campaign);
-    
+
     // Load session into editor
     await Editor.loadSession(sessionId);
 
     const session = await LonerDB.getSession(sessionId);
-    SessionManager.displayCurrentSession(session);
-    
+    displayCurrentSession(session);
+
     // Initialize Quick Links panels
-    if (typeof showNPCPanel === 'function') {
-      await showNPCPanel();
-    }
-    if (typeof showLocationPanel === 'function') {
-      await showLocationPanel();
-    }
-    if (typeof showThreadPanel === 'function') {
-      await showThreadPanel();
-    }
-    if (typeof showEventPanel === 'function') {
-      await showEventPanel();
-    }
-    
+    await showNPCPanel();
+    await showLocationPanel();
+    await showThreadPanel();
+    await showEventPanel();
+
     // Refresh list to show new active state
     await loadCampaignsList();
-    
+
     UI.showAlert('Campaign activated!', 'success');
-    
+
     // Optionally switch to play view
-    showView('play');
-    
+    UI.showView('play');
+
   } catch (error) {
     console.error('Error setting active campaign:', error);
     UI.showAlert('Error activating campaign: ' + error.message, 'error');
@@ -388,22 +362,22 @@ async function setAsActiveCampaign(campaignId) {
 /**
  * Select a campaign
  */
-async function selectCampaign(campaignId) {
+export async function selectCampaign(campaignId) {
   try {
     console.log('Selecting campaign:', campaignId);
-    
+
     const campaign = await LonerDB.getCampaign(campaignId);
     console.log('Campaign loaded:', campaign);
-    
+
     displayCurrentCampaign(campaign);
-    
+
     // Update last played
     await LonerDB.updateCampaignLastPlayed(campaignId);
-    
+
     // Load sessions
     const sessions = await LonerDB.getSessionsForCampaign(campaignId);
     console.log('Found sessions:', sessions.length);
-    
+
     let sessionId;
     if (sessions.length > 0) {
       sessionId = sessions[0].id;
@@ -412,17 +386,17 @@ async function selectCampaign(campaignId) {
       console.log('No sessions found, creating first session');
       sessionId = await LonerDB.createSession(campaignId, 'Session 1');
     }
-    
+
     // Set as active and save state
     setCurrentCampaign(campaignId, sessionId);
-    
+
     // Load session into editor
     await Editor.loadSession(sessionId);
-    
+
     // Go to play view
-    showView('play');
+    UI.showView('play');
     UI.showAlert('Campaign loaded!', 'success');
-    
+
     console.log('✅ Campaign selection complete');
   } catch (error) {
     console.error('Error selecting campaign:', error);
@@ -433,37 +407,34 @@ async function selectCampaign(campaignId) {
 /**
  * Delete campaign with confirmation
  */
-async function deleteCampaignConfirm(campaignId) {
+export async function deleteCampaignConfirm(campaignId) {
   const campaign = await LonerDB.db.campaigns.get(campaignId);
-  
+
   if (!campaign) {
     UI.showAlert('Campaign not found', 'error');
     return;
   }
-  
-  if (UI.confirmDialog(`Delete campaign "${campaign.name}"? This will also delete all associated characters, sessions, NPCs, locations, threads, and events. This cannot be undone.`)) {
-    try {
+
+  await confirmAndDelete(
+    `Delete campaign "${campaign.name}"? This will also delete all associated characters, sessions, NPCs, locations, threads, and events. This cannot be undone.`,
+    async () => {
       await LonerDB.deleteCampaign(campaignId);
-      UI.closeModal();
       UI.showAlert('Campaign deleted', 'success');
-      
+
       // Reload campaign list
       await loadCampaignsList();
-      
+
       // If this was the active campaign, clear it
       const state = getState();
       if (state.campaignId === campaignId) {
         clearCurrentCampaign();
       }
-    } catch (error) {
-      console.error('Error deleting campaign:', error);
-      UI.showAlert('Error deleting campaign: ' + error.message, 'error');
-    }
-  }
+    },
+    { closeModalFirst: true }
+  );
 }
 
-// Export functions
-window.CampaignManager = {
+export const CampaignManager = {
   displayCurrentCampaign,
   showNewCampaignForm,
   createNewCampaign,
@@ -475,4 +446,3 @@ window.CampaignManager = {
   saveCampaignEdit,
   setAsActiveCampaign
 };
-

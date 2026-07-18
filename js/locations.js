@@ -1,76 +1,18 @@
 /**
  * LONER ASSISTANT v2.0 - Location Management
- * 
+ *
  * Track places in your adventure
  */
 
-/**
- * Display Location quick reference in sidebar
- */
-async function showLocationPanel() {
-  const state = getState();
-  
-  if (!state.campaignId) {
-    UI.showAlert('Select a campaign first!', 'error');
-    return;
-  }
-  
-  const locations = await LonerDB.getLocationsForCampaign(state.campaignId);
-  
-  const panelHTML = `
-    <div class="panel">
-      <div class="panel-header">
-        <h3>Locations</h3>
-        <button class="btn btn-sm btn-primary" onclick="showNewLocationForm()">+ Add</button>
-      </div>
-      ${locations.length === 0 ? '<p class="text-muted">No locations yet</p>' : `
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          ${locations.map(loc => `
-            <div class="location-quick-card" style="padding: 0.75rem; background: var(--bg-secondary); border-radius: var(--radius); border-left: 3px solid ${loc.visited ? 'var(--success)' : 'var(--text-muted)'};">
-              <div style="display: flex; justify-content: space-between; align-items: start;">
-                <div style="flex: 1;">
-                  <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <strong>${UI.escapeHtml(loc.name)}</strong>
-                    ${loc.visited ? '<span style="font-size: 0.75rem;">✓</span>' : ''}
-                  </div>
-                  ${loc.description ? `
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
-                      ${UI.escapeHtml(loc.description).substring(0, 60)}${loc.description.length > 60 ? '...' : ''}
-                    </div>
-                  ` : ''}
-                </div>
-                <button class="btn btn-sm btn-outline" onclick="viewLocationDetails(${loc.id})" style="padding: 0.25rem 0.5rem;">
-                  View
-                </button>
-              </div>
-              ${!loc.visited ? `
-                <button class="btn btn-sm" onclick="markLocationVisited(${loc.id})" style="margin-top: 0.5rem; font-size: 0.75rem;">
-                  Mark as Visited
-                </button>
-              ` : ''}
-            </div>
-          `).join('')}
-        </div>
-      `}
-    </div>
-  `;
-  
-  const sidebar = document.querySelector('.sidebar-left');
-  let locationPanelContainer = document.getElementById('location-panel-container');
-  
-  if (!locationPanelContainer) {
-    locationPanelContainer = document.createElement('div');
-    locationPanelContainer.id = 'location-panel-container';
-    sidebar.appendChild(locationPanelContainer);
-  }
-  
-  locationPanelContainer.innerHTML = panelHTML;
-}
+import * as LonerDB from './db/database.js';
+import * as UI from './ui.js';
+import { getState } from './state.js';
+import { openFormModal, confirmAndDelete } from './crud/modal-form.js';
 
 /**
  * Show new location form
  */
-function showNewLocationForm() {
+export function showNewLocationForm() {
   const formHTML = `
     <form id="new-location-form">
       <div class="form-group">
@@ -93,47 +35,37 @@ function showNewLocationForm() {
       </div>
     </form>
   `;
-  
-  UI.showModal('New Location', formHTML);
-  
-  setTimeout(() => {
-    const form = document.getElementById('new-location-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await createNewLocation();
-      });
-    }
-  }, 100);
+
+  openFormModal('New Location', 'new-location-form', formHTML, () => createNewLocation());
 }
 
 /**
  * Create new location
  */
-async function createNewLocation() {
+export async function createNewLocation() {
   const nameInput = document.getElementById('location-name');
-  
+
   if (!nameInput || !nameInput.value.trim()) {
     UI.showAlert('Please enter a location name', 'error');
     return;
   }
-  
+
   try {
     const state = getState();
-    
+
     if (!state.campaignId) {
       UI.showAlert('Please create or select a campaign first!', 'error');
       UI.closeModal();
       return;
     }
-    
+
     const name = nameInput.value.trim();
     const description = document.getElementById('location-description').value.trim();
-    
+
     const locationId = await LonerDB.createLocation(state.campaignId, name, description);
-    
+
     console.log('Location created with ID:', locationId);
-    
+
     UI.closeModal();
     UI.showAlert('Location created!', 'success');
 
@@ -144,7 +76,7 @@ async function createNewLocation() {
     if (document.getElementById('view-locations').classList.contains('active')) {
       await loadLocationsList();
     }
-    
+
   } catch (error) {
     console.error('Error creating location:', error);
     UI.showAlert('Error creating location: ' + error.message, 'error');
@@ -154,9 +86,9 @@ async function createNewLocation() {
 /**
  * View location details
  */
-async function viewLocationDetails(locationId) {
+export async function viewLocationDetails(locationId) {
   const location = await LonerDB.db.locations.get(locationId);
-  
+
   const detailsHTML = `
     <div class="location-details">
       <div class="form-group">
@@ -184,37 +116,34 @@ async function viewLocationDetails(locationId) {
       </div>
     </div>
   `;
-  
+
   UI.showModal(location.name, detailsHTML);
 }
 
 /**
  * Mark location as visited
  */
-async function markLocationVisited(locationId) {
+export async function markLocationVisited(locationId) {
   try {
     const location = await LonerDB.db.locations.get(locationId);
     await LonerDB.markLocationVisited(locationId);
-    
+
     // LOG EVENT
-    if (typeof EventManager !== 'undefined' && location) {
-      await EventManager.logEvent('location', `Visited ${location.name}`, {
+    if (typeof window.EventManager !== 'undefined' && location) {
+      await window.EventManager.logEvent('location', `Visited ${location.name}`, {
         locationName: location.name
       });
     }
-    
+
     UI.showAlert('Location marked as visited!', 'success');
-    
+
     // Refresh displays
-    const panel = document.getElementById('location-panel-container');
-    if (panel) {
-      await showLocationPanel();
-    }
-    
+    await showLocationPanel();
+
     if (document.getElementById('view-locations')?.classList.contains('active')) {
       await loadLocationsList();
     }
-    
+
   } catch (error) {
     console.error('Error marking location:', error);
     UI.showAlert('Error: ' + error.message, 'error');
@@ -224,7 +153,7 @@ async function markLocationVisited(locationId) {
 /**
  * Mark visited and close modal
  */
-async function markLocationVisitedAndClose(locationId) {
+export async function markLocationVisitedAndClose(locationId) {
   await markLocationVisited(locationId);
   UI.closeModal();
 }
@@ -232,9 +161,9 @@ async function markLocationVisitedAndClose(locationId) {
 /**
  * Edit location
  */
-async function editLocation(locationId) {
+export async function editLocation(locationId) {
   const location = await LonerDB.db.locations.get(locationId);
-  
+
   const formHTML = `
     <form id="edit-location-form">
       <div class="form-group">
@@ -257,40 +186,30 @@ async function editLocation(locationId) {
       </div>
     </form>
   `;
-  
-  UI.showModal('Edit Location', formHTML);
-  
-  setTimeout(() => {
-    const form = document.getElementById('edit-location-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await saveLocationEdit(locationId);
-      });
-    }
-  }, 100);
+
+  openFormModal('Edit Location', 'edit-location-form', formHTML, () => saveLocationEdit(locationId));
 }
 
 /**
  * Save location edits
  */
-async function saveLocationEdit(locationId) {
+export async function saveLocationEdit(locationId) {
   const name = document.getElementById('edit-location-name').value.trim();
   const description = document.getElementById('edit-location-description').value.trim();
   const visited = document.getElementById('edit-location-visited').checked;
-  
+
   if (!name) {
     UI.showAlert('Name is required', 'error');
     return;
   }
-  
+
   try {
     await LonerDB.updateLocation(locationId, {
       name,
       description,
       visited
     });
-    
+
     UI.closeModal();
     UI.showAlert('Location updated!', 'success');
 
@@ -300,7 +219,7 @@ async function saveLocationEdit(locationId) {
     if (document.getElementById('view-locations')?.classList.contains('active')) {
       await loadLocationsList();
     }
-    
+
   } catch (error) {
     console.error('Error saving location:', error);
     UI.showAlert('Error saving location: ' + error.message, 'error');
@@ -310,32 +229,28 @@ async function saveLocationEdit(locationId) {
 /**
  * Delete location with confirmation
  */
-async function deleteLocationConfirm(locationId) {
+export async function deleteLocationConfirm(locationId) {
   const location = await LonerDB.db.locations.get(locationId);
-  
-  if (UI.confirmDialog(`Delete "${location.name}"? This cannot be undone.`)) {
+
+  await confirmAndDelete(`Delete "${location.name}"? This cannot be undone.`, async () => {
     await LonerDB.deleteLocation(locationId);
-    UI.closeModal();
     UI.showAlert('Location deleted', 'success');
-    
+
     // Refresh displays
-    const panel = document.getElementById('location-panel-container');
-    if (panel) {
-      await showLocationPanel();
-    }
-    
+    await showLocationPanel();
+
     if (document.getElementById('view-locations')?.classList.contains('active')) {
       await loadLocationsList();
     }
-  }
+  }, { closeModalFirst: true });
 }
 
 /**
  * Load locations list view
  */
-async function loadLocationsList() {
+export async function loadLocationsList() {
   const state = getState();
-  
+
   if (!state.campaignId) {
     const container = document.getElementById('locations-list');
     if (container) {
@@ -343,17 +258,17 @@ async function loadLocationsList() {
     }
     return;
   }
-  
+
   const locations = await LonerDB.getLocationsForCampaign(state.campaignId);
   const container = document.getElementById('locations-list');
-  
+
   if (!container) return;
-  
+
   if (locations.length === 0) {
     container.innerHTML = '<p class="text-muted text-center">No locations yet. Create one!</p>';
     return;
   }
-  
+
   container.innerHTML = locations.map(loc => `
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
@@ -382,21 +297,24 @@ async function loadLocationsList() {
   `).join('');
 }
 
-async function showLocationPanel() {
+/**
+ * Display Location quick reference in the Play view sidebar panel
+ */
+export async function showLocationPanel() {
   const state = getState();
   if (!state.campaignId) {
     document.getElementById('locations-quick-list').innerHTML = '<p class="text-muted">No campaign selected</p>';
     return;
   }
-  
+
   const locations = await LonerDB.getLocationsForCampaign(state.campaignId);
   const container = document.getElementById('locations-quick-list');
-  
+
   if (locations.length === 0) {
     container.innerHTML = '<p class="text-muted">No locations yet</p>';
     return;
   }
-  
+
   container.innerHTML = locations.slice(0, 5).map(location => `
     <div class="quick-link-item" onclick="viewLocationDetails(${location.id})">
       <strong>${UI.escapeHtml(location.name)}</strong>
@@ -405,8 +323,7 @@ async function showLocationPanel() {
   `).join('');
 }
 
-// Export functions
-window.LocationManager = {
+export const LocationManager = {
   showLocationPanel,
   showNewLocationForm,
   createNewLocation,

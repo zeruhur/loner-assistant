@@ -5,7 +5,11 @@
  * All shortcuts use Alt + key combination
  */
 
-const ShortcutsSystem = {
+import { getState } from './state.js';
+import { showAlert } from './toast.js';
+import { showModal } from './ui.js';
+
+export const ShortcutsSystem = {
   /**
    * Registry of all available shortcuts
    * Format: { key: { description, category, action } }
@@ -15,8 +19,8 @@ const ShortcutsSystem = {
       description: 'Roll Oracle (Chance vs Risk)',
       category: 'gameplay',
       action: () => {
-        if (typeof rollOracle === 'function') {
-          rollOracle();
+        if (typeof window.rollOracle === 'function') {
+          window.rollOracle();
           console.log('⚡ Oracle rolled via shortcut');
         }
       }
@@ -25,8 +29,8 @@ const ShortcutsSystem = {
       description: 'Roll Table / Adventure Maker',
       category: 'gameplay',
       action: () => {
-        if (typeof TableManager !== 'undefined' && TableManager.show) {
-          TableManager.show();
+        if (window.TableManager && window.TableManager.show) {
+          window.TableManager.show();
           console.log('⚡ Table Manager opened via shortcut');
         }
       }
@@ -42,8 +46,8 @@ const ShortcutsSystem = {
       description: 'Trigger Twist Event',
       category: 'gameplay',
       action: () => {
-        if (typeof triggerTwist === 'function') {
-          triggerTwist();
+        if (typeof window.triggerTwist === 'function') {
+          window.triggerTwist();
           console.log('⚡ Twist triggered via shortcut');
         }
       }
@@ -52,8 +56,8 @@ const ShortcutsSystem = {
       description: 'Save Notes',
       category: 'editing',
       action: () => {
-        if (typeof saveNotes === 'function') {
-          saveNotes();
+        if (typeof window.saveNotes === 'function') {
+          window.saveNotes();
           console.log('⚡ Notes saved via shortcut');
         }
       }
@@ -87,7 +91,7 @@ const ShortcutsSystem = {
         if (shortcut.category === 'gameplay') {
           const state = getState();
           if (!state || !state.sessionId) {
-            UI.showAlert('❌ No active session. Create or select a campaign first!', 'error');
+            showAlert('❌ No active session. Create or select a campaign first!', 'error');
             return;
           }
         }
@@ -97,7 +101,7 @@ const ShortcutsSystem = {
           shortcut.action();
         } catch (error) {
           console.error('❌ Shortcut error:', error);
-          UI.showAlert(`Error executing shortcut: ${error.message}`, 'error');
+          showAlert(`Error executing shortcut: ${error.message}`, 'error');
         }
       }
     });
@@ -115,7 +119,7 @@ const ShortcutsSystem = {
       editorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       console.log('📝 Editor focused via shortcut');
     } else {
-      UI.showAlert('Note editor not ready yet', 'info');
+      showAlert('Note editor not ready yet', 'info');
     }
   },
 

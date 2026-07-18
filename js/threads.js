@@ -1,69 +1,19 @@
 /**
  * LONER ASSISTANT v2.0 - Narrative Thread Management
- * 
+ *
  * Track ongoing storylines and plot threads
  */
 
-/**
- * Display Threads quick reference in sidebar
- */
-async function showThreadPanel() {
-  const state = getState();
-  
-  if (!state.campaignId) {
-    UI.showAlert('Select a campaign first!', 'error');
-    return;
-  }
-  
-  const threads = await LonerDB.getThreadsForCampaign(state.campaignId, 'active');
-  
-  const panelHTML = `
-    <div class="panel">
-      <div class="panel-header">
-        <h3>Active Threads</h3>
-        <button class="btn btn-sm btn-primary" onclick="showNewThreadForm()">+ Add</button>
-      </div>
-      ${threads.length === 0 ? '<p class="text-muted">No active threads</p>' : `
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          ${threads.map(thread => `
-            <div class="thread-quick-card" style="padding: 0.75rem; background: var(--bg-secondary); border-radius: var(--radius); border-left: 3px solid var(--primary);">
-              <div style="display: flex; justify-content: space-between; align-items: start;">
-                <div style="flex: 1;">
-                  <strong>${UI.escapeHtml(thread.title)}</strong>
-                  ${thread.description ? `
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
-                      ${UI.escapeHtml(thread.description).substring(0, 60)}${thread.description.length > 60 ? '...' : ''}
-                    </div>
-                  ` : ''}
-                </div>
-                <button class="btn btn-sm btn-outline" onclick="viewThreadDetails(${thread.id})" style="padding: 0.25rem 0.5rem;">
-                  View
-                </button>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      `}
-    </div>
-  `;
-  
-  const sidebar = document.querySelector('.sidebar-left');
-  let threadPanelContainer = document.getElementById('thread-panel-container');
-  
-  if (!threadPanelContainer) {
-    threadPanelContainer = document.createElement('div');
-    threadPanelContainer.id = 'thread-panel-container';
-    sidebar.appendChild(threadPanelContainer);
-  }
-  
-  threadPanelContainer.innerHTML = panelHTML;
-}
+import * as LonerDB from './db/database.js';
+import * as UI from './ui.js';
+import { getState } from './state.js';
+import { openFormModal, confirmAndDelete } from './crud/modal-form.js';
 
 /**
  * Get thread status color
  */
 function getThreadStatusColor(status) {
-  switch(status) {
+  switch (status) {
     case 'active': return 'var(--primary)';
     case 'resolved': return 'var(--success)';
     case 'abandoned': return 'var(--text-muted)';
@@ -74,7 +24,7 @@ function getThreadStatusColor(status) {
 /**
  * Show new thread form
  */
-function showNewThreadForm() {
+export function showNewThreadForm() {
   const formHTML = `
     <form id="new-thread-form">
       <div class="form-group">
@@ -99,47 +49,37 @@ function showNewThreadForm() {
       </div>
     </form>
   `;
-  
-  UI.showModal('New Narrative Thread', formHTML);
-  
-  setTimeout(() => {
-    const form = document.getElementById('new-thread-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await createNewThread();
-      });
-    }
-  }, 100);
+
+  openFormModal('New Narrative Thread', 'new-thread-form', formHTML, () => createNewThread());
 }
 
 /**
  * Create new thread
  */
-async function createNewThread() {
+export async function createNewThread() {
   const titleInput = document.getElementById('thread-title');
-  
+
   if (!titleInput || !titleInput.value.trim()) {
     UI.showAlert('Please enter a thread title', 'error');
     return;
   }
-  
+
   try {
     const state = getState();
-    
+
     if (!state.campaignId) {
       UI.showAlert('Please create or select a campaign first!', 'error');
       UI.closeModal();
       return;
     }
-    
+
     const title = titleInput.value.trim();
     const description = document.getElementById('thread-description').value.trim();
-    
+
     const threadId = await LonerDB.createThread(state.campaignId, title, description);
-    
+
     console.log('Thread created with ID:', threadId);
-    
+
     UI.closeModal();
     UI.showAlert('Thread created!', 'success');
 
@@ -150,7 +90,7 @@ async function createNewThread() {
     if (document.getElementById('view-threads').classList.contains('active')) {
       await loadThreadsList();
     }
-    
+
   } catch (error) {
     console.error('Error creating thread:', error);
     UI.showAlert('Error creating thread: ' + error.message, 'error');
@@ -160,9 +100,9 @@ async function createNewThread() {
 /**
  * View thread details
  */
-async function viewThreadDetails(threadId) {
+export async function viewThreadDetails(threadId) {
   const thread = await LonerDB.db.threads.get(threadId);
-  
+
   const detailsHTML = `
     <div class="thread-details">
       <div class="form-group">
@@ -194,34 +134,31 @@ async function viewThreadDetails(threadId) {
       </div>
     </div>
   `;
-  
+
   UI.showModal(thread.title, detailsHTML);
 }
 
 /**
  * Resolve thread and close modal
  */
-async function resolveThreadAndClose(threadId) {
+export async function resolveThreadAndClose(threadId) {
   const thread = await LonerDB.db.threads.get(threadId);
   await LonerDB.updateThreadStatus(threadId, 'resolved');
-  
+
   // LOG EVENT
-  if (typeof EventManager !== 'undefined' && thread) {
-    await EventManager.logEvent('thread', `Thread resolved: ${thread.title}`, {
+  if (typeof window.EventManager !== 'undefined' && thread) {
+    await window.EventManager.logEvent('thread', `Thread resolved: ${thread.title}`, {
       threadTitle: thread.title,
       status: 'resolved'
     });
   }
-  
+
   UI.closeModal();
   UI.showAlert('Thread marked as resolved!', 'success');
-  
+
   // Refresh displays
-  const panel = document.getElementById('thread-panel-container');
-  if (panel) {
-    await showThreadPanel();
-  }
-  
+  await showThreadPanel();
+
   if (document.getElementById('view-threads')?.classList.contains('active')) {
     await loadThreadsList();
   }
@@ -230,9 +167,9 @@ async function resolveThreadAndClose(threadId) {
 /**
  * Edit thread
  */
-async function editThread(threadId) {
+export async function editThread(threadId) {
   const thread = await LonerDB.db.threads.get(threadId);
-  
+
   const formHTML = `
     <form id="edit-thread-form">
       <div class="form-group">
@@ -257,40 +194,30 @@ async function editThread(threadId) {
       </div>
     </form>
   `;
-  
-  UI.showModal('Edit Thread', formHTML);
-  
-  setTimeout(() => {
-    const form = document.getElementById('edit-thread-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await saveThreadEdit(threadId);
-      });
-    }
-  }, 100);
+
+  openFormModal('Edit Thread', 'edit-thread-form', formHTML, () => saveThreadEdit(threadId));
 }
 
 /**
  * Save thread edits
  */
-async function saveThreadEdit(threadId) {
+export async function saveThreadEdit(threadId) {
   const title = document.getElementById('edit-thread-title').value.trim();
   const description = document.getElementById('edit-thread-description').value.trim();
   const status = document.getElementById('edit-thread-status').value;
-  
+
   if (!title) {
     UI.showAlert('Title is required', 'error');
     return;
   }
-  
+
   try {
     await LonerDB.updateThread(threadId, {
       title,
       description,
       status
     });
-    
+
     UI.closeModal();
     UI.showAlert('Thread updated!', 'success');
 
@@ -300,7 +227,7 @@ async function saveThreadEdit(threadId) {
     if (document.getElementById('view-threads')?.classList.contains('active')) {
       await loadThreadsList();
     }
-    
+
   } catch (error) {
     console.error('Error saving thread:', error);
     UI.showAlert('Error saving thread: ' + error.message, 'error');
@@ -310,12 +237,11 @@ async function saveThreadEdit(threadId) {
 /**
  * Delete thread with confirmation
  */
-async function deleteThreadConfirm(threadId) {
+export async function deleteThreadConfirm(threadId) {
   const thread = await LonerDB.db.threads.get(threadId);
-  
-  if (UI.confirmDialog(`Delete "${thread.title}"? This cannot be undone.`)) {
+
+  await confirmAndDelete(`Delete "${thread.title}"? This cannot be undone.`, async () => {
     await LonerDB.deleteThread(threadId);
-    UI.closeModal();
     UI.showAlert('Thread deleted', 'success');
 
     // Always refresh displays
@@ -324,15 +250,15 @@ async function deleteThreadConfirm(threadId) {
     if (document.getElementById('view-threads')?.classList.contains('active')) {
       await loadThreadsList();
     }
-  }
+  }, { closeModalFirst: true });
 }
 
 /**
  * Load threads list view
  */
-async function loadThreadsList() {
+export async function loadThreadsList() {
   const state = getState();
-  
+
   if (!state.campaignId) {
     const container = document.getElementById('threads-list');
     if (container) {
@@ -340,45 +266,45 @@ async function loadThreadsList() {
     }
     return;
   }
-  
+
   const threads = await LonerDB.getThreadsForCampaign(state.campaignId);
   const container = document.getElementById('threads-list');
-  
+
   if (!container) return;
-  
+
   if (threads.length === 0) {
     container.innerHTML = '<p class="text-muted text-center">No threads yet. Create one!</p>';
     return;
   }
-  
+
   // Group by status
   const active = threads.filter(t => t.status === 'active');
   const resolved = threads.filter(t => t.status === 'resolved');
   const abandoned = threads.filter(t => t.status === 'abandoned');
-  
+
   let html = '';
-  
+
   if (active.length > 0) {
     html += '<h3 style="margin-bottom: 1rem;">Active Threads</h3>';
     html += '<div class="grid-list" style="margin-bottom: 2rem;">';
     html += active.map(thread => renderThreadCard(thread)).join('');
     html += '</div>';
   }
-  
+
   if (resolved.length > 0) {
     html += '<h3 style="margin-bottom: 1rem;">Resolved Threads</h3>';
     html += '<div class="grid-list" style="margin-bottom: 2rem;">';
     html += resolved.map(thread => renderThreadCard(thread)).join('');
     html += '</div>';
   }
-  
+
   if (abandoned.length > 0) {
     html += '<h3 style="margin-bottom: 1rem;">Abandoned Threads</h3>';
     html += '<div class="grid-list">';
     html += abandoned.map(thread => renderThreadCard(thread)).join('');
     html += '</div>';
   }
-  
+
   container.innerHTML = html;
 }
 
@@ -409,22 +335,25 @@ function renderThreadCard(thread) {
   `;
 }
 
-async function showThreadPanel() {
+/**
+ * Display Threads quick reference in the Play view sidebar panel
+ */
+export async function showThreadPanel() {
   const state = getState();
   if (!state.campaignId) {
     document.getElementById('threads-quick-list').innerHTML = '<p class="text-muted">No campaign selected</p>';
     return;
   }
-  
+
   const threads = await LonerDB.getThreadsForCampaign(state.campaignId);
   const activeThreads = threads.filter(t => t.status === 'active');
   const container = document.getElementById('threads-quick-list');
-  
+
   if (activeThreads.length === 0) {
     container.innerHTML = '<p class="text-muted">No active threads</p>';
     return;
   }
-  
+
   container.innerHTML = activeThreads.slice(0, 5).map(thread => `
     <div class="quick-link-item" onclick="viewThreadDetails(${thread.id})">
       <strong>${UI.escapeHtml(thread.title)}</strong>
@@ -432,8 +361,7 @@ async function showThreadPanel() {
   `).join('');
 }
 
-// Export functions
-window.ThreadManager = {
+export const ThreadManager = {
   showThreadPanel,
   showNewThreadForm,
   createNewThread,

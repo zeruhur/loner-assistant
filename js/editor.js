@@ -1,15 +1,23 @@
 /**
  * LONER ASSISTANT v2.0 - Note Editor Management
- * 
- * All editor-related functions (Quill editor)
+ *
+ * All editor-related functions (Quill editor). Quill itself is loaded
+ * as a classic script (lib/quill.min.js) before this module runs, so
+ * it's available here as the global `Quill`.
  */
+
+import { getState } from './state.js';
+import { getSession, getCampaign, updateSessionNotes } from './db/database.js';
+import { showAlert } from './toast.js';
+import { formatTime } from './ui.js';
+import { setTwistCounter } from './oracle.js';
 
 let quillEditor = null;
 
 /**
  * Initialize Quill rich text editor
  */
-function initializeEditor() {
+export function initializeEditor() {
   quillEditor = new Quill('#editor', {
     theme: 'snow',
     placeholder: 'Write your adventure here...',
@@ -18,13 +26,13 @@ function initializeEditor() {
         [{ 'header': [1, 2, 3, false] }],
         ['bold', 'italic', 'underline', 'strike'],
         ['blockquote', 'code-block'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
         [{ 'color': [] }, { 'background': [] }],
         ['clean']
       ]
     }
   });
-  
+
   console.log('📝 Editor initialized');
   return quillEditor;
 }
@@ -32,11 +40,11 @@ function initializeEditor() {
 /**
  * Load a session into the editor
  */
-async function loadSession(sessionId) {
+export async function loadSession(sessionId) {
   try {
-    const session = await LonerDB.getSession(sessionId);
+    const session = await getSession(sessionId);
     console.log('Loading session into editor:', session);
-    
+
     // Load notes into editor
     if (session.notes) {
       try {
@@ -49,16 +57,12 @@ async function loadSession(sessionId) {
     } else {
       quillEditor.setText('');
     }
-    
-    // Load twist counter
+
+    // Restore twist counter (without re-saving it back to the DB)
     if (session.twistCounter !== undefined) {
-      currentTwistCounter = session.twistCounter;
-      const counterEl = document.getElementById('twist-count');
-      if (counterEl) {
-        counterEl.textContent = currentTwistCounter;
-      }
+      setTwistCounter(session.twistCounter);
     }
-    
+
     console.log('✅ Session loaded into editor:', session.name);
   } catch (error) {
     console.error('Error loading session:', error);
@@ -69,18 +73,18 @@ async function loadSession(sessionId) {
 /**
  * Save current session notes
  */
-async function saveNotes() {
+export async function saveNotes() {
   const state = getState();
 
   if (!state.sessionId) {
     console.warn('No active session');
-    NotificationSystem.error('No active session. Create a campaign first!');
+    showAlert('No active session. Create a campaign first!', 'error');
     return;
   }
 
   if (!quillEditor) {
     console.error('Editor not initialized');
-    NotificationSystem.error('Editor not ready. Please refresh the page.');
+    showAlert('Editor not ready. Please refresh the page.', 'error');
     return;
   }
 
@@ -88,45 +92,42 @@ async function saveNotes() {
     const contents = quillEditor.getContents();
     const json = JSON.stringify(contents);
 
-    await LonerDB.updateSessionNotes(state.sessionId, json);
+    await updateSessionNotes(state.sessionId, json);
 
     const saveStatus = document.getElementById('save-status');
     if (saveStatus) {
-      saveStatus.textContent = `Saved at ${UI.formatTime(new Date())}`;
+      saveStatus.textContent = `Saved at ${formatTime(new Date())}`;
       saveStatus.style.color = 'var(--success)';
     }
 
-    NotificationSystem.success('Notes saved');
+    showAlert('Notes saved', 'success');
     console.log('✅ Notes saved');
   } catch (error) {
     console.error('Error saving notes:', error);
-    NotificationSystem.error('Error saving notes: ' + error.message);
+    showAlert('Error saving notes: ' + error.message, 'error');
   }
 }
 
 /**
  * Auto-save notes every 30 seconds
  */
-function startAutoSave() {
+export function startAutoSave() {
   setInterval(async () => {
     const state = getState();
     if (state.sessionId && quillEditor && quillEditor.getLength() > 1) {
       await saveNotes();
     }
   }, 30000); // 30 seconds
-  
+
   console.log('🔄 Auto-save enabled (every 30s)');
 }
 
 /**
  * Insert text into editor at cursor position
  */
-/**
- * Insert text into editor at cursor position
- */
-function insertIntoEditor(text) {
+export function insertIntoEditor(text) {
   if (!quillEditor) return;
-  
+
   const range = quillEditor.getSelection() || { index: quillEditor.getLength() };
   quillEditor.insertText(range.index, text + '\n');
   quillEditor.setSelection(range.index + text.length + 1);
@@ -135,20 +136,20 @@ function insertIntoEditor(text) {
 /**
  * Insert formatted content into editor
  */
-function insertFormattedContent(content) {
+export function insertFormattedContent(content) {
   if (!quillEditor) return;
-  
+
   const range = quillEditor.getSelection() || { index: quillEditor.getLength() };
-  
+
   // Insert the formatted content
   quillEditor.insertText(range.index, content.text, content.format || {});
-  
+
   // Add a newline
   quillEditor.insertText(range.index + content.text.length, '\n');
-  
+
   // Move cursor to end
   quillEditor.setSelection(range.index + content.text.length + 1);
-  
+
   // Auto-save after insert
   setTimeout(() => saveNotes(), 500);
 }
@@ -156,28 +157,28 @@ function insertFormattedContent(content) {
 /**
  * Insert a styled block (for oracle results, etc.)
  */
-function insertBlock(emoji, title, content, color = null) {
+export function insertBlock(title, content, color = null) {
   if (!quillEditor) return;
-  
+
   const range = quillEditor.getSelection() || { index: quillEditor.getLength() };
   let currentIndex = range.index;
-  
-  // Insert emoji and title (bold)
-  const header = `${emoji} ${title}: `;
+
+  // Insert title (bold)
+  const header = `${title}: `;
   quillEditor.insertText(currentIndex, header, { bold: true, color: color });
   currentIndex += header.length;
-  
+
   // Insert content (normal)
   quillEditor.insertText(currentIndex, content);
   currentIndex += content.length;
-  
+
   // Add newline
   quillEditor.insertText(currentIndex, '\n');
   currentIndex += 1;
-  
+
   // Move cursor to end
   quillEditor.setSelection(currentIndex);
-  
+
   // Auto-save after insert
   setTimeout(() => saveNotes(), 500);
 }
@@ -185,9 +186,9 @@ function insertBlock(emoji, title, content, color = null) {
 /**
  * Insert a divider line
  */
-function insertDivider() {
+export function insertDivider() {
   if (!quillEditor) return;
-  
+
   const range = quillEditor.getSelection() || { index: quillEditor.getLength() };
   quillEditor.insertText(range.index, '\n---\n\n');
   quillEditor.setSelection(range.index + 6);
@@ -196,28 +197,28 @@ function insertDivider() {
 /**
  * Get the editor instance
  */
-function getEditor() {
+export function getEditor() {
   return quillEditor;
 }
 
 /**
  * Export session notes as Markdown
  */
-async function exportNotesAsMarkdown() {
+export async function exportNotesAsMarkdown() {
   try {
-    const state = App.getState();
+    const state = getState();
     if (!state.sessionId) {
-      UI.showAlert('No session loaded', 'error');
+      showAlert('No session loaded', 'error');
       return;
     }
 
-    const session = await LonerDB.getSession(state.sessionId);
+    const session = await getSession(state.sessionId);
     if (!session) {
-      UI.showAlert('Session not found', 'error');
+      showAlert('Session not found', 'error');
       return;
     }
 
-    const campaign = await LonerDB.getCampaign(session.campaignId);
+    const campaign = await getCampaign(session.campaignId);
 
     // Get content from Quill
     const delta = quillEditor.getContents();
@@ -231,32 +232,32 @@ async function exportNotesAsMarkdown() {
     const filename = `${campaign.name.replace(/[^a-z0-9]/gi, '-')}-${session.name.replace(/[^a-z0-9]/gi, '-')}-${new Date().toISOString().split('T')[0]}.md`;
     downloadAsFile(fullMarkdown, filename, 'text/markdown');
 
-    NotificationSystem.show('Session exported as Markdown!', 'success');
+    showAlert('Session exported as Markdown!', 'success');
 
   } catch (error) {
     console.error('Error exporting as Markdown:', error);
-    UI.showAlert('Failed to export as Markdown', 'error');
+    showAlert('Failed to export as Markdown', 'error');
   }
 }
 
 /**
  * Export session notes as HTML
  */
-async function exportNotesAsHTML() {
+export async function exportNotesAsHTML() {
   try {
-    const state = App.getState();
+    const state = getState();
     if (!state.sessionId) {
-      UI.showAlert('No session loaded', 'error');
+      showAlert('No session loaded', 'error');
       return;
     }
 
-    const session = await LonerDB.getSession(state.sessionId);
+    const session = await getSession(state.sessionId);
     if (!session) {
-      UI.showAlert('Session not found', 'error');
+      showAlert('Session not found', 'error');
       return;
     }
 
-    const campaign = await LonerDB.getCampaign(session.campaignId);
+    const campaign = await getCampaign(session.campaignId);
 
     // Get HTML content from Quill
     const html = quillEditor.root.innerHTML;
@@ -295,11 +296,11 @@ async function exportNotesAsHTML() {
     const filename = `${campaign.name.replace(/[^a-z0-9]/gi, '-')}-${session.name.replace(/[^a-z0-9]/gi, '-')}-${new Date().toISOString().split('T')[0]}.html`;
     downloadAsFile(fullHTML, filename, 'text/html');
 
-    NotificationSystem.show('Session exported as HTML!', 'success');
+    showAlert('Session exported as HTML!', 'success');
 
   } catch (error) {
     console.error('Error exporting as HTML:', error);
-    UI.showAlert('Failed to export as HTML', 'error');
+    showAlert('Failed to export as HTML', 'error');
   }
 }
 
@@ -402,18 +403,3 @@ function downloadAsFile(content, filename, mimeType) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-
-// Export functions
-window.Editor = {
-  initializeEditor,
-  loadSession,
-  saveNotes,
-  startAutoSave,
-  insertIntoEditor,
-  insertFormattedContent,
-  insertBlock,
-  insertDivider,
-  getEditor,
-  exportNotesAsMarkdown,
-  exportNotesAsHTML
-};

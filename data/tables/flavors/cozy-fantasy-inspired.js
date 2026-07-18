@@ -1,4 +1,4 @@
-window.CozyFantasyInspired = {
+export default {
     supplement: {
       id: 'cozy-fantasy-inspired',
       name: 'Cozy Fantasy Inspiration',

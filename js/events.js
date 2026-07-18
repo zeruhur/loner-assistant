@@ -1,72 +1,76 @@
 /**
  * LONER ASSISTANT v2.0 - Event Log
- * 
+ *
  * Track story moments automatically and manually
  */
+
+import * as LonerDB from './db/database.js';
+import * as UI from './ui.js';
+import { getState } from './state.js';
+import { openFormModal } from './crud/modal-form.js';
 
 /**
  * Event type configurations
  */
 const EVENT_TYPES = {
-  oracle: { 
-    label: 'Oracle Roll', 
-    icon: '🎲', 
-    color: 'var(--primary)' 
+  oracle: {
+    label: 'Oracle Roll',
+    icon: '🎲',
+    color: 'var(--primary)'
   },
-  twist: { 
-    label: 'Twist', 
-    icon: '⚡', 
-    color: 'var(--warning)' 
+  twist: {
+    label: 'Twist',
+    icon: '⚡',
+    color: 'var(--warning)'
   },
-  conflict: { 
-    label: 'Conflict', 
-    icon: '⚔️', 
-    color: 'var(--danger)' 
+  conflict: {
+    label: 'Conflict',
+    icon: '⚔️',
+    color: 'var(--danger)'
   },
-  scene: { 
-    label: 'Scene', 
-    icon: '🎬', 
-    color: 'var(--info)' 
+  scene: {
+    label: 'Scene',
+    icon: '🎬',
+    color: 'var(--info)'
   },
-  npc: { 
-    label: 'NPC Encounter', 
-    icon: '👤', 
-    color: 'var(--success)' 
+  npc: {
+    label: 'NPC Encounter',
+    icon: '👤',
+    color: 'var(--success)'
   },
-  location: { 
-    label: 'Location', 
-    icon: '📍', 
-    color: 'var(--info)' 
+  location: {
+    label: 'Location',
+    icon: '📍',
+    color: 'var(--info)'
   },
-  thread: { 
-    label: 'Thread Update', 
-    icon: '🧵', 
-    color: 'var(--primary)' 
+  thread: {
+    label: 'Thread Update',
+    icon: '🧵',
+    color: 'var(--primary)'
   },
-  revelation: { 
-    label: 'Revelation', 
-    icon: '💡', 
-    color: 'var(--warning)' 
+  revelation: {
+    label: 'Revelation',
+    icon: '💡',
+    color: 'var(--warning)'
   },
-  custom: { 
-    label: 'Custom Event', 
-    icon: '📝', 
-    color: 'var(--text-muted)' 
+  custom: {
+    label: 'Custom Event',
+    icon: '📝',
+    color: 'var(--text-muted)'
   }
 };
 
 /**
  * Log an event (called by other systems)
  */
-
-async function logEvent(type, description, metadata = {}) {
+export async function logEvent(type, description, metadata = {}) {
   const state = getState();
-  
+
   if (!state.campaignId || !state.sessionId) {
     console.warn('Cannot log event: no active campaign/session');
     return null;
   }
-  
+
   try {
     const eventId = await LonerDB.logEvent(
       state.campaignId,
@@ -75,20 +79,20 @@ async function logEvent(type, description, metadata = {}) {
       description,
       metadata
     );
-    
+
     console.log(`📜 Event logged: ${type} - ${description}`);
-    
+
     // Refresh event panel if visible
     const panel = document.getElementById('event-panel-container');
     if (panel) {
       await showEventPanel();
     }
-    
+
     // Refresh timeline if visible
     if (document.getElementById('view-events')?.classList.contains('active')) {
       await loadEventTimeline();
     }
-    
+
     return eventId;
   } catch (error) {
     console.error('Error logging event:', error);
@@ -99,7 +103,7 @@ async function logEvent(type, description, metadata = {}) {
 /**
  * Show event panel in sidebar (recent events)
  */
-async function showEventPanel() {
+export async function showEventPanel() {
   const state = getState();
   if (!state.sessionId) {
     document.getElementById('events-quick-list').innerHTML = '<p class="text-muted">No session active</p>';
@@ -125,12 +129,12 @@ async function showEventPanel() {
 /**
  * Show new event form
  */
-function showNewEventForm() {
+export function showNewEventForm() {
   const typeOptions = Object.entries(EVENT_TYPES)
     .map(([key, config]) => `
       <option value="${key}">${config.icon} ${config.label}</option>
     `).join('');
-  
+
   const formHTML = `
     <form id="new-event-form">
       <div class="form-group">
@@ -149,24 +153,14 @@ function showNewEventForm() {
       </div>
     </form>
   `;
-  
-  UI.showModal('Log Event', formHTML);
-  
-  setTimeout(() => {
-    const form = document.getElementById('new-event-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await createNewEvent();
-      });
-    }
-  }, 100);
+
+  openFormModal('Log Event', 'new-event-form', formHTML, () => createNewEvent());
 }
 
 /**
  * Create new event manually
  */
-async function createNewEvent() {
+export async function createNewEvent() {
   const descriptionInput = document.getElementById('event-description');
 
   if (!descriptionInput || !descriptionInput.value.trim()) {
@@ -210,17 +204,17 @@ async function createNewEvent() {
  */
 function groupEventsByTime(events) {
   const grouped = {};
-  
+
   events.forEach(event => {
     const date = new Date(event.timestamp);
     const timeLabel = UI.formatDate(date);
-    
+
     if (!grouped[timeLabel]) {
       grouped[timeLabel] = [];
     }
     grouped[timeLabel].push(event);
   });
-  
+
   return grouped;
 }
 
@@ -229,7 +223,7 @@ function groupEventsByTime(events) {
  */
 function renderEventCard(event) {
   const config = EVENT_TYPES[event.type] || EVENT_TYPES.custom;
-  
+
   return `
     <div class="card" style="border-left: 4px solid ${config.color};">
       <div style="display: flex; align-items: start; gap: 1rem;">
@@ -269,7 +263,7 @@ function renderEventCard(event) {
  */
 function renderMetadata(metadata) {
   const parts = [];
-  
+
   if (metadata.result) {
     parts.push(`Result: <strong>${metadata.result}</strong>`);
   }
@@ -285,14 +279,14 @@ function renderMetadata(metadata) {
   if (metadata.harmTaken) {
     parts.push(`Harm: <strong>${metadata.harmTaken}</strong>`);
   }
-  
+
   return parts.join(' • ');
 }
 
 /**
  * Delete event with confirmation
  */
-async function deleteEventConfirm(eventId) {
+export async function deleteEventConfirm(eventId) {
   if (UI.confirmDialog('Delete this event? This cannot be undone.')) {
     await LonerDB.db.events.delete(eventId);
     UI.showAlert('Event deleted', 'success');
@@ -304,36 +298,36 @@ async function deleteEventConfirm(eventId) {
 /**
  * Export session recap
  */
-async function exportSessionRecap() {
+export async function exportSessionRecap() {
   const state = getState();
-  
+
   if (!state.sessionId) {
     UI.showAlert('No active session', 'error');
     return;
   }
-  
+
   const session = await LonerDB.getSession(state.sessionId);
   const events = await LonerDB.getEventsForSession(state.sessionId);
   const campaign = await LonerDB.getCampaign(state.campaignId);
-  
+
   // Build markdown recap
   let markdown = `# ${campaign.name}\n`;
   markdown += `## ${session.name}\n`;
   markdown += `Date: ${UI.formatDate(session.date)}\n\n`;
   markdown += `---\n\n`;
-  
+
   if (events.length === 0) {
     markdown += `*No events logged for this session.*\n`;
   } else {
     markdown += `## Timeline\n\n`;
-    
+
     events.forEach(event => {
       const config = EVENT_TYPES[event.type] || EVENT_TYPES.custom;
       markdown += `**${UI.formatTime(event.timestamp)}** - ${config.icon} ${config.label}\n`;
       markdown += `${event.description}\n\n`;
     });
   }
-  
+
   // Download as file
   const blob = new Blob([markdown], { type: 'text/markdown' });
   const url = URL.createObjectURL(blob);
@@ -344,14 +338,14 @@ async function exportSessionRecap() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  
+
   UI.showAlert('Session recap exported!', 'success');
 }
 
 /**
  * Load and display full event timeline
  */
-async function loadEventTimeline() {
+export async function loadEventTimeline() {
   const state = getState();
 
   if (!state.sessionId) {
@@ -371,13 +365,13 @@ async function loadEventTimeline() {
     container.innerHTML = '<p class="text-muted text-center">No events yet. Events will be logged automatically as you play.</p>';
     return;
   }
-  
+
   // Group events by time period
   const grouped = groupEventsByTime(events);
-  
+
   // Render timeline
   let html = '';
-  
+
   for (const [timeLabel, timeEvents] of Object.entries(grouped)) {
     html += `
       <div class="timeline-section">
@@ -388,16 +382,16 @@ async function loadEventTimeline() {
       </div>
     `;
   }
-  
+
   container.innerHTML = html;
 }
 
 /**
  * Show quick events in Play Panel
  */
-async function showQuickEvents() {
+export async function showQuickEvents() {
   const state = getState();
-  
+
   if (!state.sessionId) {
     const container = document.getElementById('quick-events');
     if (container) {
@@ -405,20 +399,20 @@ async function showQuickEvents() {
     }
     return;
   }
-  
+
   const events = await LonerDB.getEventsForSession(state.sessionId);
-  
+
   // Get last 3 events for quick view
   const recentEvents = events.slice(-3).reverse();
-  
+
   const container = document.getElementById('quick-events');
   if (!container) return;
-  
+
   if (recentEvents.length === 0) {
     container.innerHTML = '<p class="text-muted" style="font-size: 0.85rem;">No events yet</p>';
     return;
   }
-  
+
   container.innerHTML = recentEvents.map(event => {
     const config = EVENT_TYPES[event.type] || EVENT_TYPES.custom;
     return `
@@ -439,8 +433,7 @@ async function showQuickEvents() {
   }).join('');
 }
 
-// Export functions
-window.EventManager = {
+export const EventManager = {
   logEvent,
   showEventPanel,
   showNewEventForm,

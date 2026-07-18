@@ -1,16 +1,21 @@
 /**
  * LONER ASSISTANT v2.0 - Character Management
- * 
+ *
  * All character-related functions
  */
+
+import * as LonerDB from './db/database.js';
+import * as UI from './ui.js';
+import { getState, setCurrentCharacter, clearCurrentCharacter } from './state.js';
+import { openFormModal, confirmAndDelete } from './crud/modal-form.js';
 
 /**
  * Display active character in sidebar
  */
-function displayActiveCharacter(character) {
+export function displayActiveCharacter(character) {
   const infoDiv = document.getElementById('active-character-info');
   if (!infoDiv) return;
-  
+
   infoDiv.innerHTML = `
     <h4>${UI.escapeHtml(character.name)}</h4>
     <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
@@ -40,7 +45,7 @@ function displayActiveCharacter(character) {
 /**
  * Show new character form
  */
-function showNewCharacterForm() {
+export function showNewCharacterForm() {
   const formHTML = `
     <form id="new-character-form">
       <div class="form-group">
@@ -77,42 +82,31 @@ function showNewCharacterForm() {
       </div>
     </form>
   `;
-  
-  UI.showModal('New Character', formHTML);
-  
-  // Attach event listener to form after it's in the DOM
-  setTimeout(() => {
-    const form = document.getElementById('new-character-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await createNewCharacter();
-      });
-    }
-  }, 100);
+
+  openFormModal('New Character', 'new-character-form', formHTML, () => createNewCharacter());
 }
 
 /**
  * Create a new character
  */
-async function createNewCharacter() {
+export async function createNewCharacter() {
   const nameInput = document.getElementById('char-name');
-  
+
   if (!nameInput || !nameInput.value.trim()) {
     UI.showAlert('Please enter a character name', 'error');
     return;
   }
-  
+
   try {
     const state = getState();
 
     if (!state.campaignId) {
       UI.showAlert('Please create or select a campaign first!', 'error');
       UI.closeModal();
-      showView('campaigns');
+      UI.showView('campaigns');
       return;
     }
-    
+
     const name = nameInput.value.trim();
     const concept = document.getElementById('char-concept').value.trim();
     const skills = document.getElementById('char-skills').value
@@ -126,7 +120,7 @@ async function createNewCharacter() {
       .filter(s => s);
     const goal = document.getElementById('char-goal').value.trim();
     const nemesis = document.getElementById('char-nemesis').value.trim();
-    
+
     const charId = await LonerDB.createCharacter({
       name,
       concept,
@@ -137,16 +131,16 @@ async function createNewCharacter() {
       nemesis,
       campaignId: state.campaignId
     });
-    
+
     console.log('Character created with ID:', charId);
-    
+
     UI.closeModal();
     UI.showAlert('Character created!', 'success');
-    
+
     // Reload characters list
     await loadCharactersList();
-    showView('characters');
-    
+    UI.showView('characters');
+
   } catch (error) {
     console.error('Error creating character:', error);
     UI.showAlert('Error creating character: ' + error.message, 'error');
@@ -156,17 +150,17 @@ async function createNewCharacter() {
 /**
  * Load and display characters list
  */
-async function loadCharactersList() {
+export async function loadCharactersList() {
   const characters = await LonerDB.getCharacters();
-  
+
   const container = document.getElementById('characters-list');
   if (!container) return;
-  
+
   if (characters.length === 0) {
     container.innerHTML = '<p class="text-muted text-center">No characters yet. Create one!</p>';
     return;
   }
-  
+
   container.innerHTML = characters.map(character => `
     <div class="card character-card">
       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
@@ -209,9 +203,9 @@ async function loadCharactersList() {
 /**
  * View full character sheet in modal
  */
-async function viewCharacterSheet(characterId) {
+export async function viewCharacterSheet(characterId) {
   const character = await LonerDB.getCharacter(characterId);
-  
+
   const sheetHTML = `
     <div class="character-sheet">
       <div class="form-group">
@@ -248,16 +242,16 @@ async function viewCharacterSheet(characterId) {
       </div>
     </div>
   `;
-  
+
   UI.showModal(character.name, sheetHTML);
 }
 
 /**
  * Edit character
  */
-async function editCharacter(characterId) {
+export async function editCharacter(characterId) {
   const character = await LonerDB.getCharacter(characterId);
-  
+
   const formHTML = `
     <form id="edit-character-form">
       <div class="form-group">
@@ -298,25 +292,14 @@ async function editCharacter(characterId) {
       </div>
     </form>
   `;
-  
-  UI.showModal('Edit Character', formHTML);
-  
-  // Attach event listener to form after it's in the DOM
-  setTimeout(() => {
-    const form = document.getElementById('edit-character-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await saveCharacterEdit(characterId);
-      });
-    }
-  }, 100);
+
+  openFormModal('Edit Character', 'edit-character-form', formHTML, () => saveCharacterEdit(characterId));
 }
 
 /**
  * Save character edits
  */
-async function saveCharacterEdit(characterId) {
+export async function saveCharacterEdit(characterId) {
   try {
     const name = document.getElementById('edit-char-name').value.trim();
     const concept = document.getElementById('edit-char-concept').value.trim();
@@ -332,7 +315,7 @@ async function saveCharacterEdit(characterId) {
     const goal = document.getElementById('edit-char-goal').value.trim();
     const nemesis = document.getElementById('edit-char-nemesis').value.trim();
     const luck = parseInt(document.getElementById('edit-char-luck').value);
-    
+
     await LonerDB.updateCharacter(characterId, {
       name,
       concept,
@@ -343,19 +326,19 @@ async function saveCharacterEdit(characterId) {
       nemesis,
       luck
     });
-    
+
     UI.closeModal();
     UI.showAlert('Character updated!', 'success');
-    
+
     // Reload list
     await loadCharactersList();
-    
+
     // If this was the active character, update display
     const state = getState();
     if (characterId === state.characterId) {
       await selectCharacter(characterId);
     }
-    
+
   } catch (error) {
     console.error('Error saving character:', error);
     UI.showAlert('Error saving character: ' + error.message, 'error');
@@ -365,19 +348,19 @@ async function saveCharacterEdit(characterId) {
 /**
  * Select an active character
  */
-async function selectCharacter(characterId) {
+export async function selectCharacter(characterId) {
   setCurrentCharacter(characterId);
-  
+
   const character = await LonerDB.getCharacter(characterId);
   displayActiveCharacter(character);
-  
+
   UI.showAlert('Character selected!', 'success');
 }
 
 /**
  * Set character as active
  */
-async function setAsActiveCharacter(characterId) {
+export async function setAsActiveCharacter(characterId) {
   await LonerDB.setActiveCharacter(characterId);
   await selectCharacter(characterId);
   await loadCharactersList();
@@ -387,25 +370,24 @@ async function setAsActiveCharacter(characterId) {
 /**
  * Delete character with confirmation
  */
-async function deleteCharacterConfirm(characterId) {
+export async function deleteCharacterConfirm(characterId) {
   const character = await LonerDB.getCharacter(characterId);
-  
-  if (UI.confirmDialog(`Delete "${character.name}"? This cannot be undone.`)) {
+
+  await confirmAndDelete(`Delete "${character.name}"? This cannot be undone.`, async () => {
     await LonerDB.deleteCharacter(characterId);
     UI.showAlert('Character deleted', 'success');
     await loadCharactersList();
-    
+
     // If this was the active character, clear it
     const state = getState();
     if (characterId === state.characterId) {
       clearCurrentCharacter();
       document.getElementById('active-character-info').innerHTML = '<p class="text-muted">No character selected</p>';
     }
-  }
+  });
 }
 
-// Export functions
-window.CharacterManager = {
+export const CharacterManager = {
   displayActiveCharacter,
   showNewCharacterForm,
   createNewCharacter,

@@ -3,7 +3,7 @@
  * D66 random tables
  */
 
-window.CozyFantasyAdventureTables = {
+export default {
   supplement: {
     id: 'cozy-fantasy-adventure',
     name: 'Cozy Fantasy Adventure Tables',

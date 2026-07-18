@@ -5,10 +5,14 @@
  * No fancy frameworks - just plain JavaScript!
  */
 
+import { showAlert } from './toast.js';
+
+export { showAlert };
+
 /**
  * Toggle mobile navigation menu
  */
-function toggleNavMenu() {
+export function toggleNavMenu() {
   const navMenu = document.getElementById('nav-menu');
   const hamburgerBtn = document.querySelector('.hamburger-menu');
 
@@ -23,7 +27,7 @@ function toggleNavMenu() {
 /**
  * Close mobile navigation menu when a nav button is clicked
  */
-function closeNavMenu() {
+export function closeNavMenu() {
   const navMenu = document.getElementById('nav-menu');
   const hamburgerBtn = document.querySelector('.hamburger-menu');
 
@@ -38,10 +42,7 @@ function closeNavMenu() {
 /**
  * Show a specific view and hide others
  */
-/**
- * Show a specific view
- */
-function showView(viewName) {
+export function showView(viewName) {
   // Close mobile nav menu when view is selected
   closeNavMenu();
 
@@ -64,42 +65,38 @@ function showView(viewName) {
       btn.classList.remove('active');
     }
   });
-  
-  // Load view-specific content
-  switch(viewName) {
+
+  // Sync URL hash for deep-linking / back-button support
+  if (location.hash !== `#${viewName}`) {
+    history.replaceState(null, '', `#${viewName}`);
+  }
+
+  // Load view-specific content. These loader functions live in their
+  // own entity modules; they're reached via the curated window-exposed
+  // set (see main.js) rather than importing every entity module here,
+  // to avoid a circular-import tangle between ui.js and the entity modules.
+  switch (viewName) {
     case 'campaigns':
-      if (typeof loadCampaignsList === 'function') {
-        loadCampaignsList();
-      }
+      if (typeof window.loadCampaignsList === 'function') window.loadCampaignsList();
       break;
     case 'characters':
-      if (typeof loadCharactersList === 'function') {
-        loadCharactersList();
-      }
+      if (typeof window.loadCharactersList === 'function') window.loadCharactersList();
       break;
     case 'npcs':
-      if (typeof loadNPCsList === 'function') {
-        loadNPCsList();
-      }
+      if (typeof window.loadNPCsList === 'function') window.loadNPCsList();
       break;
     case 'locations':
-      if (typeof loadLocationsList === 'function') {
-        loadLocationsList();
-      }
+      if (typeof window.loadLocationsList === 'function') window.loadLocationsList();
       break;
     case 'threads':
-      if (typeof loadThreadsList === 'function') {
-        loadThreadsList();
-      }
+      if (typeof window.loadThreadsList === 'function') window.loadThreadsList();
       break;
     case 'events':
-      if (typeof loadEventTimeline === 'function') {
-        loadEventTimeline();
-      }
+      if (typeof window.loadEventTimeline === 'function') window.loadEventTimeline();
       break;
-    case 'tools':  // ← ADD THIS CASE
-      if (typeof TableManager !== 'undefined' && TableManager.render) {
-        TableManager.render();
+    case 'tools':
+      if (window.TableManager && window.TableManager.render) {
+        window.TableManager.render();
       }
       break;
   }
@@ -108,136 +105,55 @@ function showView(viewName) {
 /**
  * Show a modal dialog
  */
-function showModal(title, content) {
+export function showModal(title, content) {
   const modal = document.getElementById('modal');
   const modalTitle = document.getElementById('modal-title');
   const modalBody = document.getElementById('modal-body');
-  
+
   modalTitle.textContent = title;
   modalBody.innerHTML = content;
-  
+
   modal.classList.remove('hidden');
 }
 
 /**
  * Close the modal
  */
-function closeModal() {
+export function closeModal() {
   const modal = document.getElementById('modal');
   modal.classList.add('hidden');
 }
 
 /**
- * Show a simple alert message
- */
-function showAlert(message, type = 'info') {
-  try {
-    // Create alert element
-    const alert = document.createElement('div');
-    alert.className = `alert alert-${type}`;
-    alert.textContent = message;
-    
-    let bgColor;
-    switch(type) {
-      case 'success':
-        bgColor = '#10b981';
-        break;
-      case 'error':
-        bgColor = '#ef4444';
-        break;
-      case 'warning':
-        bgColor = '#f59e0b';
-        break;
-      default:
-        bgColor = '#4f46e5';
-    }
-    
-    alert.style.cssText = `
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      padding: 1rem 1.5rem;
-      background: ${bgColor};
-      color: white;
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      z-index: 9999;
-      animation: slideIn 0.3s ease;
-      max-width: 400px;
-      word-wrap: break-word;
-    `;
-    
-    document.body.appendChild(alert);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-      alert.style.animation = 'slideOut 0.3s ease';
-      setTimeout(() => alert.remove(), 300);
-    }, 3000);
-  } catch (error) {
-    console.error('Error showing alert:', error);
-    // Fallback to console if DOM isn't ready
-    console.log(`[${type.toUpperCase()}] ${message}`);
-  }
-}
-
-// Add animation styles
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes slideIn {
-    from {
-      transform: translateX(400px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-  
-  @keyframes slideOut {
-    from {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateX(400px);
-      opacity: 0;
-    }
-  }
-`;
-document.head.appendChild(style);
-
-/**
  * Confirm dialog
  */
-function confirmDialog(message) {
+export function confirmDialog(message) {
   return confirm(message);
 }
 
 /**
  * Format a date nicely
  */
-function formatDate(date) {
+export function formatDate(date) {
   if (!(date instanceof Date)) {
     date = new Date(date);
   }
-  
+
   const now = new Date();
   const diffMs = now - date;
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
-  
+
   // Show relative time for recent dates
   if (diffMins < 1) return 'Just now';
   if (diffMins < 60) return `${diffMins} min ago`;
   if (diffHours < 24) return `${diffHours} hours ago`;
   if (diffDays < 7) return `${diffDays} days ago`;
-  
+
   // Otherwise show actual date
-  return date.toLocaleDateString('en-US', { 
-    month: 'short', 
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
     day: 'numeric',
     year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
   });
@@ -246,7 +162,7 @@ function formatDate(date) {
 /**
  * Format time from Date object
  */
-function formatTime(date) {  // ADD 'function' keyword here
+export function formatTime(date) {
   if (!date) return 'Unknown';
   const d = new Date(date);
   return d.toLocaleTimeString('en-US', {
@@ -258,7 +174,7 @@ function formatTime(date) {  // ADD 'function' keyword here
 /**
  * Escape HTML to prevent XSS
  */
-function escapeHtml(text) {
+export function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
@@ -267,7 +183,7 @@ function escapeHtml(text) {
 /**
  * Set up navigation button handlers
  */
-function initializeNavigation() {
+export function initializeNavigation() {
   const navButtons = document.querySelectorAll('.nav-btn');
   navButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -282,7 +198,7 @@ function initializeNavigation() {
 /**
  * Toggle element visibility
  */
-function toggleElement(elementId) {
+export function toggleElement(elementId) {
   const element = document.getElementById(elementId);
   if (element) {
     element.classList.toggle('hidden');
@@ -292,7 +208,7 @@ function toggleElement(elementId) {
 /**
  * Update element content
  */
-function updateElement(elementId, content) {
+export function updateElement(elementId, content) {
   const element = document.getElementById(elementId);
   if (element) {
     element.innerHTML = content;
@@ -302,24 +218,25 @@ function updateElement(elementId, content) {
 /**
  * Render a list of items as cards
  */
-function renderCardList(containerId, items, renderFunction) {
+export function renderCardList(containerId, items, renderFunction) {
   const container = document.getElementById(containerId);
   if (!container) return;
-  
+
   if (items.length === 0) {
     container.innerHTML = '<p class="text-muted text-center">No items yet</p>';
     return;
   }
-  
+
   container.innerHTML = items.map(item => renderFunction(item)).join('');
 }
 
 /**
- * Create a card HTML
+ * Create a card HTML. `onClick` is a data-action value consumed by the
+ * delegated click listener set up in main.js, not an inline onclick.
  */
-function createCard(title, description, footer, onClick) {
+export function createCard(title, description, footer, action, id) {
   return `
-    <div class="card" onclick="${onClick}">
+    <div class="card" data-action="${action}" data-id="${id ?? ''}">
       <h3>${escapeHtml(title)}</h3>
       <p>${escapeHtml(description)}</p>
       ${footer ? `<div class="card-footer">${footer}</div>` : ''}
@@ -330,7 +247,7 @@ function createCard(title, description, footer, onClick) {
 /**
  * Show loading indicator
  */
-function showLoading(message = 'Loading...') {
+export function showLoading(message = 'Loading...') {
   const loading = document.createElement('div');
   loading.id = 'loading-indicator';
   loading.style.cssText = `
@@ -355,7 +272,7 @@ function showLoading(message = 'Loading...') {
 /**
  * Hide loading indicator
  */
-function hideLoading() {
+export function hideLoading() {
   const loading = document.getElementById('loading-indicator');
   if (loading) {
     loading.remove();
@@ -370,7 +287,7 @@ function hideLoading() {
  * @param {string} message - Description message
  * @param {string} actionHTML - Optional HTML for action button
  */
-function showEmptyState(containerId, icon, title, message, actionHTML = '') {
+export function showEmptyState(containerId, icon, title, message, actionHTML = '') {
   const container = document.getElementById(containerId);
   if (!container) return;
 
@@ -388,7 +305,7 @@ function showEmptyState(containerId, icon, title, message, actionHTML = '') {
  * Toggle panel collapse state
  * @param {string} panelId - The panel ID to toggle
  */
-function togglePanel(panelId) {
+export function togglePanel(panelId) {
   const panel = document.querySelector(`[data-panel-id="${panelId}"]`);
   if (!panel) return;
 
@@ -402,18 +319,18 @@ function togglePanel(panelId) {
 
   // Load content when expanding certain panels
   if (wasCollapsed && !isCollapsed) {
-    switch(panelId) {
+    switch (panelId) {
       case 'npcs':
-        if (typeof showNPCPanel === 'function') showNPCPanel();
+        if (typeof window.showNPCPanel === 'function') window.showNPCPanel();
         break;
       case 'locations':
-        if (typeof showLocationPanel === 'function') showLocationPanel();
+        if (typeof window.showLocationPanel === 'function') window.showLocationPanel();
         break;
       case 'threads':
-        if (typeof showThreadPanel === 'function') showThreadPanel();
+        if (typeof window.showThreadPanel === 'function') window.showThreadPanel();
         break;
       case 'events':
-        if (typeof showEventPanel === 'function') showEventPanel();
+        if (typeof window.showEventPanel === 'function') window.showEventPanel();
         break;
     }
   }
@@ -424,7 +341,7 @@ function togglePanel(panelId) {
  * @param {string} panelId - The panel ID
  * @param {boolean} isCollapsed - Whether panel is collapsed
  */
-function savePanelState(panelId, isCollapsed) {
+export function savePanelState(panelId, isCollapsed) {
   try {
     const panelStates = JSON.parse(localStorage.getItem('panelStates') || '{}');
     panelStates[panelId] = isCollapsed;
@@ -437,7 +354,7 @@ function savePanelState(panelId, isCollapsed) {
 /**
  * Restore panel collapsed states from localStorage
  */
-function restorePanelStates() {
+export function restorePanelStates() {
   try {
     const panelStates = JSON.parse(localStorage.getItem('panelStates') || '{}');
 
@@ -456,52 +373,31 @@ function restorePanelStates() {
   }
 }
 
-// Keyboard shortcuts
+// Ctrl/Cmd keyboard shortcuts (distinct scheme from the Alt+key
+// ShortcutsSystem in shortcuts.js - both are preserved as-is).
 document.addEventListener('keydown', (e) => {
   // Ctrl/Cmd + O = Open Oracle
   if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
     e.preventDefault();
-    if (typeof rollOracle === 'function') {
-      rollOracle();
+    if (typeof window.rollOracle === 'function') {
+      window.rollOracle();
     }
   }
-  
+
   // Ctrl/Cmd + S = Save Notes
   if ((e.ctrlKey || e.metaKey) && e.key === 's') {
     e.preventDefault();
-    if (typeof saveNotes === 'function') {
-      saveNotes();
-      UI.showAlert('Notes saved!', 'success');
+    if (typeof window.saveNotes === 'function') {
+      window.saveNotes();
+      showAlert('Notes saved!', 'success');
     }
   }
-  
+
   // Ctrl/Cmd + N = New Event
   if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
     e.preventDefault();
-    if (typeof showNewEventForm === 'function') {
-      showNewEventForm();
+    if (typeof window.showNewEventForm === 'function') {
+      window.showNewEventForm();
     }
   }
 });
-
-// Make functions available globally
-window.UI = {
-  showView,
-  showModal,
-  closeModal,
-  showAlert,
-  confirmDialog,
-  formatDate,
-  formatTime,
-  escapeHtml,
-  initializeNavigation,
-  toggleElement,
-  updateElement,
-  renderCardList,
-  createCard,
-  showLoading,
-  hideLoading,
-  togglePanel,
-  savePanelState,
-  restorePanelStates
-};

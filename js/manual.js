@@ -4,7 +4,7 @@
  * Display the user manual in-app
  */
 
-const ManualSystem = {
+export const ManualSystem = {
 
   /**
    * Show the user manual in a modal
@@ -23,7 +23,7 @@ const ManualSystem = {
         ${manualHTML}
       </div>
       <div style="margin-top: var(--space-lg); text-align: center;">
-        <button class="btn btn-primary" onclick="UI.closeModal()">Close</button>
+        <button class="btn btn-primary" onclick="closeModal()">Close</button>
       </div>
     `;
 
@@ -177,6 +177,3 @@ const ManualSystem = {
     `;
   }
 };
-
-// Make available globally
-window.ManualSystem = ManualSystem;

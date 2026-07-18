@@ -1,29 +1,23 @@
 /**
  * LONER ASSISTANT v2.0 - Roll Tables System
- * 
+ *
  * Universal table roller supporting multiple formats:
  * - 1d6, 2d6 (standard Loner tables)
  * - 1d66 (tens digit from first die, ones from second)
  * - Random selection (for flat lists)
  */
 
-const TableSystem = {
+import { supplements as registrySupplements } from '../data/table-registry.js';
+import { getState } from './state.js';
+import { db, getCustomTables, setUserPreference } from './db/database.js';
+import { rollD6 } from './oracle.js';
+import { showAlert } from './toast.js';
+import * as Editor from './editor.js';
+
+export const TableSystem = {
   // Store loaded tables
   registry: {},
   activeSupplements: [],
-  
-  /**
-   * Load a script dynamically
-   */
-  async loadScript(filePath) {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = filePath;
-      script.onload = resolve;
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
-  },
 
   /**
    * Initialize the table system
@@ -32,36 +26,26 @@ const TableSystem = {
     console.log('🎲 Initializing Table System...');
 
     // Load and register all enabled supplements from the central registry
-    if (typeof TableRegistry !== 'undefined') {
-      for (const suppMeta of TableRegistry.supplements) {
-        if (suppMeta.enabled) {
-          try {
-            // Load the script if not already loaded
-            if (typeof window[this.getGlobalNameFromId(suppMeta.id)] === 'undefined') {
-              console.log(`📦 Loading: ${suppMeta.name} from ${suppMeta.file}`);
-              await this.loadScript(suppMeta.file);
-            }
-
-            // Now try to register it
-            const supplement = this.findSupplementInWindow(suppMeta.id);
-            if (supplement) {
-              this.registerSupplement(supplement);
-              console.log(`✅ Registered: ${suppMeta.name}`);
-            } else {
-              console.warn(`⚠️ ${suppMeta.name} loaded but not valid (check file: ${suppMeta.file})`);
-            }
-          } catch (error) {
-            console.warn(`⚠️ Failed to load ${suppMeta.name}:`, error);
-          }
+    for (const suppMeta of registrySupplements) {
+      if (!suppMeta.enabled) continue;
+      try {
+        const url = new URL('../data/' + suppMeta.file, import.meta.url);
+        const module = await import(/* @vite-ignore */ url.href);
+        const supplement = module.default;
+        if (supplement && supplement.supplement && supplement.tables) {
+          this.registerSupplement(supplement);
+          console.log(`✅ Registered: ${suppMeta.name}`);
+        } else {
+          console.warn(`⚠️ ${suppMeta.name} loaded but not valid (check file: ${suppMeta.file})`);
         }
+      } catch (error) {
+        console.warn(`⚠️ Failed to load ${suppMeta.name}:`, error);
       }
-    } else {
-      console.warn('⚠️ TableRegistry not found');
     }
 
     // Load custom tables from database
     try {
-      const customTables = await LonerDB.getCustomTables();
+      const customTables = await getCustomTables();
       customTables.forEach(table => this.registerCustomTable(table));
       if (customTables.length > 0) {
         console.log(`✅ Loaded ${customTables.length} custom table(s)`);
@@ -84,69 +68,6 @@ const TableSystem = {
   },
 
   /**
-   * Find a supplement in the global window by ID
-   * First tries naming convention, then scans if needed
-   */
-  findSupplementInWindow(id) {
-    // Try naming convention first (faster)
-    // e.g., 'core-loner' → 'CoreLonerTables'
-    const conventionalName = id
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join('') + 'Tables';
-
-    if (typeof window[conventionalName] !== 'undefined') {
-      const obj = window[conventionalName];
-      if (obj && obj.supplement && obj.supplement.id === id && obj.tables) {
-        return obj;
-      }
-    }
-
-    // Fallback: scan window for matching supplement.id (slower but flexible)
-    try {
-      for (const key in window) {
-        try {
-          const obj = window[key];
-          if (obj && typeof obj === 'object' && obj.supplement && obj.supplement.id === id && obj.tables) {
-            return obj;
-          }
-        } catch (e) {
-          // Skip properties that throw errors on access
-        }
-      }
-    } catch (e) {
-      console.warn('Error scanning window for supplements:', e);
-    }
-
-    return null;
-  },
-
-  /**
-   * Convert supplement ID to global variable name
-   * e.g., 'core-loner' → 'CoreLonerTables'
-   */
-  getGlobalNameFromId(id) {
-    return id
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join('') + 'Tables';
-  },
-
-  /**
-   * Load the table registry
-   */
-  async loadRegistry() {
-    // In production, this would load from table-registry.js
-    // For now, we'll manually register known tables
-    this.registerSupplement(CoreLonerTables);
-    this.registerSupplement(CoreInspiredTables);
-    
-    // Load custom tables from database
-    const customTables = await LonerDB.getCustomTables();
-    customTables.forEach(table => this.registerCustomTable(table));
-  },
-  
-  /**
    * Register a supplement's tables
    */
   registerSupplement(supplement) {
@@ -154,7 +75,7 @@ const TableSystem = {
     this.registry[id] = supplement;
     console.log(`Registered supplement: ${supplement.supplement.name}`);
   },
-  
+
   /**
    * Register a custom user table
    */
@@ -178,7 +99,7 @@ const TableSystem = {
 
     this.registry['custom'].tables[registeredTable.id] = registeredTable;
   },
-  
+
   /**
    * Roll on a specific table
    */
@@ -187,12 +108,12 @@ const TableSystem = {
     if (!supplement) {
       throw new Error(`Supplement not found: ${supplementId}`);
     }
-    
+
     const table = supplement.tables[tableId];
     if (!table) {
       throw new Error(`Table not found: ${tableId}`);
     }
-    
+
     // Roll based on table type
     let result;
     switch (table.rollType) {
@@ -214,7 +135,7 @@ const TableSystem = {
       default:
         throw new Error(`Unknown roll type: ${table.rollType}`);
     }
-    
+
     return {
       table: table.name,
       supplement: supplement.supplement.name,
@@ -225,7 +146,7 @@ const TableSystem = {
       timestamp: new Date()
     };
   },
-  
+
   /**
    * Roll 1d6 on a table
    */
@@ -234,7 +155,7 @@ const TableSystem = {
     const value = table.entries[die - 1];
     return { value, rolls: [die] };
   },
-  
+
   /**
    * Roll 2d6 on a table (row, column)
    */
@@ -244,7 +165,7 @@ const TableSystem = {
     const value = table.entries[die1 - 1][die2 - 1];
     return { value, rolls: [die1, die2] };
   },
-  
+
   /**
    * Roll 1d66 (first die = tens, second = ones)
    */
@@ -255,7 +176,7 @@ const TableSystem = {
     const value = table.entries[index];
     return { value, rolls: [die1, die2] };
   },
-  
+
   /**
    * Random selection from flat list
    */
@@ -264,7 +185,7 @@ const TableSystem = {
     const value = table.entries[index];
     return { value, rolls: ['random'] };
   },
-  
+
   /**
    * Roll on subtable (e.g., Get Inspired verbs)
    */
@@ -275,7 +196,7 @@ const TableSystem = {
     const value = subList[die2];
     return { value, rolls: [die1, die2 + 1] };
   },
-  
+
   /**
    * Roll the complete Adventure Maker sequence
    */
@@ -290,31 +211,28 @@ const TableSystem = {
       action2: this.roll('core-loner', 'actions'),
       thing3: this.roll('core-loner', 'things')
     };
-    
+
     // Format as a nice summary
     const summary = this.formatAdventureMaker(results);
-    
+
     // Log to database
     await this.logTableRoll('adventure-maker', 'core-loner', summary);
-    
+
     // Insert to notes
-    if (typeof Editor !== 'undefined') {
-      Editor.insertBlock(
-        '🎭',
-        'Adventure Maker',
-        summary,
-        '#8b5cf6'
-      );
-    }
-    
+    Editor.insertBlock(
+      'Adventure Maker',
+      summary,
+      '#8b5cf6'
+    );
+
     // Log event
-    if (typeof EventManager !== 'undefined') {
-      await EventManager.logEvent('table-roll', 'Adventure Maker generated', { results });
+    if (typeof window.EventManager !== 'undefined') {
+      await window.EventManager.logEvent('table-roll', 'Adventure Maker generated', { results });
     }
-    
+
     return results;
   },
-  
+
   /**
    * Format Adventure Maker results
    */
@@ -329,18 +247,18 @@ const TableSystem = {
       **Key Element:** ${results.thing3.result}
           `.trim();
   },
-  
+
   /**
    * Roll Get Inspired with current flavor
    */
   async rollGetInspired(supplementId = null) {
     // Use active supplement or default to core
     const activeSupplement = supplementId || this.getActiveInspiredFlavor();
-    
+
     const verb = this.roll(activeSupplement, 'verbs');
     const adjective = this.roll(activeSupplement, 'adjectives');
     const noun = this.roll(activeSupplement, 'nouns');
-    
+
     const result = {
       verb: verb.result,
       adjective: adjective.result,
@@ -348,28 +266,25 @@ const TableSystem = {
       formatted: `${verb.result} the ${adjective.result} ${noun.result}`,
       supplement: activeSupplement
     };
-    
+
     // Log to database
     await this.logTableRoll('get-inspired', activeSupplement, result.formatted);
-    
+
     // Insert to notes
-    if (typeof Editor !== 'undefined') {
-      Editor.insertBlock(
-        '✨',
-        'Inspiration',
-        result.formatted,
-        '#10b981'
-      );
-    }
-    
+    Editor.insertBlock(
+      'Inspiration',
+      result.formatted,
+      '#10b981'
+    );
+
     // Log event
-    if (typeof EventManager !== 'undefined') {
-      await EventManager.logEvent('inspiration', result.formatted, { supplement: activeSupplement });
+    if (typeof window.EventManager !== 'undefined') {
+      await window.EventManager.logEvent('inspiration', result.formatted, { supplement: activeSupplement });
     }
-    
+
     return result;
   },
-  
+
   /**
    * Get active Get Inspired flavor
    */
@@ -378,16 +293,16 @@ const TableSystem = {
     const stored = localStorage.getItem('loner-inspired-flavor');
     return stored || 'core-inspired';
   },
-  
+
   /**
    * Set active Get Inspired flavor
    */
   async setInspiredFlavor(supplementId) {
     localStorage.setItem('loner-inspired-flavor', supplementId);
-    await LonerDB.setUserPreference('inspiredFlavor', supplementId);
-    UI.showAlert(`Get Inspired flavor changed to: ${this.registry[supplementId].supplement.name}`, 'success');
+    await setUserPreference('inspiredFlavor', supplementId);
+    showAlert(`Get Inspired flavor changed to: ${this.registry[supplementId].supplement.name}`, 'success');
   },
-  
+
   /**
    * Get all available Get Inspired flavors
    */
@@ -404,14 +319,14 @@ const TableSystem = {
     }
     return flavors;
   },
-  
+
   /**
    * Log table roll to database
    */
   async logTableRoll(tableName, supplementId, result) {
     const state = getState();
     if (!state.sessionId) return;
-    
+
     await db.tableRolls.add({
       sessionId: state.sessionId,
       timestamp: new Date(),
@@ -420,21 +335,21 @@ const TableSystem = {
       result: result
     });
   },
-  
+
   /**
    * Get table roll history for current session
    */
   async getSessionRollHistory() {
     const state = getState();
     if (!state.sessionId) return [];
-    
+
     return await db.tableRolls
       .where('sessionId')
       .equals(state.sessionId)
       .reverse()
       .toArray();
   },
-  
+
   /**
    * Save user preferences
    */
@@ -442,7 +357,7 @@ const TableSystem = {
     const prefs = await db.userPreferences.get('tableSystem');
     return prefs ? prefs.value : {};
   },
-  
+
   async savePreferences(prefs) {
     await db.userPreferences.put({
       key: 'tableSystem',

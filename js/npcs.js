@@ -1,75 +1,19 @@
 /**
  * LONER ASSISTANT v2.0 - NPC Management
- * 
+ *
  * Manage non-player characters
  */
 
-/**
- * Display NPC quick reference in sidebar
- */
-async function showNPCPanel() {
-  const state = getState();
-  
-  if (!state.campaignId) {
-    UI.showAlert('Select a campaign first!', 'error');
-    return;
-  }
-  
-  const npcs = await LonerDB.getNPCsForCampaign(state.campaignId);
-  
-  const panelHTML = `
-    <div class="panel">
-      <div class="panel-header">
-        <h3>NPCs</h3>
-        <button class="btn btn-sm btn-primary" onclick="showNewNPCForm()">+ Add</button>
-      </div>
-      ${npcs.length === 0 ? '<p class="text-muted">No NPCs yet</p>' : `
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          ${npcs.map(npc => `
-            <div class="npc-quick-card" style="padding: 0.75rem; background: var(--bg-secondary); border-radius: var(--radius); border-left: 3px solid ${getRelationshipColor(npc.relationship)};">
-              <div style="display: flex; justify-content: space-between; align-items: start;">
-                <div>
-                  <strong>${UI.escapeHtml(npc.name)}</strong>
-                  <div style="font-size: 0.85rem; color: var(--text-muted);">${UI.escapeHtml(npc.relationship || 'neutral')}</div>
-                </div>
-                <button class="btn btn-sm btn-outline" onclick="viewNPCDetails(${npc.id})" style="padding: 0.25rem 0.5rem;">
-                  View
-                </button>
-              </div>
-              ${npc.tags && npc.tags.length > 0 ? `
-                <div style="display: flex; gap: 0.25rem; margin-top: 0.5rem; flex-wrap: wrap;">
-                  ${npc.tags.map(tag => `
-                    <span style="background: var(--bg-tertiary); padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.75rem;">
-                      ${UI.escapeHtml(tag)}
-                    </span>
-                  `).join('')}
-                </div>
-              ` : ''}
-            </div>
-          `).join('')}
-        </div>
-      `}
-    </div>
-  `;
-  
-  // Find or create sidebar panel
-  const sidebar = document.querySelector('.sidebar-left');
-  let npcPanelContainer = document.getElementById('npc-panel-container');
-  
-  if (!npcPanelContainer) {
-    npcPanelContainer = document.createElement('div');
-    npcPanelContainer.id = 'npc-panel-container';
-    sidebar.appendChild(npcPanelContainer);
-  }
-  
-  npcPanelContainer.innerHTML = panelHTML;
-}
+import * as LonerDB from './db/database.js';
+import * as UI from './ui.js';
+import { getState } from './state.js';
+import { openFormModal, confirmAndDelete } from './crud/modal-form.js';
 
 /**
  * Get relationship color
  */
 function getRelationshipColor(relationship) {
-  switch(relationship) {
+  switch (relationship) {
     case 'ally': return 'var(--success)';
     case 'enemy': return 'var(--danger)';
     default: return 'var(--text-muted)';
@@ -79,7 +23,7 @@ function getRelationshipColor(relationship) {
 /**
  * Show new NPC form
  */
-function showNewNPCForm() {
+export function showNewNPCForm() {
   const formHTML = `
     <form id="new-npc-form">
       <div class="form-group">
@@ -108,51 +52,41 @@ function showNewNPCForm() {
       </div>
     </form>
   `;
-  
-  UI.showModal('New NPC', formHTML);
-  
-  setTimeout(() => {
-    const form = document.getElementById('new-npc-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await createNewNPC();
-      });
-    }
-  }, 100);
+
+  openFormModal('New NPC', 'new-npc-form', formHTML, () => createNewNPC());
 }
 
 /**
  * Create new NPC
  */
-async function createNewNPC() {
+export async function createNewNPC() {
   const nameInput = document.getElementById('npc-name');
-  
+
   if (!nameInput || !nameInput.value.trim()) {
     UI.showAlert('Please enter an NPC name', 'error');
     return;
   }
-  
+
   try {
     const state = getState();
-    
+
     if (!state.campaignId) {
       UI.showAlert('Please create or select a campaign first!', 'error');
       UI.closeModal();
       return;
     }
-    
+
     const name = nameInput.value.trim();
     const description = document.getElementById('npc-description').value.trim();
     const tags = document.getElementById('npc-tags').value
       .split(',')
       .map(t => t.trim())
       .filter(t => t);
-    
+
     const npcId = await LonerDB.createNPC(state.campaignId, name, description, tags);
-    
+
     console.log('NPC created with ID:', npcId);
-    
+
     UI.closeModal();
     UI.showAlert('NPC created!', 'success');
 
@@ -163,7 +97,7 @@ async function createNewNPC() {
     if (document.getElementById('view-npcs').classList.contains('active')) {
       await loadNPCsList();
     }
-    
+
   } catch (error) {
     console.error('Error creating NPC:', error);
     UI.showAlert('Error creating NPC: ' + error.message, 'error');
@@ -173,9 +107,9 @@ async function createNewNPC() {
 /**
  * View NPC details
  */
-async function viewNPCDetails(npcId) {
+export async function viewNPCDetails(npcId) {
   const npc = await LonerDB.db.npcs.get(npcId);
-  
+
   const detailsHTML = `
     <div class="npc-details">
       <div class="form-group">
@@ -204,16 +138,16 @@ async function viewNPCDetails(npcId) {
       </div>
     </div>
   `;
-  
+
   UI.showModal(npc.name, detailsHTML);
 }
 
 /**
  * Edit NPC
  */
-async function editNPC(npcId) {
+export async function editNPC(npcId) {
   const npc = await LonerDB.db.npcs.get(npcId);
-  
+
   const formHTML = `
     <form id="edit-npc-form">
       <div class="form-group">
@@ -242,24 +176,14 @@ async function editNPC(npcId) {
       </div>
     </form>
   `;
-  
-  UI.showModal('Edit NPC', formHTML);
-  
-  setTimeout(() => {
-    const form = document.getElementById('edit-npc-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await saveNPCEdit(npcId);
-      });
-    }
-  }, 100);
+
+  openFormModal('Edit NPC', 'edit-npc-form', formHTML, () => saveNPCEdit(npcId));
 }
 
 /**
  * Save NPC edits
  */
-async function saveNPCEdit(npcId) {
+export async function saveNPCEdit(npcId) {
   const name = document.getElementById('edit-npc-name').value.trim();
   const description = document.getElementById('edit-npc-description').value.trim();
   const relationship = document.getElementById('edit-npc-relationship').value;
@@ -267,12 +191,12 @@ async function saveNPCEdit(npcId) {
     .split(',')
     .map(t => t.trim())
     .filter(t => t);
-  
+
   if (!name) {
     UI.showAlert('Name is required', 'error');
     return;
   }
-  
+
   try {
     await LonerDB.updateNPC(npcId, {
       name,
@@ -280,7 +204,7 @@ async function saveNPCEdit(npcId) {
       relationship,
       tags
     });
-    
+
     UI.closeModal();
     UI.showAlert('NPC updated!', 'success');
 
@@ -290,7 +214,7 @@ async function saveNPCEdit(npcId) {
     if (document.getElementById('view-npcs')?.classList.contains('active')) {
       await loadNPCsList();
     }
-    
+
   } catch (error) {
     console.error('Error saving NPC:', error);
     UI.showAlert('Error saving NPC: ' + error.message, 'error');
@@ -300,32 +224,28 @@ async function saveNPCEdit(npcId) {
 /**
  * Delete NPC with confirmation
  */
-async function deleteNPCConfirm(npcId) {
+export async function deleteNPCConfirm(npcId) {
   const npc = await LonerDB.db.npcs.get(npcId);
-  
-  if (UI.confirmDialog(`Delete "${npc.name}"? This cannot be undone.`)) {
+
+  await confirmAndDelete(`Delete "${npc.name}"? This cannot be undone.`, async () => {
     await LonerDB.deleteNPC(npcId);
-    UI.closeModal();
     UI.showAlert('NPC deleted', 'success');
-    
+
     // Refresh displays
-    const panel = document.getElementById('npc-panel-container');
-    if (panel) {
-      await showNPCPanel();
-    }
-    
+    await showNPCPanel();
+
     if (document.getElementById('view-npcs')?.classList.contains('active')) {
       await loadNPCsList();
     }
-  }
+  }, { closeModalFirst: true });
 }
 
 /**
  * Load NPCs list view
  */
-async function loadNPCsList() {
+export async function loadNPCsList() {
   const state = getState();
-  
+
   if (!state.campaignId) {
     const container = document.getElementById('npcs-list');
     if (container) {
@@ -333,17 +253,17 @@ async function loadNPCsList() {
     }
     return;
   }
-  
+
   const npcs = await LonerDB.getNPCsForCampaign(state.campaignId);
   const container = document.getElementById('npcs-list');
-  
+
   if (!container) return;
-  
+
   if (npcs.length === 0) {
     container.innerHTML = '<p class="text-muted text-center">No NPCs yet. Create one!</p>';
     return;
   }
-  
+
   container.innerHTML = npcs.map(npc => `
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
@@ -376,21 +296,24 @@ async function loadNPCsList() {
   `).join('');
 }
 
-async function showNPCPanel() {
+/**
+ * Display NPC quick reference in the Play view sidebar panel
+ */
+export async function showNPCPanel() {
   const state = getState();
   if (!state.campaignId) {
     document.getElementById('npcs-quick-list').innerHTML = '<p class="text-muted">No campaign selected</p>';
     return;
   }
-  
+
   const npcs = await LonerDB.getNPCsForCampaign(state.campaignId);
   const container = document.getElementById('npcs-quick-list');
-  
+
   if (npcs.length === 0) {
     container.innerHTML = '<p class="text-muted">No NPCs yet</p>';
     return;
   }
-  
+
   container.innerHTML = npcs.slice(0, 5).map(npc => `
     <div class="quick-link-item" onclick="viewNPCDetails(${npc.id})">
       <strong>${UI.escapeHtml(npc.name)}</strong>
@@ -399,8 +322,7 @@ async function showNPCPanel() {
   `).join('');
 }
 
-// Export functions
-window.NPCManager = {
+export const NPCManager = {
   showNPCPanel,
   showNewNPCForm,
   createNewNPC,

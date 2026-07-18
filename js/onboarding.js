@@ -5,7 +5,7 @@
  * Users can click "?" button to learn about features without intrusive tutorial
  */
 
-const HelpSystem = {
+export const HelpSystem = {
   /**
    * Help content for each view and section
    * Format: { viewId: { title, description, sections: [ {title, content} ] } }

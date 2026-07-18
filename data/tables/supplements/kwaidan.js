@@ -3,7 +3,7 @@
  * D66 random tables
  */
 
-window.KwaidanAdventureTables = {
+export default {
   supplement: {
     id: 'kwaidan-adventure-tables',
     name: 'Kwaidan Adventure Tables',
