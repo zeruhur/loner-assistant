@@ -1,195 +1,330 @@
 #!/usr/bin/env python3
 """
-Convert markdown D66 tables to JavaScript supplement files for Loner Assistant.
+Convert a markdown D66 table (Geared Towards Loner style) into a ready-to-use
+Loner Assistant supplement file, and wire it up automatically.
+
+Given a markdown file shaped like:
+
+    ## Some Supplement Tables
+
+    ### Table One
+    | 11  | Some result |
+    | 12  | Another result |
+    ...
+    | 66  | Last result |
+
+    ### Table Two
+    ...
+
+this will:
+  1. Generate data/tables/supplements/<slug>.js as a proper ES module
+     (export default { supplement, tables }), matching the exact shape
+     tables.js/table-registry.js expect - not the old `window.X = {...}`
+     classic-script format.
+  2. Add (or update) the corresponding entry in data/table-registry.js.
+  3. Add the new file to sw.js's PRECACHE_URLS so it works offline too,
+     and bump CACHE_VERSION so installed PWAs pick it up.
 
 Usage:
-    python md_to_table.py markdown_file.md [output_file.js]
+    python md_to_table.py markdown_file.md
 
-Example:
-    python md_to_table.py adventure_tables.md
-    # Creates: adventure_tables.js
+No manual copy-pasting or reformatting needed afterward - just refresh
+the app (a hard refresh / cache clear if it's already installed as a PWA).
 """
 
 import re
 import sys
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parent
+SUPPLEMENTS_DIR = REPO_ROOT / 'data' / 'tables' / 'supplements'
+REGISTRY_FILE = REPO_ROOT / 'data' / 'table-registry.js'
+SW_FILE = REPO_ROOT / 'sw.js'
 
-def markdown_to_js(markdown_file, output_file=None):
-    """Convert markdown D66 tables to JavaScript supplement file."""
 
-    # Read markdown file
-    with open(markdown_file, 'r', encoding='utf-8') as f:
-        content = f.read()
+def slugify(text):
+    """kebab-case, ASCII-safe slug."""
+    text = text.lower().strip()
+    text = text.replace('–', '-').replace('—', '-').replace('&', 'and')
+    text = re.sub(r"[‘’']", '', text)
+    text = re.sub(r'[^a-z0-9]+', '-', text)
+    return text.strip('-')
 
-    # Extract main supplement name from first ## header
+
+def strip_tables_suffix(name):
+    return re.sub(r'\s+tables$', '', name, flags=re.IGNORECASE).strip()
+
+
+def detect_newline(path):
+    """Return '\\r\\n' or '\\n' matching the file's existing convention,
+    so edits to table-registry.js/sw.js don't turn into whole-file diffs
+    (the repo is inconsistent: some files are CRLF, some are LF)."""
+    raw = path.read_bytes()
+    return '\r\n' if b'\r\n' in raw else '\n'
+
+
+def write_matching_newline(path, content_with_lf):
+    """Write content (built with plain '\\n') using the target file's
+    existing line-ending convention."""
+    newline = detect_newline(path) if path.exists() else '\n'
+    if newline == '\r\n':
+        content_with_lf = content_with_lf.replace('\n', '\r\n')
+    with open(path, 'w', encoding='utf-8', newline='') as f:
+        f.write(content_with_lf)
+
+
+def js_string(s):
+    """Single-quoted JS string literal with escaping."""
+    escaped = s.replace('\\', '\\\\').replace("'", "\\'")
+    return f"'{escaped}'"
+
+
+# Get Inspired tables (Verbs/Adjectives/Nouns) are often bundled inside the
+# same "## Adventure Tables" markdown as the D66 random tables, under a
+# "### Inspiration Tables" divider that isn't itself a real table. Split
+# these three out into their own flavor file - the app treats Get Inspired
+# flavors and Adventure Tables supplements as separate things.
+INSPIRATION_TABLE_NAMES = {'verbs', 'adjectives', 'nouns'}
+DIVIDER_HEADERS = {'inspiration tables'}
+
+
+def parse_markdown(markdown_file):
+    content = Path(markdown_file).read_text(encoding='utf-8')
+
     main_match = re.search(r'^## (.+?)$', content, re.MULTILINE)
     if not main_match:
-        raise ValueError("❌ No main title (## header) found")
-
+        raise ValueError("No main title (## header) found")
     supplement_name = main_match.group(1).strip()
-    # Remove "Tables" suffix from name if present (will be added back in global variable name)
-    id_base = supplement_name.lower().replace(' tables', '').replace(' Tables', '')
-    supplement_id = id_base.replace(' ', '-').replace('–', '-')
 
-    print(f"📚 Supplement: {supplement_name}")
-
-    # Find all ### table sections (using negative lookahead to capture all content until next ###)
-    table_pattern = r'^### \*?\*?(.+?)\*?\*?\s*\n((?:(?!^###).)*)(?=^###|$)'
+    table_pattern = r'^### \*?\*?(.+?)\*?\*?\s*\n((?:(?!^###).)*)(?=^###|\Z)'
     table_sections = list(re.finditer(table_pattern, content, re.MULTILINE | re.DOTALL))
-
     if not table_sections:
-        raise ValueError("❌ No tables (### headers) found")
+        raise ValueError("No tables (### headers) found")
 
-    tables = {}
+    adventure_tables = {}
+    inspiration_tables = {}
 
     for section in table_sections:
         table_name = section.group(1).strip().replace('**', '').replace('*', '')
         table_content = section.group(2)
 
-        # Extract D66 entries: | 11  | Description |
         entries = {}
         row_pattern = r'\|\s*(\d{2})\s*\|\s*(.+?)\s*\|'
-
         for match in re.finditer(row_pattern, table_content):
-            code = match.group(1)
-            desc = match.group(2).strip()
-            # Skip header separators
+            code, desc = match.group(1), match.group(2).strip()
             if desc.startswith('---'):
                 continue
             entries[code] = desc
 
         if not entries:
-            print(f"  ⚠️  Skipping '{table_name}' (no entries found)")
+            if table_name.strip().lower() not in DIVIDER_HEADERS:
+                print(f"  Skipping '{table_name}' (no D66 entries found)")
             continue
 
-        # Validate all 36 D66 codes present
         expected_codes = [f"{i}{j}" for i in range(1, 7) for j in range(1, 7)]
         missing = [c for c in expected_codes if c not in entries]
         if missing:
-            print(f"  ⚠️  Warning: '{table_name}' missing codes: {missing}")
+            print(f"  Warning: '{table_name}' missing codes: {missing}")
 
-        # Build 6x6 grid (rows 1-6, columns 1-6)
-        grid = []
-        for row in range(1, 7):
-            row_data = []
-            for col in range(1, 7):
-                code = f"{row}{col}"
-                desc = entries.get(code, "")
-                row_data.append(desc)
-            grid.append(row_data)
+        grid = [[entries.get(f"{r}{c}", "") for c in range(1, 7)] for r in range(1, 7)]
 
-        # Create table ID (use underscores for valid JavaScript object keys, remove special chars)
-        table_id = (table_name.lower()
-                    .replace(' ', '_')
-                    .replace('–', '_')  # en-dash
-                    .replace('-', '_')  # hyphen
-                    .replace('&', 'and')
-                    .replace("'", '')   # apostrophe
-                    .replace('\u2019', ''))  # right single quotation mark
+        table_id = slugify(table_name).replace('-', '_')
+        target = inspiration_tables if table_id in INSPIRATION_TABLE_NAMES else adventure_tables
+        target[table_id] = {'id': table_id, 'name': table_name, 'entries': grid}
+        label = 'Get Inspired' if target is inspiration_tables else 'Adventure Tables'
+        print(f"  {table_name} ({label}): {len(entries)} entries")
 
-        tables[table_id] = {
-            'id': table_id,
-            'name': table_name,
-            'entries': grid
-        }
+    if not adventure_tables and not inspiration_tables:
+        raise ValueError("No valid tables found")
 
-        print(f"  ✅ {table_name}: {len(entries)} entries")
-
-    if not tables:
-        raise ValueError("❌ No valid tables found")
-
-    # Generate class name: "Adventure Tables" -> "AdventureTablesTables"
-    class_name = ''.join(word.capitalize() for word in supplement_id.split('-')) + 'Tables'
-
-    # Generate JavaScript
-    js_code = f"""/**
- * {supplement_name}
- * D66 random tables
- */
-
-window.{class_name} = {{
-  supplement: {{
-    id: '{supplement_id}',
-    name: '{supplement_name}',
-    version: '1.0',
-    enabled: true
-  }},
-
-  tables: {{
-"""
-
-    for table_id, table_info in tables.items():
-        # Escape single quotes in table name and ID
-        escaped_name = table_info['name'].replace("'", "\\'")
-        escaped_id = table_info['id'].replace("'", "\\'")
-
-        js_code += f"""    {table_id}: {{
-      id: '{escaped_id}',
-      name: '{escaped_name}',
-      category: 'random-tables',
-      rollType: '2d6',
-      entries: [
-"""
-
-        for row in table_info['entries']:
-            # Escape quotes and format entries
-            escaped_entries = []
-            for entry in row:
-                # Escape single quotes and backslashes
-                escaped = entry.replace('\\', '\\\\').replace("'", "\\'")
-                escaped_entries.append(f"'{escaped}'")
-
-            js_code += f"        [{', '.join(escaped_entries)}],\n"
-
-        js_code += """      ]
-    },
-"""
-
-    js_code += """  }
-};
-"""
-
-    # Determine output filename
-    if output_file is None:
-        output_file = Path(markdown_file).stem + '.js'
-
-    # Write output
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(js_code)
-
-    print(f"\n✅ Generated: {output_file}")
-    print(f"   Tables: {len(tables)}")
-    print(f"\n📝 Next steps:")
-    print(f"   1. Move '{output_file}' to data/tables/supplements/")
-    print(f"   2. Add to data/table-registry.js:")
-    print(f"      {{")
-    print(f"        id: '{supplement_id}',")
-    print(f"        name: '{supplement_name}',")
-    print(f"        file: 'data/tables/supplements/{output_file}',")
-    print(f"        version: '1.0',")
-    print(f"        enabled: true,")
-    print(f"        description: 'D66 random tables'")
-    print(f"      }}")
-    print(f"   3. Refresh your app!")
+    return supplement_name, adventure_tables, inspiration_tables
 
 
-if __name__ == '__main__':
+def generate_js(supplement_id, supplement_name, tables, category, flavor_of=None):
+    lines = [
+        '/**',
+        f' * {supplement_name}',
+        ' * D66 random tables',
+        ' */',
+        '',
+        'export default {',
+        '  supplement: {',
+        f'    id: {js_string(supplement_id)},',
+        f'    name: {js_string(supplement_name)},',
+        "    version: '1.0',",
+        '    enabled: true' + (',' if flavor_of else ''),
+    ]
+    if flavor_of:
+        lines.append(f"    flavorOf: {js_string(flavor_of)}")
+    lines += [
+        '  },',
+        '',
+        '  tables: {',
+    ]
+
+    table_ids = list(tables.keys())
+    for i, table_id in enumerate(table_ids):
+        info = tables[table_id]
+        lines.append(f'    {table_id}: {{')
+        lines.append(f"      id: {js_string(info['id'])},")
+        lines.append(f"      name: {js_string(info['name'])},")
+        lines.append(f"      category: {js_string(category)},")
+        lines.append("      rollType: '2d6',")
+        lines.append('      entries: [')
+        for row in info['entries']:
+            escaped_row = ', '.join(js_string(e) for e in row)
+            lines.append(f'        [{escaped_row}],')
+        lines.append('      ]')
+        lines.append('    }' + (',' if i < len(table_ids) - 1 else ''))
+
+    lines.append('  }')
+    lines.append('};')
+    lines.append('')
+    return '\n'.join(lines)
+
+
+def update_registry(supplement_id, supplement_name, relative_file_path, description, flavor_of=None):
+    text = REGISTRY_FILE.read_text(encoding='utf-8')
+
+    if re.search(rf"id:\s*'{re.escape(supplement_id)}'", text):
+        print(f"  data/table-registry.js already has '{supplement_id}' - leaving it alone")
+        return False
+
+    flavor_line = f"    flavorOf: 'get-inspired',\n" if flavor_of else ""
+    entry = (
+        "  {\n"
+        f"    id: '{supplement_id}',\n"
+        f"    name: '{supplement_name}',\n"
+        f"    file: '{relative_file_path}',\n"
+        "    version: '1.0',\n"
+        "    enabled: true,\n"
+        f"{flavor_line}"
+        f"    description: '{description}'\n"
+        "  }"
+    )
+
+    marker = '\n  // Template for adding new supplements:'
+    if marker not in text:
+        raise ValueError("Could not find the template marker comment in table-registry.js - "
+                          "add the entry manually this time.")
+
+    before, after = text.split(marker, 1)
+    before = before.rstrip()
+    if not before.endswith(','):
+        before += ','
+    new_text = before + '\n' + entry + marker + after
+
+    write_matching_newline(REGISTRY_FILE, new_text)
+    return True
+
+
+def update_service_worker(relative_file_path):
+    text = SW_FILE.read_text(encoding='utf-8')
+    # relative_file_path is relative to data/, e.g. 'tables/supplements/foo.js'
+    entry_line = f"./data/{relative_file_path}"
+
+    if entry_line in text:
+        print(f"  sw.js already precaches {entry_line} - leaving it alone")
+        return False
+
+    # Insert right before the closing `];` of PRECACHE_URLS, adding a
+    # trailing comma to what was previously the last entry.
+    idx = text.find('const PRECACHE_URLS = [')
+    if idx == -1:
+        raise ValueError("Could not find PRECACHE_URLS in sw.js - add the entry manually this time.")
+    close_idx = text.find('\n];', idx)
+    if close_idx == -1:
+        raise ValueError("Could not find the end of PRECACHE_URLS in sw.js - add the entry manually this time.")
+
+    before = text[:close_idx].rstrip()
+    if not before.endswith(','):
+        before += ','
+    new_text = before + f"\n  '{entry_line}'" + text[close_idx:]
+
+    # Bump CACHE_VERSION (format: 'loner-vN') so installed PWAs refetch it.
+    version_match = re.search(r"const CACHE_VERSION = 'loner-v(\d+)';", new_text)
+    if version_match:
+        next_version = int(version_match.group(1)) + 1
+        new_text = new_text.replace(
+            version_match.group(0),
+            f"const CACHE_VERSION = 'loner-v{next_version}';"
+        )
+        print(f"  Bumped sw.js CACHE_VERSION to loner-v{next_version}")
+
+    write_matching_newline(SW_FILE, new_text)
+    return True
+
+
+def main():
     if len(sys.argv) < 2:
-        print("Usage: python md_to_table.py <markdown_file> [output_file.js]")
-        print("\nExample:")
-        print("  python md_to_table.py adventure_tables.md")
-        print("  python md_to_table.py adventure_tables.md custom-tables.js")
+        print("Usage: python md_to_table.py <markdown_file>")
         sys.exit(1)
 
     markdown_file = sys.argv[1]
-    output_file = sys.argv[2] if len(sys.argv) > 2 else None
+    if not Path(markdown_file).exists():
+        print(f"File not found: {markdown_file}")
+        sys.exit(1)
 
     try:
-        if not Path(markdown_file).exists():
-            raise FileNotFoundError(f"File not found: {markdown_file}")
+        supplement_name, adventure_tables, inspiration_tables = parse_markdown(markdown_file)
+        id_base = strip_tables_suffix(supplement_name)
+        base_slug = slugify(id_base)
+        adventure_id = base_slug if base_slug.endswith('-adventure') else base_slug + '-adventure'
 
-        markdown_to_js(markdown_file, output_file)
+        if adventure_tables:
+            write_supplement(
+                out_dir=SUPPLEMENTS_DIR,
+                relative_dir='tables/supplements',
+                filename=base_slug + '.js',
+                supplement_id=adventure_id,
+                supplement_name=supplement_name,
+                tables=adventure_tables,
+                category='random-tables',
+                description=f'{id_base} supplemental adventure tables'
+            )
+
+        if inspiration_tables:
+            write_supplement(
+                out_dir=REPO_ROOT / 'data' / 'tables' / 'flavors',
+                relative_dir='tables/flavors',
+                filename=base_slug + '-inspired.js',
+                supplement_id=base_slug + '-inspired',
+                supplement_name=f'{id_base} Inspiration',
+                tables=inspiration_tables,
+                category='get-inspired',
+                description=f'Get Inspired flavor themed for {id_base} adventures',
+                flavor_of='get-inspired'
+            )
+
+        print("\nDone. Refresh the app to see it "
+              "(if it's installed as a PWA, it'll pick up the new CACHE_VERSION on next load).")
+
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
         sys.exit(1)
+
+
+def write_supplement(out_dir, relative_dir, filename, supplement_id, supplement_name,
+                      tables, category, description, flavor_of=None):
+    relative_file_path = f'{relative_dir}/{filename}'
+    out_path = out_dir / filename
+
+    if out_path.exists():
+        answer = input(f"{out_path.relative_to(REPO_ROOT)} already exists. Overwrite? [y/N] ")
+        if answer.strip().lower() != 'y':
+            print(f"Skipped {out_path.relative_to(REPO_ROOT)}")
+            return
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    js_code = generate_js(supplement_id, supplement_name, tables, category, flavor_of)
+    write_matching_newline(out_path, js_code)
+    print(f"\nWrote {out_path.relative_to(REPO_ROOT)}")
+
+    if update_registry(supplement_id, supplement_name, relative_file_path, description, flavor_of):
+        print(f"Registered '{supplement_id}' in data/table-registry.js")
+
+    update_service_worker(relative_file_path)
+
+
+if __name__ == '__main__':
+    main()
