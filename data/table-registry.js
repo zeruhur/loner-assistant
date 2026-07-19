@@ -109,6 +109,23 @@ export const supplements = [
     enabled: true,
     flavorOf: 'get-inspired',
     description: 'Get Inspired flavor themed for Arabian Nights adventures'
+  },
+  {
+    id: 'legends-of-camelot-adventure',
+    name: 'Legends of Camelot Adventure Tables',
+    file: 'tables/supplements/legends-of-camelot.js',
+    version: '1.0',
+    enabled: true,
+    description: 'Legends of Camelot supplemental adventure tables'
+  },
+  {
+    id: 'legends-of-camelot-inspired',
+    name: 'Legends of Camelot Inspiration',
+    file: 'tables/flavors/legends-of-camelot-inspired.js',
+    version: '1.0',
+    enabled: true,
+    flavorOf: 'get-inspired',
+    description: 'Get Inspired flavor themed for Legends of Camelot adventures'
   }
   // Template for adding new supplements:
   // {

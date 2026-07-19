@@ -65,7 +65,11 @@ def name_from_filename(markdown_file):
     words = [w for w in re.split(r'[_\-]+', stem) if w]
     if words and words[-1].lower() == 'adventure':
         words = words[:-1]
-    return ' '.join(w.capitalize() for w in words)
+    lowercase_words = {'of', 'the', 'and', 'a', 'an', 'in', 'on', 'at', 'to', 'for'}
+    return ' '.join(
+        w.capitalize() if i == 0 or w.lower() not in lowercase_words else w.lower()
+        for i, w in enumerate(words)
+    )
 
 
 def detect_newline(path):
