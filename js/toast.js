@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Toast Notifications
+ * LONER ASSISTANT v2.1 - Toast Notifications
  *
  * Single consolidated toast/notification system. Replaces the two
  * previously-redundant implementations (ui.js's inline-styled

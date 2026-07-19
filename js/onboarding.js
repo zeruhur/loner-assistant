@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Onboarding & Help System
+ * LONER ASSISTANT v2.1 - Onboarding & Help System
  *
  * Provides context-sensitive help panels for each view and section
  * Users can click "?" button to learn about features without intrusive tutorial

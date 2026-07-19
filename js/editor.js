@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Note Editor Management
+ * LONER ASSISTANT v2.1 - Note Editor Management
  *
  * All editor-related functions (Quill editor). Quill itself is loaded
  * as a classic script (lib/quill.min.js) before this module runs, so

@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - User Manual System
+ * LONER ASSISTANT v2.1 - User Manual System
  *
  * Display the user manual in-app
  */

@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Shared modal-form wiring
+ * LONER ASSISTANT v2.1 - Shared modal-form wiring
  *
  * Every entity module (campaigns/characters/npcs/locations/threads/events/
  * sessions) used to hand-roll the same two patterns: open a modal containing

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Loner Assistant v2.0** is a comprehensive web-based companion tool for the Loner solo RPG system. It enables players to manage campaigns, characters, story content, and game mechanics entirely in a browser using client-side architecture with IndexedDB for persistent storage.
+**Loner Assistant v2.1** is a comprehensive web-based companion tool for the Loner solo RPG system. It enables players to manage campaigns, characters, story content, and game mechanics entirely in a browser using client-side architecture with IndexedDB for persistent storage.
 
 ### Key Context
 - **What is Loner?** A minimalist, tag-based solo RPG with emergent storytelling. Rules are rules-light and narrative-focused (see `loner-en.md`).

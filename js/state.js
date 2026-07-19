@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Global App State
+ * LONER ASSISTANT v2.1 - Global App State
  *
  * Tracks the three pieces of state the whole app cares about
  * (current campaign, session, character) and persists them to

@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Keyboard Shortcuts System
+ * LONER ASSISTANT v2.1 - Keyboard Shortcuts System
  *
  * Provides global keyboard shortcuts for quick access to common gameplay actions
  * All shortcuts use Alt + key combination

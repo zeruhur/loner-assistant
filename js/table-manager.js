@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Table Manager UI
+ * LONER ASSISTANT v2.1 - Table Manager UI
  *
  * Interface for browsing and rolling tables
  */

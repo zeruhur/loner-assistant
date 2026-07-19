@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Roll Tables System
+ * LONER ASSISTANT v2.1 - Roll Tables System
  *
  * Universal table roller supporting multiple formats:
  * - 1d6, 2d6 (standard Loner tables)

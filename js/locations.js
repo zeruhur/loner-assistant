@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Location Management
+ * LONER ASSISTANT v2.1 - Location Management
  *
  * Track places in your adventure
  */

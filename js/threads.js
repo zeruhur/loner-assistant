@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Narrative Thread Management
+ * LONER ASSISTANT v2.1 - Narrative Thread Management
  *
  * Track ongoing storylines and plot threads
  */

@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Custom Tables Manager
+ * LONER ASSISTANT v2.1 - Custom Tables Manager
  *
  * Allows users to create, edit, and manage their own roll tables
  */

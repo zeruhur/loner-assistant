@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Event Log
+ * LONER ASSISTANT v2.1 - Event Log
  *
  * Track story moments automatically and manually
  */

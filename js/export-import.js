@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Export/Import System
+ * LONER ASSISTANT v2.1 - Export/Import System
  *
  * Handles exporting and importing of:
  * - Individual sessions

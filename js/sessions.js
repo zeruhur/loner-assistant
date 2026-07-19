@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Session Management
+ * LONER ASSISTANT v2.1 - Session Management
  *
  * All session-related functions
  */

@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Main Application Controller
+ * LONER ASSISTANT v2.1 - Main Application Controller
  *
  * This is the app's single ES module entry point (loaded from index.html
  * via <script type="module">). It:
@@ -45,7 +45,7 @@ import {
  * Initialize the application when page loads
  */
 document.addEventListener('DOMContentLoaded', async function () {
-  console.log('🎲 Loner Assistant v2.0 starting...');
+  console.log('🎲 Loner Assistant v2.1 starting...');
 
   try {
     // 1. Initialize UI first (doesn't need database)

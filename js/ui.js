@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - UI Helper Functions
+ * LONER ASSISTANT v2.1 - UI Helper Functions
  *
  * Simple functions for showing/hiding views, modals, etc.
  * No fancy frameworks - just plain JavaScript!

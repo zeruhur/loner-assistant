@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - NPC Management
+ * LONER ASSISTANT v2.1 - NPC Management
  *
  * Manage non-player characters
  */

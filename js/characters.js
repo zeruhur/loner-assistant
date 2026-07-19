@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Character Management
+ * LONER ASSISTANT v2.1 - Character Management
  *
  * All character-related functions
  */

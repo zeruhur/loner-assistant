@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Service Worker
+ * LONER ASSISTANT v2.1 - Service Worker
  *
  * Hand-written, Cache API only (no Workbox, no build step). Precaches the
  * full app shell (HTML/CSS/JS modules/table data/vendored libs/fonts/icons)

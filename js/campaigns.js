@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Campaign Management
+ * LONER ASSISTANT v2.1 - Campaign Management
  *
  * All campaign-related functions
  */

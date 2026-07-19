@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Database Setup
+ * LONER ASSISTANT v2.1 - Database Setup
  *
  * This file handles ALL data storage using Dexie.js (IndexedDB wrapper).
  * Dexie itself is loaded as a classic script (lib/dexie.min.js) before this

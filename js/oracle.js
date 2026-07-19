@@ -1,5 +1,5 @@
 /**
- * LONER ASSISTANT v2.0 - Oracle & Dice Rolling
+ * LONER ASSISTANT v2.1 - Oracle & Dice Rolling
  *
  * Handles all dice rolling and oracle consultation logic
  */

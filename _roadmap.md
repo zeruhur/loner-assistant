@@ -1,4 +1,4 @@
-# **Loner Assistant v2.0 - Path B Roadmap**
+# **Loner Assistant v2.1 - Path B Roadmap**
 
 ## **Step-by-Step Build Plan**
 
