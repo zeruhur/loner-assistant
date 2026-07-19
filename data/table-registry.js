@@ -92,6 +92,23 @@ export const supplements = [
     version: '1.0',
     enabled: true,
     description: 'Cog & Compass supplemental adventure tables'
+  },
+  {
+    id: 'arabian-nights-adventure',
+    name: 'Arabian Nights Adventure Tables',
+    file: 'tables/supplements/arabian-nights.js',
+    version: '1.0',
+    enabled: true,
+    description: 'Arabian Nights supplemental adventure tables'
+  },
+  {
+    id: 'arabian-nights-inspired',
+    name: 'Arabian Nights Inspiration',
+    file: 'tables/flavors/arabian-nights-inspired.js',
+    version: '1.0',
+    enabled: true,
+    flavorOf: 'get-inspired',
+    description: 'Get Inspired flavor themed for Arabian Nights adventures'
   }
   // Template for adding new supplements:
   // {

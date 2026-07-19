@@ -55,6 +55,19 @@ def strip_tables_suffix(name):
     return re.sub(r'\s+tables$', '', name, flags=re.IGNORECASE).strip()
 
 
+def name_from_filename(markdown_file):
+    """Fallback title derived from the filename, e.g.
+    'arabian_nights_adventure.md' -> 'Arabian Nights'. Used when the
+    markdown's own '## ' header is just the generic 'Adventure Tables'
+    label rather than a real supplement title (common in Geared Towards
+    Loner-style files, which don't repeat the title inside the file)."""
+    stem = Path(markdown_file).stem
+    words = [w for w in re.split(r'[_\-]+', stem) if w]
+    if words and words[-1].lower() == 'adventure':
+        words = words[:-1]
+    return ' '.join(w.capitalize() for w in words)
+
+
 def detect_newline(path):
     """Return '\\r\\n' or '\\n' matching the file's existing convention,
     so edits to table-registry.js/sw.js don't turn into whole-file diffs
@@ -96,7 +109,10 @@ def parse_markdown(markdown_file):
         raise ValueError("No main title (## header) found")
     supplement_name = main_match.group(1).strip()
 
-    table_pattern = r'^### \*?\*?(.+?)\*?\*?\s*\n((?:(?!^###).)*)(?=^###|\Z)'
+    # Table headers are usually ###, but Inspiration Tables (Verbs/Adjectives/
+    # Nouns) are sometimes nested one level deeper as #### under a
+    # non-table "### Inspiration Tables" divider - match both levels.
+    table_pattern = r'^#{3,4} \*?\*?(.+?)\*?\*?\s*\n((?:(?!^#{3,4} ).)*)(?=^#{3,4} |\Z)'
     table_sections = list(re.finditer(table_pattern, content, re.MULTILINE | re.DOTALL))
     if not table_sections:
         raise ValueError("No tables (### headers) found")
@@ -115,6 +131,21 @@ def parse_markdown(markdown_file):
             if desc.startswith('---'):
                 continue
             entries[code] = desc
+
+        if not entries:
+            # Some Inspiration Tables use a 6x6 row/column grid instead of
+            # explicit D66 codes, e.g.:
+            #   | 1 | Discover | Travel | Negotiate | Fight | Explore | Protect |
+            # where the leading "1" is the row (first die) and each of the 6
+            # cells after it is a column (second die).
+            grid_row_pattern = (
+                r'^\|\s*([1-6])\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|'
+                r'\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*$'
+            )
+            for match in re.finditer(grid_row_pattern, table_content, re.MULTILINE):
+                row = match.group(1)
+                for col in range(1, 7):
+                    entries[f'{row}{col}'] = match.group(col + 1).strip()
 
         if not entries:
             if table_name.strip().lower() not in DIVIDER_HEADERS:
@@ -268,6 +299,11 @@ def main():
     try:
         supplement_name, adventure_tables, inspiration_tables = parse_markdown(markdown_file)
         id_base = strip_tables_suffix(supplement_name)
+        if id_base.strip().lower() in ('adventure', ''):
+            # Generic/uninformative '## ' header - fall back to the filename.
+            id_base = name_from_filename(markdown_file)
+            supplement_name = f'{id_base} Adventure Tables'
+            print(f"  Generic '## Adventure Tables' header - using filename instead: '{id_base}'")
         base_slug = slugify(id_base)
         adventure_id = base_slug if base_slug.endswith('-adventure') else base_slug + '-adventure'
 
