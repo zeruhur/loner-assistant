@@ -14,7 +14,7 @@
  * registerServiceWorker() nudges them to do, but only if this bumps).
  */
 
-const CACHE_VERSION = 'loner-v9';
+const CACHE_VERSION = 'loner-v11';
 const CACHE_NAME = `loner-cache-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
@@ -78,7 +78,9 @@ const PRECACHE_URLS = [
   './data/tables/supplements/arabian-nights.js',
   './data/tables/flavors/arabian-nights-inspired.js',
   './data/tables/supplements/legends-of-camelot.js',
-  './data/tables/flavors/legends-of-camelot-inspired.js'
+  './data/tables/flavors/legends-of-camelot-inspired.js',
+  './data/tables/supplements/cthulhu.js',
+  './data/tables/flavors/cthulhu-inspired.js'
 ];
 
 self.addEventListener('install', (event) => {

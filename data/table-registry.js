@@ -126,6 +126,23 @@ export const supplements = [
     enabled: true,
     flavorOf: 'get-inspired',
     description: 'Get Inspired flavor themed for Legends of Camelot adventures'
+  },
+  {
+    id: 'cthulhu-adventure',
+    name: 'Cthulhu Adventure Tables',
+    file: 'tables/supplements/cthulhu.js',
+    version: '1.0',
+    enabled: true,
+    description: 'Cthulhu supplemental adventure tables'
+  },
+  {
+    id: 'cthulhu-inspired',
+    name: 'Cthulhu Inspiration',
+    file: 'tables/flavors/cthulhu-inspired.js',
+    version: '1.0',
+    enabled: true,
+    flavorOf: 'get-inspired',
+    description: 'Get Inspired flavor themed for Cthulhu adventures'
   }
   // Template for adding new supplements:
   // {
