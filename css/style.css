@@ -245,17 +245,24 @@ a:hover {
 
 .nav-brand {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--space-sm);
 }
 
-.nav-brand h1 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 2rem;
-  text-transform: none;
-  letter-spacing: 0;
-  line-height: 1;
+.brand-logo {
+  height: 2rem;
+  width: auto;
+  color: var(--text-primary);
+  display: block;
+}
+
+.brand-suffix {
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted);
 }
 
 .version {
@@ -1903,8 +1910,8 @@ select:focus {
     font-size: 0.8rem;
   }
 
-  .nav-brand h1 {
-    font-size: 1.25rem;
+  .brand-logo {
+    height: 1.25rem;
   }
 
   .panel {
@@ -1972,9 +1979,8 @@ select:focus {
     margin-bottom: var(--space-xs);
   }
 
-  .nav-brand h1 {
-    font-size: 1.1rem;
-    font-weight: 600;
+  .brand-logo {
+    height: 1.1rem;
   }
 
   .version {
@@ -2206,8 +2212,8 @@ select:focus {
     padding: 0.5rem;
   }
 
-  .nav-brand h1 {
-    font-size: 1rem;
+  .brand-logo {
+    height: 1rem;
   }
 
   .nav-btn {
