@@ -256,6 +256,8 @@ export const TableManager = {
       return;
     }
 
+    supplements.sort((a, b) => a.name.localeCompare(b.name));
+
     // Populate dropdown
     selector.innerHTML = '<option value="">-- Select Supplement --</option>' +
       supplements.map(supp => `
