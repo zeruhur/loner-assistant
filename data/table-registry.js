@@ -143,6 +143,23 @@ export const supplements = [
     enabled: true,
     flavorOf: 'get-inspired',
     description: 'Get Inspired flavor themed for Cthulhu adventures'
+  },
+  {
+    id: 'galaxy-drifter-adventure',
+    name: 'Galaxy Drifter Adventure Tables',
+    file: 'tables/supplements/galaxy-drifter.js',
+    version: '1.0',
+    enabled: true,
+    description: 'Galaxy Drifter supplemental adventure tables'
+  },
+  {
+    id: 'galaxy-drifter-inspired',
+    name: 'Galaxy Drifter Inspiration',
+    file: 'tables/flavors/galaxy-drifter-inspired.js',
+    version: '1.0',
+    enabled: true,
+    flavorOf: 'get-inspired',
+    description: 'Get Inspired flavor themed for Galaxy Drifter adventures'
   }
   // Template for adding new supplements:
   // {
