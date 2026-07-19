@@ -55,6 +55,29 @@ def strip_tables_suffix(name):
     return re.sub(r'\s+tables$', '', name, flags=re.IGNORECASE).strip()
 
 
+def strip_markdown_emphasis(text):
+    """Remove inline **bold**/*italic* markers from table cell text - the
+    app displays these as plain text (toasts, notes, event log), not
+    markdown, so stray asterisks would otherwise show up literally."""
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
+    text = re.sub(r'\*(.+?)\*', r'\1', text)
+    return text
+
+
+SMALL_WORDS = {'of', 'the', 'and', 'a', 'an', 'in', 'on', 'at', 'to', 'for'}
+
+
+def titlecase(text):
+    """Title-case a string (or already-split words), lowercasing minor
+    words like 'of'/'the' except when they're first - handles both
+    ALL-CAPS headers ('THE THREADS OF SAGA') and filename-derived words."""
+    words = [w for w in text.split() if w]
+    return ' '.join(
+        w.capitalize() if i == 0 or w.lower() not in SMALL_WORDS else w.lower()
+        for i, w in enumerate(words)
+    )
+
+
 def name_from_filename(markdown_file):
     """Fallback title derived from the filename, e.g.
     'arabian_nights_adventure.md' -> 'Arabian Nights'. Used when the
@@ -65,11 +88,7 @@ def name_from_filename(markdown_file):
     words = [w for w in re.split(r'[_\-]+', stem) if w]
     if words and words[-1].lower() == 'adventure':
         words = words[:-1]
-    lowercase_words = {'of', 'the', 'and', 'a', 'an', 'in', 'on', 'at', 'to', 'for'}
-    return ' '.join(
-        w.capitalize() if i == 0 or w.lower() not in lowercase_words else w.lower()
-        for i, w in enumerate(words)
-    )
+    return titlecase(' '.join(words))
 
 
 def detect_newline(path):
@@ -131,7 +150,7 @@ def parse_markdown(markdown_file):
         entries = {}
         row_pattern = r'\|\s*(\d{2})\s*\|\s*(.+?)\s*\|'
         for match in re.finditer(row_pattern, table_content):
-            code, desc = match.group(1), match.group(2).strip()
+            code, desc = match.group(1), strip_markdown_emphasis(match.group(2).strip())
             if desc.startswith('---'):
                 continue
             entries[code] = desc
@@ -143,13 +162,13 @@ def parse_markdown(markdown_file):
             # where the leading "1" is the row (first die) and each of the 6
             # cells after it is a column (second die).
             grid_row_pattern = (
-                r'^\|\s*([1-6])\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|'
+                r'^\|\s*\*{0,2}([1-6])\*{0,2}\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|'
                 r'\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*$'
             )
             for match in re.finditer(grid_row_pattern, table_content, re.MULTILINE):
                 row = match.group(1)
                 for col in range(1, 7):
-                    entries[f'{row}{col}'] = match.group(col + 1).strip()
+                    entries[f'{row}{col}'] = strip_markdown_emphasis(match.group(col + 1).strip())
 
         if not entries:
             if table_name.strip().lower() not in DIVIDER_HEADERS:
@@ -302,12 +321,23 @@ def main():
 
     try:
         supplement_name, adventure_tables, inspiration_tables = parse_markdown(markdown_file)
-        id_base = strip_tables_suffix(supplement_name)
-        if id_base.strip().lower() in ('adventure', ''):
-            # Generic/uninformative '## ' header - fall back to the filename.
-            id_base = name_from_filename(markdown_file)
+
+        # Some files title their '## ' header "ADVENTURE TABLES: <real title>"
+        # (often in all caps) rather than repeating a plain "Adventure Tables"
+        # label - pull the real title out from after the colon.
+        prefix_match = re.match(r'^adventure\s+tables\s*:\s*(.+)$', supplement_name, re.IGNORECASE)
+        if prefix_match:
+            id_base = titlecase(prefix_match.group(1))
             supplement_name = f'{id_base} Adventure Tables'
-            print(f"  Generic '## Adventure Tables' header - using filename instead: '{id_base}'")
+            print(f"  '## {prefix_match.group(0)}' header has an embedded title: '{id_base}'")
+        else:
+            id_base = strip_tables_suffix(supplement_name)
+            if id_base.strip().lower() in ('adventure', ''):
+                # Generic/uninformative '## ' header - fall back to the filename.
+                id_base = name_from_filename(markdown_file)
+                supplement_name = f'{id_base} Adventure Tables'
+                print(f"  Generic '## Adventure Tables' header - using filename instead: '{id_base}'")
+
         base_slug = slugify(id_base)
         adventure_id = base_slug if base_slug.endswith('-adventure') else base_slug + '-adventure'
 

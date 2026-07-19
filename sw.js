@@ -14,7 +14,7 @@
  * registerServiceWorker() nudges them to do, but only if this bumps).
  */
 
-const CACHE_VERSION = 'loner-v13';
+const CACHE_VERSION = 'loner-v27';
 const CACHE_NAME = `loner-cache-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
@@ -82,7 +82,21 @@ const PRECACHE_URLS = [
   './data/tables/supplements/cthulhu.js',
   './data/tables/flavors/cthulhu-inspired.js',
   './data/tables/supplements/galaxy-drifter.js',
-  './data/tables/flavors/galaxy-drifter-inspired.js'
+  './data/tables/flavors/galaxy-drifter-inspired.js',
+  './data/tables/supplements/paranormal-files.js',
+  './data/tables/flavors/paranormal-files-inspired.js',
+  './data/tables/supplements/the-threads-of-saga.js',
+  './data/tables/flavors/the-threads-of-saga-inspired.js',
+  './data/tables/supplements/pulp-adventures.js',
+  './data/tables/flavors/pulp-adventures-inspired.js',
+  './data/tables/supplements/pulp-heroes.js',
+  './data/tables/flavors/pulp-heroes-inspired.js',
+  './data/tables/supplements/savage-blades-of-xylandra.js',
+  './data/tables/flavors/savage-blades-of-xylandra-inspired.js',
+  './data/tables/supplements/steel-and-sorcery.js',
+  './data/tables/flavors/steel-and-sorcery-inspired.js',
+  './data/tables/supplements/urban-fantasy.js',
+  './data/tables/flavors/urban-fantasy-inspired.js'
 ];
 
 self.addEventListener('install', (event) => {
