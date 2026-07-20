@@ -14,7 +14,7 @@
  * registerServiceWorker() nudges them to do, but only if this bumps).
  */
 
-const CACHE_VERSION = 'loner-v27';
+const CACHE_VERSION = 'loner-v28';
 const CACHE_NAME = `loner-cache-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
@@ -38,10 +38,10 @@ const PRECACHE_URLS = [
   './assets/fonts/dicier-round-light.otf',
 
   './assets/logo.svg',
-  './assets/icons-pwa/icon-192.png',
-  './assets/icons-pwa/icon-512.png',
-  './assets/icons-pwa/icon-maskable-512.png',
-  './assets/icons-pwa/apple-touch-icon.png',
+  './assets/icons-pwa/icon-192.png?v=3',
+  './assets/icons-pwa/icon-512.png?v=3',
+  './assets/icons-pwa/icon-maskable-512.png?v=3',
+  './assets/icons-pwa/apple-touch-icon.png?v=3',
 
   './js/main.js',
   './js/state.js',
