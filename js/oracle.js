@@ -5,7 +5,7 @@
  */
 
 import { getState } from './state.js';
-import { updateTwistCounter as dbUpdateTwistCounter } from './db/database.js';
+import { updateTwistCounter as dbUpdateTwistCounter, getCharacter, updateCharacterLuck } from './db/database.js';
 import { showAlert } from './toast.js';
 import * as Editor from './editor.js';
 
@@ -342,15 +342,26 @@ let inConflict = false;
 let characterLuck = 6;
 let opponentLuck = 6;
 let opponentName = 'Opponent';
+let conflictCharacterId = null;
 
 export async function startConflict() {
   // Get values from form
   opponentName = document.getElementById('opponent-name').value || 'Opponent';
   opponentLuck = parseInt(document.getElementById('opponent-luck-input').value) || 6;
 
-  // Get character luck from active character
-  // TODO: Get from database when we have active character
-  characterLuck = 6;
+  // Get character luck from the active character, if any
+  conflictCharacterId = getState().characterId;
+  if (conflictCharacterId) {
+    const character = await getCharacter(conflictCharacterId);
+    if (character) {
+      characterLuck = character.luck;
+    } else {
+      conflictCharacterId = null;
+      characterLuck = 6;
+    }
+  } else {
+    characterLuck = 6;
+  }
 
   inConflict = true;
 
@@ -433,6 +444,10 @@ export async function rollConflict() {
       description = 'Failure';
     }
     characterLuck -= damage;
+
+    if (conflictCharacterId) {
+      await updateCharacterLuck(conflictCharacterId, Math.max(0, characterLuck));
+    }
   }
 
   // Log event
@@ -538,10 +553,9 @@ export async function endConflict() {
   // Reset values
   characterLuck = 6;
   opponentLuck = 6;
+  conflictCharacterId = null;
   document.getElementById('opponent-name').value = 'Opponent';
   document.getElementById('opponent-luck-input').value = 6;
 
   showAlert('Conflict ended', 'info');
-
-  // TODO: Update character luck in database
 }
