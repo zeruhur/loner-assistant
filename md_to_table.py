@@ -30,7 +30,10 @@ Tables are routed to a `category` the app understands:
 
 This will:
   1. Generate/refresh data/tables/supplements/<slug>.js as a proper ES module
-     (export default { supplement, tables }), with per-table `category`.
+     (export default { supplement, tables }), with per-table `category`. If the
+     file already exists it is MERGED, not overwritten: tables in the markdown
+     replace same-id tables, new ones are appended, and tables not present in
+     the markdown are left untouched (so a partial file won't wipe the rest).
   2. Add (or update) the corresponding entry in data/table-registry.js. If the
      target file is already registered, its existing id/name are reused so the
      supplement id stays stable (character tables land in the SAME supplement).
@@ -241,8 +244,29 @@ def parse_markdown(markdown_file):
     return title, supplement_tables, inspiration_tables
 
 
-def generate_js(supplement_id, supplement_name, tables, default_category, flavor_of=None):
+def generate_table_block(table_id, info, default_category):
+    """Render one table as its `<id>: { ... }` block, without a trailing
+    comma and without a trailing newline. This is the unit that both a fresh
+    write and a merge splice together, so the two paths stay byte-identical."""
+    category = info.get('category', default_category)
     lines = [
+        f'    {table_id}: {{',
+        f"      id: {js_string(info['id'])},",
+        f"      name: {js_string(info['name'])},",
+        f"      category: {js_string(category)},",
+        "      rollType: '2d6',",
+        '      entries: [',
+    ]
+    for row in info['entries']:
+        escaped_row = ', '.join(js_string(e) for e in row)
+        lines.append(f'        [{escaped_row}],')
+    lines.append('      ]')
+    lines.append('    }')
+    return '\n'.join(lines)
+
+
+def generate_js(supplement_id, supplement_name, tables, default_category, flavor_of=None):
+    header_lines = [
         '/**',
         f' * {supplement_name}',
         ' * D66 random tables',
@@ -256,33 +280,53 @@ def generate_js(supplement_id, supplement_name, tables, default_category, flavor
         '    enabled: true' + (',' if flavor_of else ''),
     ]
     if flavor_of:
-        lines.append(f"    flavorOf: {js_string(flavor_of)}")
-    lines += [
-        '  },',
-        '',
-        '  tables: {',
-    ]
+        header_lines.append(f"    flavorOf: {js_string(flavor_of)}")
+    header_lines += ['  },', '', '  tables: {']
 
-    table_ids = list(tables.keys())
-    for i, table_id in enumerate(table_ids):
-        info = tables[table_id]
-        category = info.get('category', default_category)
-        lines.append(f'    {table_id}: {{')
-        lines.append(f"      id: {js_string(info['id'])},")
-        lines.append(f"      name: {js_string(info['name'])},")
-        lines.append(f"      category: {js_string(category)},")
-        lines.append("      rollType: '2d6',")
-        lines.append('      entries: [')
-        for row in info['entries']:
-            escaped_row = ', '.join(js_string(e) for e in row)
-            lines.append(f'        [{escaped_row}],')
-        lines.append('      ]')
-        lines.append('    }' + (',' if i < len(table_ids) - 1 else ''))
+    header = '\n'.join(header_lines) + '\n'
+    body = ',\n'.join(
+        generate_table_block(tid, info, default_category)
+        for tid, info in tables.items()
+    )
+    return header + body + '\n  }\n};\n'
 
-    lines.append('  }')
-    lines.append('};')
-    lines.append('')
-    return '\n'.join(lines)
+
+# Matches one `    <id>: { ... }` table block in a generated supplement file.
+# `^    }` (a 4-space-indented closing brace) only ever ends a table block -
+# entries rows are indented deeper and the container braces are indented less -
+# so a non-greedy match to the first one reliably captures a whole block.
+TABLE_BLOCK_RE = re.compile(r'^    (\w+): \{\n.*?\n    \}', re.DOTALL | re.MULTILINE)
+
+
+def merge_supplement_file(out_path, tables, default_category):
+    """Merge freshly-parsed tables into an existing generated file: tables
+    whose id already exists are replaced in place, new ones are appended, and
+    tables not present in this markdown are left untouched. Returns
+    (added, replaced) id lists, or None if the file has no parseable blocks
+    (caller should then do a fresh write)."""
+    existing = out_path.read_text(encoding='utf-8')  # universal newlines -> \n
+    matches = list(TABLE_BLOCK_RE.finditer(existing))
+    if not matches:
+        return None
+
+    ordered_ids = [m.group(1) for m in matches]
+    block_map = {m.group(1): m.group(0) for m in matches}
+    header = existing[:matches[0].start()]
+    footer = existing[matches[-1].end():]
+
+    added, replaced = [], []
+    for tid, info in tables.items():
+        block = generate_table_block(tid, info, default_category)
+        if tid in block_map:
+            replaced.append(tid)
+        else:
+            ordered_ids.append(tid)
+            added.append(tid)
+        block_map[tid] = block
+
+    body = ',\n'.join(block_map[i] for i in ordered_ids)
+    write_matching_newline(out_path, header + body + footer)
+    return added, replaced
 
 
 def find_registry_entry_by_file(relative_file_path):
@@ -376,17 +420,24 @@ def write_supplement(out_dir, relative_dir, filename, supplement_id, supplement_
                      tables, default_category, description, flavor_of=None):
     relative_file_path = f'{relative_dir}/{filename}'
     out_path = out_dir / filename
-
-    if out_path.exists():
-        answer = input(f"{out_path.relative_to(REPO_ROOT)} already exists. Overwrite? [y/N] ")
-        if answer.strip().lower() != 'y':
-            print(f"Skipped {out_path.relative_to(REPO_ROOT)}")
-            return
+    rel = out_path.relative_to(REPO_ROOT)
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    js_code = generate_js(supplement_id, supplement_name, tables, default_category, flavor_of)
-    write_matching_newline(out_path, js_code)
-    print(f"\nWrote {out_path.relative_to(REPO_ROOT)}")
+
+    # Merge into an existing file so tables not present in this markdown are
+    # preserved (running on a partial file won't wipe the others). Only a
+    # brand-new file is generated from scratch.
+    merged = merge_supplement_file(out_path, tables, default_category) if out_path.exists() else None
+    if merged is not None:
+        added, replaced = merged
+        print(f"\nMerged into {rel}: {len(replaced)} updated, {len(added)} added, "
+              f"existing tables preserved")
+        if added:
+            print("  added: " + ", ".join(added))
+    else:
+        js_code = generate_js(supplement_id, supplement_name, tables, default_category, flavor_of)
+        write_matching_newline(out_path, js_code)
+        print(f"\nWrote {rel}")
 
     if update_registry(supplement_id, supplement_name, relative_file_path, description, flavor_of):
         print(f"Registered '{supplement_id}' in data/table-registry.js")

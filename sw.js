@@ -14,7 +14,7 @@
  * registerServiceWorker() nudges them to do, but only if this bumps).
  */
 
-const CACHE_VERSION = 'loner-v29';
+const CACHE_VERSION = 'loner-v30';
 const CACHE_NAME = `loner-cache-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
