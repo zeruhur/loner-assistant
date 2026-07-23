@@ -23,28 +23,46 @@ function getRelationshipColor(relationship) {
 /**
  * Show new NPC form
  */
-export function showNewNPCForm() {
+export function showNewNPCForm(prefill = null) {
+  const p = prefill || {};
+  const v = (s) => UI.escapeHtml(s || '');
+  const skillsVal = Array.isArray(p.skills) ? p.skills.join(', ') : (p.skills || '');
+  const gearVal = Array.isArray(p.gear) ? p.gear.join(', ') : (p.gear || '');
+  const rel = p.relationship || 'neutral';
+
   const formHTML = `
     <form id="new-npc-form">
       <div class="form-group">
         <label>Name *</label>
-        <input type="text" id="npc-name" required placeholder="NPC name">
+        <input type="text" id="npc-name" required placeholder="NPC name" value="${v(p.name)}">
       </div>
       <div class="form-group">
-        <label>Description</label>
-        <textarea id="npc-description" placeholder="What do you know about them?" rows="3"></textarea>
+        <label>Concept</label>
+        <input type="text" id="npc-concept" placeholder="e.g., Wandering Monk" value="${v(p.concept)}">
+      </div>
+      <div class="form-group">
+        <label>Skills (comma-separated)</label>
+        <input type="text" id="npc-skills" placeholder="Exorcism, Investigation" value="${v(skillsVal)}">
+      </div>
+      <div class="form-group">
+        <label>Frailty</label>
+        <input type="text" id="npc-frailty" placeholder="Haunted Past" value="${v(p.frailty)}">
+      </div>
+      <div class="form-group">
+        <label>Gear (comma-separated)</label>
+        <input type="text" id="npc-gear" placeholder="Prayer Beads, Lantern" value="${v(gearVal)}">
       </div>
       <div class="form-group">
         <label>Relationship</label>
         <select id="npc-relationship">
-          <option value="neutral">Neutral</option>
-          <option value="ally">Ally</option>
-          <option value="enemy">Enemy</option>
+          <option value="neutral" ${rel === 'neutral' ? 'selected' : ''}>Neutral</option>
+          <option value="ally" ${rel === 'ally' ? 'selected' : ''}>Ally</option>
+          <option value="enemy" ${rel === 'enemy' ? 'selected' : ''}>Enemy</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Tags (comma-separated)</label>
-        <input type="text" id="npc-tags" placeholder="merchant, suspicious, helpful">
+        <label>Notes</label>
+        <textarea id="npc-description" placeholder="What do you know about them?" rows="3">${v(p.description)}</textarea>
       </div>
       <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
         <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
@@ -77,13 +95,18 @@ export async function createNewNPC() {
     }
 
     const name = nameInput.value.trim();
-    const description = document.getElementById('npc-description').value.trim();
-    const tags = document.getElementById('npc-tags').value
-      .split(',')
-      .map(t => t.trim())
-      .filter(t => t);
+    const splitList = (id) => document.getElementById(id).value
+      .split(',').map(s => s.trim()).filter(s => s);
 
-    const npcId = await LonerDB.createNPC(state.campaignId, name, description, tags);
+    const npcId = await LonerDB.createNPC(state.campaignId, {
+      name,
+      concept: document.getElementById('npc-concept').value.trim(),
+      skills: splitList('npc-skills'),
+      frailty: document.getElementById('npc-frailty').value.trim(),
+      gear: splitList('npc-gear'),
+      relationship: document.getElementById('npc-relationship').value,
+      description: document.getElementById('npc-description').value.trim()
+    });
 
     console.log('NPC created with ID:', npcId);
 
@@ -107,18 +130,38 @@ export async function createNewNPC() {
 /**
  * View NPC details
  */
+function chipsHTML(items) {
+  return `<div style="display: flex; flex-wrap: wrap; gap: 0.25rem;">
+    ${items.map(i => `<span class="tag-chip">${UI.escapeHtml(i)}</span>`).join('')}
+  </div>`;
+}
+
 export async function viewNPCDetails(npcId) {
   const npc = await LonerDB.db.npcs.get(npcId);
+  const skills = npc.skills || [];
+  const gear = npc.gear || [];
 
   const detailsHTML = `
-    <div class="npc-details">
+    <div class="npc-details character-sheet">
       <div class="form-group">
         <label>Name</label>
         <div>${UI.escapeHtml(npc.name)}</div>
       </div>
       <div class="form-group">
-        <label>Description</label>
-        <div>${UI.escapeHtml(npc.description || 'No description')}</div>
+        <label>Concept</label>
+        <div>${UI.escapeHtml(npc.concept || '—')}</div>
+      </div>
+      <div class="form-group">
+        <label>Skills</label>
+        ${skills.length ? chipsHTML(skills) : '<div>None</div>'}
+      </div>
+      <div class="form-group">
+        <label>Frailty</label>
+        <div>${UI.escapeHtml(npc.frailty || '—')}</div>
+      </div>
+      <div class="form-group">
+        <label>Gear</label>
+        ${gear.length ? chipsHTML(gear) : '<div>None</div>'}
       </div>
       <div class="form-group">
         <label>Relationship</label>
@@ -126,10 +169,16 @@ export async function viewNPCDetails(npcId) {
           ${UI.escapeHtml(npc.relationship || 'neutral')}
         </div>
       </div>
+      ${npc.description ? `
+        <div class="form-group">
+          <label>Notes</label>
+          <div>${UI.escapeHtml(npc.description)}</div>
+        </div>
+      ` : ''}
       ${npc.tags && npc.tags.length > 0 ? `
         <div class="form-group">
           <label>Tags</label>
-          <div>${npc.tags.map(t => UI.escapeHtml(t)).join(', ')}</div>
+          ${chipsHTML(npc.tags)}
         </div>
       ` : ''}
       <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem;">
@@ -148,15 +197,28 @@ export async function viewNPCDetails(npcId) {
 export async function editNPC(npcId) {
   const npc = await LonerDB.db.npcs.get(npcId);
 
+  const v = (s) => UI.escapeHtml(s || '');
   const formHTML = `
     <form id="edit-npc-form">
       <div class="form-group">
         <label>Name *</label>
-        <input type="text" id="edit-npc-name" required value="${UI.escapeHtml(npc.name)}">
+        <input type="text" id="edit-npc-name" required value="${v(npc.name)}">
       </div>
       <div class="form-group">
-        <label>Description</label>
-        <textarea id="edit-npc-description" rows="3">${UI.escapeHtml(npc.description || '')}</textarea>
+        <label>Concept</label>
+        <input type="text" id="edit-npc-concept" value="${v(npc.concept)}">
+      </div>
+      <div class="form-group">
+        <label>Skills (comma-separated)</label>
+        <input type="text" id="edit-npc-skills" value="${v((npc.skills || []).join(', '))}">
+      </div>
+      <div class="form-group">
+        <label>Frailty</label>
+        <input type="text" id="edit-npc-frailty" value="${v(npc.frailty)}">
+      </div>
+      <div class="form-group">
+        <label>Gear (comma-separated)</label>
+        <input type="text" id="edit-npc-gear" value="${v((npc.gear || []).join(', '))}">
       </div>
       <div class="form-group">
         <label>Relationship</label>
@@ -167,8 +229,8 @@ export async function editNPC(npcId) {
         </select>
       </div>
       <div class="form-group">
-        <label>Tags (comma-separated)</label>
-        <input type="text" id="edit-npc-tags" value="${npc.tags ? npc.tags.join(', ') : ''}">
+        <label>Notes</label>
+        <textarea id="edit-npc-description" rows="3">${v(npc.description)}</textarea>
       </div>
       <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
         <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
@@ -185,12 +247,8 @@ export async function editNPC(npcId) {
  */
 export async function saveNPCEdit(npcId) {
   const name = document.getElementById('edit-npc-name').value.trim();
-  const description = document.getElementById('edit-npc-description').value.trim();
-  const relationship = document.getElementById('edit-npc-relationship').value;
-  const tags = document.getElementById('edit-npc-tags').value
-    .split(',')
-    .map(t => t.trim())
-    .filter(t => t);
+  const splitList = (id) => document.getElementById(id).value
+    .split(',').map(s => s.trim()).filter(s => s);
 
   if (!name) {
     UI.showAlert('Name is required', 'error');
@@ -200,9 +258,12 @@ export async function saveNPCEdit(npcId) {
   try {
     await LonerDB.updateNPC(npcId, {
       name,
-      description,
-      relationship,
-      tags
+      concept: document.getElementById('edit-npc-concept').value.trim(),
+      skills: splitList('edit-npc-skills'),
+      frailty: document.getElementById('edit-npc-frailty').value.trim(),
+      gear: splitList('edit-npc-gear'),
+      relationship: document.getElementById('edit-npc-relationship').value,
+      description: document.getElementById('edit-npc-description').value.trim()
     });
 
     UI.closeModal();
@@ -273,15 +334,16 @@ export async function loadNPCsList() {
         </span>
       </div>
       <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
-        ${UI.escapeHtml(npc.description || 'No description')}
+        ${UI.escapeHtml(npc.concept || npc.description || 'No concept')}
       </p>
-      ${npc.tags && npc.tags.length > 0 ? `
-        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-          ${npc.tags.map(tag => `
-            <span class="tag-chip">${UI.escapeHtml(tag)}</span>
-          `).join('')}
-        </div>
-      ` : ''}
+      ${(() => {
+        const chips = (npc.skills && npc.skills.length ? npc.skills : (npc.tags || []));
+        return chips.length ? `
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            ${chips.map(tag => `<span class="tag-chip">${UI.escapeHtml(tag)}</span>`).join('')}
+          </div>
+        ` : '';
+      })()}
       <div class="card-footer">
         <span>Created: ${UI.formatDate(npc.createdAt)}</span>
         <div style="display: flex; gap: 0.5rem;">
@@ -312,12 +374,17 @@ export async function showNPCPanel() {
     return;
   }
 
-  container.innerHTML = npcs.slice(0, 5).map(npc => `
-    <div class="quick-link-item" onclick="viewNPCDetails(${npc.id})">
-      <strong>${UI.escapeHtml(npc.name)}</strong>
-      ${npc.tags.length > 0 ? `<div style="font-size: 0.75rem; opacity: 0.7;">${npc.tags.join(', ')}</div>` : ''}
-    </div>
-  `).join('');
+  container.innerHTML = npcs.slice(0, 5).map(npc => {
+    const sub = npc.concept
+      || (npc.skills && npc.skills.length ? npc.skills.join(', ') : '')
+      || (npc.tags && npc.tags.length ? npc.tags.join(', ') : '');
+    return `
+      <div class="quick-link-item" onclick="viewNPCDetails(${npc.id})">
+        <strong>${UI.escapeHtml(npc.name)}</strong>
+        ${sub ? `<div style="font-size: 0.75rem; opacity: 0.7;">${UI.escapeHtml(sub)}</div>` : ''}
+      </div>
+    `;
+  }).join('');
 }
 
 export const NPCManager = {

@@ -238,15 +238,16 @@ export const CharacterGenerator = {
     }
 
     const c = current.character;
-    const description =
-      `${c.concept}. ` +
-      `Frailty: ${c.frailty}. ` +
-      `Gear: ${c.gear.join(', ')}.`;
-    // NPC "tags" are Loner's descriptive stats - concept + skills read best.
-    const tags = [c.concept, ...c.skills].filter(Boolean);
 
     try {
-      await LonerDB.createNPC(state.campaignId, c.fullName, description, tags);
+      await LonerDB.createNPC(state.campaignId, {
+        name: c.fullName,
+        concept: c.concept,
+        skills: c.skills,
+        frailty: c.frailty,
+        gear: c.gear,
+        relationship: 'neutral'
+      });
 
       Editor.insertBlock(
         'NPC',
