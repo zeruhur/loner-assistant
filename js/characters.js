@@ -24,12 +24,27 @@ export function displayActiveCharacter(character) {
     <div style="margin-top: 0.5rem;">
       <strong>Luck:</strong> ${character.luck}/${character.maxLuck}
     </div>
-    ${character.skills.length > 0 ? `
+    ${(character.skills || []).length > 0 ? `
       <div style="margin-top: 0.5rem;">
         <strong>Skills:</strong><br>
         <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.25rem;">
           ${character.skills.map(skill => `
             <span class="tag-chip">${UI.escapeHtml(skill)}</span>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
+    ${character.frailty ? `
+      <div style="margin-top: 0.5rem;">
+        <strong>Frailty:</strong> ${UI.escapeHtml(character.frailty)}
+      </div>
+    ` : ''}
+    ${(character.gear || []).length > 0 ? `
+      <div style="margin-top: 0.5rem;">
+        <strong>Gear:</strong><br>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.25rem;">
+          ${character.gear.map(item => `
+            <span class="tag-chip">${UI.escapeHtml(item)}</span>
           `).join('')}
         </div>
       </div>

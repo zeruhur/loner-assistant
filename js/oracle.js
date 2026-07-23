@@ -5,7 +5,7 @@
  */
 
 import { getState } from './state.js';
-import { updateTwistCounter as dbUpdateTwistCounter, getCharacter, updateCharacterLuck } from './db/database.js';
+import { updateCampaignTwistCounter, getCharacter, updateCharacterLuck } from './db/database.js';
 import { showAlert } from './toast.js';
 import * as Editor from './editor.js';
 
@@ -186,10 +186,10 @@ export function updateTwistCounter() {
     }
   }
 
-  // SAVE to database
+  // SAVE to database (campaign-level, so it persists across sessions)
   const state = getState();
-  if (state.sessionId) {
-    dbUpdateTwistCounter(state.sessionId, currentTwistCounter);
+  if (state.campaignId) {
+    updateCampaignTwistCounter(state.campaignId, currentTwistCounter);
   }
 }
 

@@ -58,9 +58,15 @@ export async function loadSession(sessionId) {
       quillEditor.setText('');
     }
 
-    // Restore twist counter (without re-saving it back to the DB)
-    if (session.twistCounter !== undefined) {
-      setTwistCounter(session.twistCounter);
+    // Restore the twist counter (without re-saving it back to the DB).
+    // The counter is now campaign-scoped so it persists across sessions;
+    // fall back to any legacy per-session value for pre-existing data.
+    const campaign = session.campaignId ? await getCampaign(session.campaignId) : null;
+    const twistCounter = campaign && campaign.twistCounter !== undefined
+      ? campaign.twistCounter
+      : session.twistCounter;
+    if (twistCounter !== undefined) {
+      setTwistCounter(twistCounter);
     }
 
     console.log('✅ Session loaded into editor:', session.name);

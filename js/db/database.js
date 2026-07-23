@@ -65,7 +65,8 @@ export async function createCampaign(name, description = '') {
     description: description,
     createdAt: new Date(),
     lastPlayed: new Date(),
-    archived: false
+    archived: false,
+    twistCounter: 0 // Story-wide tension gauge, persists across sessions
   });
   return id;
 }
@@ -97,6 +98,13 @@ export async function getCampaign(id) {
 export async function updateCampaignLastPlayed(campaignId) {
   await db.campaigns.update(campaignId, {
     lastPlayed: new Date()
+  });
+}
+
+// Update the campaign-level twist counter (persists across all sessions)
+export async function updateCampaignTwistCounter(campaignId, counter) {
+  await db.campaigns.update(campaignId, {
+    twistCounter: counter
   });
 }
 
@@ -160,13 +168,6 @@ export async function getSession(id) {
 export async function updateSessionNotes(sessionId, notesContent) {
   await db.sessions.update(sessionId, {
     notes: notesContent
-  });
-}
-
-// Update twist counter
-export async function updateTwistCounter(sessionId, counter) {
-  await db.sessions.update(sessionId, {
-    twistCounter: counter
   });
 }
 
