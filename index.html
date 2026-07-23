@@ -548,9 +548,14 @@
               <h2 style="margin: 0;">NPCs</h2>
               <button class="help-button" onclick="HelpSystem.show('npcs')" title="Show help for NPCs">?</button>
             </div>
-            <button class="btn btn-primary" onclick="showNewNPCForm()">
-              + New NPC
-            </button>
+            <div style="display: flex; gap: var(--space-sm);">
+              <button class="btn btn-secondary" onclick="CharacterGenerator.open('npc')" title="Roll an NPC from a supplement's tables">
+                🎲 Generate
+              </button>
+              <button class="btn btn-primary" onclick="showNewNPCForm()">
+                + New NPC
+              </button>
+            </div>
           </div>
           <div id="npcs-list" class="grid-list"></div>
         </div>

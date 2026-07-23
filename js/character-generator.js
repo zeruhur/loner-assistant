@@ -30,12 +30,18 @@ export const CharacterGenerator = {
   /**
    * Open the generator. Picks a default supplement (or bails if none has
    * character tables) and rolls an initial character.
+   * @param {string|null} presetType - 'pc' or 'npc' to preselect the "Save
+   *   as" toggle (e.g. the NPCs view opens straight into NPC mode).
    */
-  open() {
+  open(presetType = null) {
     const sources = TableSystem.getCharacterSources();
     if (sources.length === 0) {
       UI.showAlert('No supplement with character tables is enabled.', 'error');
       return;
+    }
+
+    if (presetType === 'pc' || presetType === 'npc') {
+      current.type = presetType;
     }
 
     // Keep the previously used supplement if it still qualifies.
