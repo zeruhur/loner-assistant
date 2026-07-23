@@ -12,6 +12,146 @@ export default {
   },
 
   tables: {
+    concepts: {
+      id: 'concepts',
+      name: 'Concepts',
+      category: 'character',
+      rollType: '2d6',
+      entries: [
+        ['Haunted Ronin', 'Wandering Monk', 'Disgraced Samurai', 'Exorcist Priest', 'Cursed Noble', 'Peasant Mystic'],
+        ['Demon Hunter', 'Vengeful Widow', 'Outcast Shaman', 'Fugitive Ninja', 'Ghostly Wanderer', 'Fortune Teller'],
+        ['Abandoned Heir', 'Possessed Scribe', 'Broken Onmyoji', 'Bandit Turned Monk', 'Accursed Artist', 'Troubled Poet'],
+        ['Blade-for-Hire', 'Loyal Retainer', 'Shrine Guardian', 'Lost Fisherman', 'Outlaw Warrior', 'Forbidden Scholar'],
+        ['Yokai Whisperer', 'Amnesiac Traveler', 'Ill-Fated Lover', 'Cursed Blacksmith', 'Wandering Herbalist', 'Ghost-Seeking Child'],
+        ['Masked Duelist', 'Spirit Negotiator', 'Betrayed Courtier', 'Shadow Puppeteer', 'Orphaned Scout', 'Doomed Court Lady'],
+      ]
+    },
+    skills: {
+      id: 'skills',
+      name: 'Skills',
+      category: 'character',
+      rollType: '2d6',
+      entries: [
+        ['Kenjutsu (Swordplay)', 'Archery', 'Spiritualism', 'Hunting', 'Stealth', 'Acrobatics'],
+        ['Calligraphy', 'Exorcism', 'Tea Ceremony', 'Deception', 'Herbalism', 'Investigation'],
+        ['Ghost-Sensing', 'Animal Handling', 'Astrology', 'Engineering', 'Poison-Crafting', 'Storytelling'],
+        ['Martial Arts', 'Divination', 'Persuasion', 'Shadow-Walking', 'Mask-Carving', 'Tracking'],
+        ['Naginata Mastery', 'Lore of the Dead', 'Fire Magic', 'Mapmaking', 'Lockpicking', 'Healing Arts'],
+        ['Shape-Resisting', 'Moon Rituals', 'Fan Combat', 'Silent Movement', 'Negotiation', 'Ritual Dancing'],
+      ]
+    },
+    frailties: {
+      id: 'frailties',
+      name: 'Frailties',
+      category: 'character',
+      rollType: '2d6',
+      entries: [
+        ['Cursed Bloodline', 'Haunted Past', 'Fear of Fire', 'Wrathful Temper', 'Dishonored', 'Superstitious'],
+        ['Unfinished Oath', 'Addicted to Sake', 'Afraid of Darkness', 'Unlucky in Love', 'Can’t Lie', 'Prone to Nightmares'],
+        ['Marked by Death', 'Fated to Betray', 'Obsessed with Revenge', 'Doomed to Die Young', 'Fears Reflection', 'Stubbornly Skeptical'],
+        ['Unstable Powers', 'Bloodstained Hands', 'Forgetful of the Past', 'Hunted by Yokai', 'Paranoid', 'Cannot Speak of the Dead'],
+        ['Weak to Iron', 'Cannot Swim', 'Cannot Sleep Unarmed', 'Speaks to the Dead Unbidden', 'Fear of Heights', 'Never Breaks a Promise'],
+        ['Bad with Money', 'Prone to Fits of Rage', 'Outcast by Society', 'Crippled by Guilt', 'Mistrusts Everyone', 'Fear of the Ocean'],
+      ]
+    },
+    gear: {
+      id: 'gear',
+      name: 'Gear',
+      category: 'character',
+      rollType: '2d6',
+      entries: [
+        ['Cursed Katana', 'Lantern of Ghosts', 'Paper Talismans', 'Naginata', 'Hidden Dagger', 'Sealed Letter'],
+        ['Fox Mask', 'Silver Bell', 'Tattered Kimono', 'Lucky Coin', 'Ancient Scroll', 'Oni-Slaying Spear'],
+        ['Whispering Blade', 'Wooden Prayer Beads', 'Blood-Stained Fan', 'Spirit-Sensing Ink', 'Herbal Pouch', 'Iron Shackles'],
+        ['Bamboo Flute', 'Poisoned Hairpin', 'Haunted Teacup', 'Shadow Puppet', 'Ashen Cloak', 'Mirror of Truth'],
+        ['Tattered Banner', 'Folding Fan', 'Mask of the Forgotten', 'Sealed Bottle of River Water', 'Demon-Sealing Rope', 'Small Bag of White Sand'],
+        ['Sandals of the Lost', 'Enchanted Umbrella', 'Rusted Helmet', 'Ghostly Calligraphy Brush', 'Dragon’s Claw Pendant', 'Broken Spearhead'],
+      ]
+    },
+    female_names: {
+      id: 'female_names',
+      name: 'Female Names',
+      category: 'character',
+      rollType: '2d6',
+      entries: [
+        ['Akari', 'Hana', 'Yuki', 'Mei', 'Sora', 'Kaori'],
+        ['Emiko', 'Aiko', 'Sakura', 'Rina', 'Kiyomi', 'Mika'],
+        ['Ayame', 'Yumiko', 'Natsuki', 'Aya', 'Haruka', 'Kimiko'],
+        ['Keiko', 'Rei', 'Asuka', 'Natsumi', 'Yuri', 'Chieko'],
+        ['Amaya', 'Eri', 'Kana', 'Misaki', 'Tomoko', 'Ayumi'],
+        ['Yui', 'Nozomi', 'Hinata', 'Yuna', 'Akane', 'Nanami'],
+      ]
+    },
+    male_names: {
+      id: 'male_names',
+      name: 'Male Names',
+      category: 'character',
+      rollType: '2d6',
+      entries: [
+        ['Ren', 'Hiroshi', 'Kaito', 'Takashi', 'Haruki', 'Daiki'],
+        ['Kenji', 'Kazuki', 'Ryota', 'Tatsuya', 'Yuto', 'Akihiko'],
+        ['Satoshi', 'Yuki', 'Riku', 'Makoto', 'Sora', 'Shinji'],
+        ['Naoki', 'Akihiro', 'Kenta', 'Sho', 'Toshiro', 'Haruto'],
+        ['Kaito', 'Taro', 'Yuma', 'Ryo', 'Keisuke', 'Hayato'],
+        ['Renji', 'Junichi', 'Taichi', 'Shota', 'Hiroto', 'Sosuke'],
+      ]
+    },
+    surnames: {
+      id: 'surnames',
+      name: 'Surnames',
+      category: 'character',
+      rollType: '2d6',
+      entries: [
+        ['Tanaka', 'Yamamoto', 'Suzuki', 'Watanabe', 'Itou', 'Sato'],
+        ['Nakamura', 'Kobayashi', 'Kato', 'Takahashi', 'Ito', 'Abe'],
+        ['Okada', 'Sakamoto', 'Inoue', 'Kimura', 'Hayashi', 'Yamada'],
+        ['Mori', 'Ishikawa', 'Otsuka', 'Nishimura', 'Fujita', 'Sasaki'],
+        ['Aoki', 'Ogawa', 'Matsumoto', 'Suzuki', 'Ikeda', 'Morita'],
+        ['Hasegawa', 'Nakanishi', 'Taniguchi', 'Saito', 'Hayashi', 'Shibata'],
+      ]
+    },
+    settlement_names: {
+      id: 'settlement_names',
+      name: 'Settlement Names',
+      category: 'random-tables',
+      rollType: '2d6',
+      entries: [
+        ['Mizukaze', 'Hoshizora', 'Yamanami', 'Akatsuki', 'Kasumi', 'Kiyomizu'],
+        ['Inari', 'Himawari', 'Suzaku', 'Yamabiko', 'Shizuka', 'Tsukinami'],
+        ['Kurogane', 'Mizuhara', 'Sakura', 'Hayabusa', 'Amagumo', 'Fujimori'],
+        ['Kamimizu', 'Komorebi', 'Aozora', 'Yamashiro', 'Ayatsuri', 'Shinrin'],
+        ['Kazan', 'Yukizuki', 'Akane', 'Hotarubi', 'Kageyama', 'Utsukushi'],
+        ['Isogai', 'Miharashi', 'Tachibana', 'Nijigami', 'Yurei', 'Minakami'],
+      ]
+    },
+    location_names: {
+      id: 'location_names',
+      name: 'Location Names',
+      category: 'random-tables',
+      rollType: '2d6',
+      entries: [
+        ['Hikari', 'Kaguya', 'Ryuji', 'Amano', 'Tsukuyomi', 'Seiryu'],
+        ['Izanagi', 'Amaterasu', 'Uzume', 'Shinrin', 'Fujin', 'Raijin'],
+        ['Enma', 'Tenjin', 'Akatsuki', 'Kannon', 'Ebisu', 'Daikokuten'],
+        ['Fujin', 'Raijin', 'Izanami', 'Fudo', 'Benzaiten', 'Jurojin'],
+        ['Marishiten', 'Kujaku', 'Susano\'o', 'Gekko', 'Ryujin', 'Ame-no-Uz'],
+        ['Uka', 'Miroku', 'Asura', 'Jizo', 'Emma', 'Benten'],
+      ]
+    },
+    regional_names: {
+      id: 'regional_names',
+      name: 'Regional Names',
+      category: 'random-tables',
+      rollType: '2d6',
+      entries: [
+        ['Higashima', 'Nishizora', 'Minakami', 'Okuizumo', 'Kochi', 'Kumamoto'],
+        ['Kizan', 'Yamanomi', 'Kanazawa', 'Chugoku', 'Boso', 'Yamagata'],
+        ['Kiso', 'Kansai', 'Shikoku', 'Tohoku', 'Chubu', 'Kyushu'],
+        ['Shonan', 'Hokuriku', 'Hokkaido', 'Chugoku', 'Izu', 'Kyushu'],
+        ['Aomori', 'Chubu', 'Tokai', 'Tohoku', 'Ogasawara', 'Okinawa'],
+        ['Iwate', 'Kanto', 'Shikoku', 'Kyushu', 'Kii', 'Akita'],
+      ]
+    },
     adventure_seeds: {
       id: 'adventure_seeds',
       name: 'Adventure Seeds',
@@ -32,12 +172,12 @@ export default {
       category: 'random-tables',
       rollType: '2d6',
       entries: [
-        ['**Whispering Blade**: This ancient katana holds the souls of fallen warriors, granting it deadly power in battle. But beware, for its whispers can drive the wielder to madness.', '**Mask of Shadows**: When worn, this mask grants the ability to see in darkness and become unseen. However, it also feeds off your inner fears, slowly draining your courage.', '**Amulet of Protection**: A shimmering amulet that shields you from harm. But every time it saves you, it demands a small token in return – a memory or an emotion.', '**Bamboo Flute of Tranquility**: A haunting melody can be played on this flute, soothing minds and healing hearts. Yet its soothing tunes can also attract spirits from the beyond.', '**Stone of Reflection**: Gaze into this polished stone and see visions of the past or glimpse into the future. But be warned, these visions might come at a price.', '**Fan of Galeforce**: With a flick of this fan, you can summon mighty winds to clear your path. Yet its power might also bring forth storms and chaos.'],
-        ['**Teacup of Clarity**: Sipping tea from this cup grants insight and wisdom. But each sip connects you to the spirits of those who drank from it before.', '**Cursed Compass**: This compass points the way to hidden treasures. But it\'s cursed – the more you rely on it, the more it leads you astray.', '**Shroud of Invisibility**: Wrap yourself in this shroud to become invisible to the world. Yet the longer you remain hidden, the more you risk losing touch with reality.', '**Scroll of Binding**: A scroll that can bind and control supernatural creatures. However, each binding costs a fragment of your life force.', '**Bell of Warning**: Ring this bell to alert you to danger. But it also warns nearby spirits of your presence, inviting their attention.', '**Mirror of Truth**: Gaze into this mirror to see through illusions and deceit. Yet its truth can be harsh, revealing more than you may want to know.'],
-        ['**Sake Cup of Valor**: Drinking from this cup grants courage and strength. But its effects are fleeting, and the price is a deep and lasting fatigue.', '**Earring of Eavesdropping**: Wear this earring to hear distant conversations. Yet the more secrets you uncover, the more your own thoughts might be exposed.', '**Lantern of Lost Souls**: This lantern illuminates the spirit world, revealing hidden truths. But it also attracts restless spirits who seek your aid.', '**Sealing Scroll**: A scroll that can seal away supernatural forces. But the more you use it, the more it drains your vitality.', '**Mirror of Vanity**: Gaze into this mirror to temporarily enhance your appearance and charisma. But vanity comes at a cost – it feeds on your self-esteem.', '**Cursed Quill**: Writing with this quill brings your words to life. However, the quill craves dark stories, and your creations might have unintended consequences.'],
-        ['**Stone of Echoes**: Whisper a message into this stone, and it will carry your words across distances. But your own secrets might also be revealed.', '**Ring of Fortune**: Wear this ring for a stroke of luck in your endeavors. Yet it tempts fate – the more you rely on it, the more danger it attracts.', '**Ink of Enchantment**: This ink imbues your drawings with magic, bringing them to life. But the more intricate the drawing, the greater the toll on your energy.', '**Compass of Lost Souls**: This compass guides you to those who are lost. But with each guiding, you risk becoming lost yourself.', '**Fang of the Beast**: This fang grants the strength and instincts of a wild beast. Yet its primal power might consume your human nature.', '**Chalice of Dreams**: Sip from this chalice to experience vivid dreams that might reveal insights. But these dreams can blur the line between reality and illusion.'],
-        ['**Mask of Deception**: A mask that grants the power of deception, making you appear as someone else. However, the mask might also blur your own identity.', '**Brazier of Protection**: This brazier wards off evil spirits with its holy flames. But the stronger its protection, the more it demands your devotion.', '**Rune-etched Bracelet**: Wear this bracelet to channel elemental magic. But its runes can also bind you to the elements, leaving you vulnerable.', '**Mirror of Regret**: Gaze into this mirror to witness past events and seek understanding. But dwelling on regrets might trap you in a cycle of despair.', '**Cursed Dice**: Roll these dice to alter fate itself. Yet their power can backfire, leading to unexpected and dire consequences.', '**Stone of Levitation**: Touch this stone to defy gravity and levitate. But the longer you remain airborne, the more you risk losing touch with the ground.'],
-        ['**Scroll of Illusions**: Unroll this scroll to create illusions that deceive the senses. But illusions can twist your perception, leading you astray.', '**Bell of Tranquility**: Ring this bell to bring calm and serenity to chaotic situations. Yet its peaceful aura might also attract restless spirits.', '**Talisman of Warding**: Wear this talisman for protection against supernatural forces. But as its power grows, it might draw these forces to you.', '**Veil of Dreams**: This veil allows you to enter the dreams of others. But navigating dreams comes with its own risks and mysteries.', '**Mask of Revelations**: A mask that reveals hidden truths and secrets. Yet truth can be a double-edged sword, sometimes better left unsaid.', '**Elixir of Euphoria**: Drinking this elixir grants moments of pure joy and ecstasy. But its intoxicating effects might lead you down a dangerous path.'],
+        ['Whispering Blade: This ancient katana holds the souls of fallen warriors, granting it deadly power in battle. But beware, for its whispers can drive the wielder to madness.', 'Mask of Shadows: When worn, this mask grants the ability to see in darkness and become unseen. However, it also feeds off your inner fears, slowly draining your courage.', 'Amulet of Protection: A shimmering amulet that shields you from harm. But every time it saves you, it demands a small token in return – a memory or an emotion.', 'Bamboo Flute of Tranquility: A haunting melody can be played on this flute, soothing minds and healing hearts. Yet its soothing tunes can also attract spirits from the beyond.', 'Stone of Reflection: Gaze into this polished stone and see visions of the past or glimpse into the future. But be warned, these visions might come at a price.', 'Fan of Galeforce: With a flick of this fan, you can summon mighty winds to clear your path. Yet its power might also bring forth storms and chaos.'],
+        ['Teacup of Clarity: Sipping tea from this cup grants insight and wisdom. But each sip connects you to the spirits of those who drank from it before.', 'Cursed Compass: This compass points the way to hidden treasures. But it\'s cursed – the more you rely on it, the more it leads you astray.', 'Shroud of Invisibility: Wrap yourself in this shroud to become invisible to the world. Yet the longer you remain hidden, the more you risk losing touch with reality.', 'Scroll of Binding: A scroll that can bind and control supernatural creatures. However, each binding costs a fragment of your life force.', 'Bell of Warning: Ring this bell to alert you to danger. But it also warns nearby spirits of your presence, inviting their attention.', 'Mirror of Truth: Gaze into this mirror to see through illusions and deceit. Yet its truth can be harsh, revealing more than you may want to know.'],
+        ['Sake Cup of Valor: Drinking from this cup grants courage and strength. But its effects are fleeting, and the price is a deep and lasting fatigue.', 'Earring of Eavesdropping: Wear this earring to hear distant conversations. Yet the more secrets you uncover, the more your own thoughts might be exposed.', 'Lantern of Lost Souls: This lantern illuminates the spirit world, revealing hidden truths. But it also attracts restless spirits who seek your aid.', 'Sealing Scroll: A scroll that can seal away supernatural forces. But the more you use it, the more it drains your vitality.', 'Mirror of Vanity: Gaze into this mirror to temporarily enhance your appearance and charisma. But vanity comes at a cost – it feeds on your self-esteem.', 'Cursed Quill: Writing with this quill brings your words to life. However, the quill craves dark stories, and your creations might have unintended consequences.'],
+        ['Stone of Echoes: Whisper a message into this stone, and it will carry your words across distances. But your own secrets might also be revealed.', 'Ring of Fortune: Wear this ring for a stroke of luck in your endeavors. Yet it tempts fate – the more you rely on it, the more danger it attracts.', 'Ink of Enchantment: This ink imbues your drawings with magic, bringing them to life. But the more intricate the drawing, the greater the toll on your energy.', 'Compass of Lost Souls: This compass guides you to those who are lost. But with each guiding, you risk becoming lost yourself.', 'Fang of the Beast: This fang grants the strength and instincts of a wild beast. Yet its primal power might consume your human nature.', 'Chalice of Dreams: Sip from this chalice to experience vivid dreams that might reveal insights. But these dreams can blur the line between reality and illusion.'],
+        ['Mask of Deception: A mask that grants the power of deception, making you appear as someone else. However, the mask might also blur your own identity.', 'Brazier of Protection: This brazier wards off evil spirits with its holy flames. But the stronger its protection, the more it demands your devotion.', 'Rune-etched Bracelet: Wear this bracelet to channel elemental magic. But its runes can also bind you to the elements, leaving you vulnerable.', 'Mirror of Regret: Gaze into this mirror to witness past events and seek understanding. But dwelling on regrets might trap you in a cycle of despair.', 'Cursed Dice: Roll these dice to alter fate itself. Yet their power can backfire, leading to unexpected and dire consequences.', 'Stone of Levitation: Touch this stone to defy gravity and levitate. But the longer you remain airborne, the more you risk losing touch with the ground.'],
+        ['Scroll of Illusions: Unroll this scroll to create illusions that deceive the senses. But illusions can twist your perception, leading you astray.', 'Bell of Tranquility: Ring this bell to bring calm and serenity to chaotic situations. Yet its peaceful aura might also attract restless spirits.', 'Talisman of Warding: Wear this talisman for protection against supernatural forces. But as its power grows, it might draw these forces to you.', 'Veil of Dreams: This veil allows you to enter the dreams of others. But navigating dreams comes with its own risks and mysteries.', 'Mask of Revelations: A mask that reveals hidden truths and secrets. Yet truth can be a double-edged sword, sometimes better left unsaid.', 'Elixir of Euphoria: Drinking this elixir grants moments of pure joy and ecstasy. But its intoxicating effects might lead you down a dangerous path.'],
       ]
     },
     mystical_locations: {
@@ -46,12 +186,12 @@ export default {
       category: 'random-tables',
       rollType: '2d6',
       entries: [
-        ['**Veiled Forest**: This forest is shrouded in a perpetual mist, obscuring ancient trees and forgotten ruins. Beware the spirits that drift among the veiled trees.', '**Forgotten Shrine**: An old shrine lies in ruins, its sacred grounds abandoned and overgrown. Yet whispers of prayers and distant echoes linger here.', '**Caverns of Echoes**: These echoing caverns play tricks on sound, distorting voices and cries. Rumor has it, those who listen closely might hear the secrets of the earth.', '**Ephemeral Pond**: A tranquil pond that reflects the moon\'s glow. Legend says it\'s a gateway to the spirit world, but those who linger too long risk becoming trapped.', '**Lost Garden**: An ornate garden once tended by spirits, now overgrown and forgotten. Its flowers still bloom, but they respond to the whispers of those who visit.', '**Haunting Hollow**: A natural amphitheater surrounded by ancient stone columns. Eerie music fills the air as if the stones themselves are singing.'],
-        ['**Cursed Marshlands**: A desolate marsh where the land seems to shift beneath your feet. Ghostly lights dance above the marsh\'s surface, luring unwary travelers.', '**Whispering Woods**: The trees here bear secrets whispered by the wind. Listen closely and you might glean ancient tales or cryptic warnings.', '**Spectral Ruins**: The remains of an ancient city, now inhabited by spirits and shadows. The spirits might offer wisdom, but their intentions are often inscrutable.', '**Enchanted Waterfall**: A waterfall that shimmers with otherworldly hues. Those who bathe in its waters might be granted visions of the past or glimpses of the future.', '**Haunted Manor**: An abandoned manor rumored to be haunted. Echoes of laughter and music can still be heard, and its halls are said to be trapped in a time loop.', '**Luminous Lagoon**: A lagoon that glows with an ethereal light at night. Its waters are said to reveal hidden truths to those who gaze upon them.'],
-        ['**Moonlit Bridge**: A bridge that materializes only under the light of the full moon, spanning across a chasm. It leads to a realm that exists only in moonlit hours.', '**Eerie Echo Cave**: A cave known for its unusual acoustics. Words spoken here are carried throughout the cavern, sometimes distorting their meaning.', '**Sorrowful Grove**: A grove of trees that weep translucent tears. Drinking these tears grants visions, but also leaves a mark on the drinker\'s soul.', '**Temple of Whispers**: A serene temple where wind whispers through the corridors. Visitors might gain guidance from the whispers of ancient spirits.', '**Mystic Mirage Oasis**: An oasis that appears and disappears like a mirage. Its waters can heal wounds, but the oasis can be elusive and hard to find.', '**Labyrinthine Passage**: A network of underground passages filled with puzzles and riddles. Solving them might lead to hidden chambers of forgotten knowledge.'],
-        ['**Spectral Bridge**: A bridge spanning a river said to be the boundary between the living and spirit worlds. Those who cross it might experience strange visions.', '**Frozen Temple**: A temple enveloped in an eternal winter. Its icy halls are home to both spirits seeking refuge and those guarding its sacred knowledge.', '**Silent Monoliths**: Tall stone monoliths that emit a faint hum. Those who listen closely might hear echoes of conversations from long ago.', '**Celestial Observatory**: An ancient observatory atop a mountain, where celestial events can reveal hidden paths and truths to those who watch the skies.', '**Tranquil Sanctuary**: A hidden sanctuary untouched by time, where the spirits of nature gather. Meditating here can offer insight into the world\'s balance.', '**Ethereal Falls**: A waterfall that cascades upward, defying gravity. Its waters grant a temporary ability to walk on air, but not without risks.'],
-        ['**Veil of Illusions**: A misty vale where illusions come to life. Navigating through the illusions might reveal hidden treasures or reveal one\'s true nature.', '**Echoing Chamber**: A chamber where sound reverberates endlessly. Utter a question, and the chamber might provide an answer – but its wisdom is cryptic.', '**Glowing Grove**: A grove of trees that emit a soft glow at night. Those who rest beneath their branches might experience vivid dreams.', '**Mystic Mirage Dunes**: A desert that shimmers with mirages. Those who navigate through the illusions might find an oasis of truth in the sands.', '**Enigmatic Standing Stones**: A circle of standing stones that hum with an otherworldly energy. They can reveal hidden pathways to those who touch them.', '**Lost Lighthouse**: A lighthouse that guides lost ships through the fog. Its keeper is rumored to possess ancient knowledge of the sea.'],
-        ['**Starlit Cave**: A cave illuminated only by the luminescence of crystals. Its walls depict star patterns that can provide guidance to lost travelers.', '**Whispering Grotto**: A coastal grotto where the sea breeze carries whispers of the tides. Those who listen closely might gain insights into the future.', '**Mystic Mirage Oasis**: An oasis that appears and disappears like a mirage. Its waters can heal wounds, but the oasis can be elusive and hard to find.', '**Eerie Echo Canyon**: A canyon that seems to amplify sounds. Each echo reveals a faint message from the past, creating an eerie symphony.', '**Cursed Catacombs**: An underground labyrinth where restless spirits dwell. Each turn might lead to a hidden treasure or a spectral encounter.', '**Hidden Lotus Garden**: A garden where the lotus flowers bloom only during a specific alignment of the stars. The pollen can bring visions, but also unsettling dreams.'],
+        ['Veiled Forest: This forest is shrouded in a perpetual mist, obscuring ancient trees and forgotten ruins. Beware the spirits that drift among the veiled trees.', 'Forgotten Shrine: An old shrine lies in ruins, its sacred grounds abandoned and overgrown. Yet whispers of prayers and distant echoes linger here.', 'Caverns of Echoes: These echoing caverns play tricks on sound, distorting voices and cries. Rumor has it, those who listen closely might hear the secrets of the earth.', 'Ephemeral Pond: A tranquil pond that reflects the moon\'s glow. Legend says it\'s a gateway to the spirit world, but those who linger too long risk becoming trapped.', 'Lost Garden: An ornate garden once tended by spirits, now overgrown and forgotten. Its flowers still bloom, but they respond to the whispers of those who visit.', 'Haunting Hollow: A natural amphitheater surrounded by ancient stone columns. Eerie music fills the air as if the stones themselves are singing.'],
+        ['Cursed Marshlands: A desolate marsh where the land seems to shift beneath your feet. Ghostly lights dance above the marsh\'s surface, luring unwary travelers.', 'Whispering Woods: The trees here bear secrets whispered by the wind. Listen closely and you might glean ancient tales or cryptic warnings.', 'Spectral Ruins: The remains of an ancient city, now inhabited by spirits and shadows. The spirits might offer wisdom, but their intentions are often inscrutable.', 'Enchanted Waterfall: A waterfall that shimmers with otherworldly hues. Those who bathe in its waters might be granted visions of the past or glimpses of the future.', 'Haunted Manor: An abandoned manor rumored to be haunted. Echoes of laughter and music can still be heard, and its halls are said to be trapped in a time loop.', 'Luminous Lagoon: A lagoon that glows with an ethereal light at night. Its waters are said to reveal hidden truths to those who gaze upon them.'],
+        ['Moonlit Bridge: A bridge that materializes only under the light of the full moon, spanning across a chasm. It leads to a realm that exists only in moonlit hours.', 'Eerie Echo Cave: A cave known for its unusual acoustics. Words spoken here are carried throughout the cavern, sometimes distorting their meaning.', 'Sorrowful Grove: A grove of trees that weep translucent tears. Drinking these tears grants visions, but also leaves a mark on the drinker\'s soul.', 'Temple of Whispers: A serene temple where wind whispers through the corridors. Visitors might gain guidance from the whispers of ancient spirits.', 'Mystic Mirage Oasis: An oasis that appears and disappears like a mirage. Its waters can heal wounds, but the oasis can be elusive and hard to find.', 'Labyrinthine Passage: A network of underground passages filled with puzzles and riddles. Solving them might lead to hidden chambers of forgotten knowledge.'],
+        ['Spectral Bridge: A bridge spanning a river said to be the boundary between the living and spirit worlds. Those who cross it might experience strange visions.', 'Frozen Temple: A temple enveloped in an eternal winter. Its icy halls are home to both spirits seeking refuge and those guarding its sacred knowledge.', 'Silent Monoliths: Tall stone monoliths that emit a faint hum. Those who listen closely might hear echoes of conversations from long ago.', 'Celestial Observatory: An ancient observatory atop a mountain, where celestial events can reveal hidden paths and truths to those who watch the skies.', 'Tranquil Sanctuary: A hidden sanctuary untouched by time, where the spirits of nature gather. Meditating here can offer insight into the world\'s balance.', 'Ethereal Falls: A waterfall that cascades upward, defying gravity. Its waters grant a temporary ability to walk on air, but not without risks.'],
+        ['Veil of Illusions: A misty vale where illusions come to life. Navigating through the illusions might reveal hidden treasures or reveal one\'s true nature.', 'Echoing Chamber: A chamber where sound reverberates endlessly. Utter a question, and the chamber might provide an answer – but its wisdom is cryptic.', 'Glowing Grove: A grove of trees that emit a soft glow at night. Those who rest beneath their branches might experience vivid dreams.', 'Mystic Mirage Dunes: A desert that shimmers with mirages. Those who navigate through the illusions might find an oasis of truth in the sands.', 'Enigmatic Standing Stones: A circle of standing stones that hum with an otherworldly energy. They can reveal hidden pathways to those who touch them.', 'Lost Lighthouse: A lighthouse that guides lost ships through the fog. Its keeper is rumored to possess ancient knowledge of the sea.'],
+        ['Starlit Cave: A cave illuminated only by the luminescence of crystals. Its walls depict star patterns that can provide guidance to lost travelers.', 'Whispering Grotto: A coastal grotto where the sea breeze carries whispers of the tides. Those who listen closely might gain insights into the future.', 'Mystic Mirage Oasis: An oasis that appears and disappears like a mirage. Its waters can heal wounds, but the oasis can be elusive and hard to find.', 'Eerie Echo Canyon: A canyon that seems to amplify sounds. Each echo reveals a faint message from the past, creating an eerie symphony.', 'Cursed Catacombs: An underground labyrinth where restless spirits dwell. Each turn might lead to a hidden treasure or a spectral encounter.', 'Hidden Lotus Garden: A garden where the lotus flowers bloom only during a specific alignment of the stars. The pollen can bring visions, but also unsettling dreams.'],
       ]
     },
     random_events: {
@@ -60,12 +200,12 @@ export default {
       category: 'random-tables',
       rollType: '2d6',
       entries: [
-        ['**Spirit Lanterns**: Wisps of light lead you off the path to a glade where ghostly lanterns sway. Do you follow?', '**Sudden Fog**: A thick fog engulfs you, concealing all but the immediate surroundings. Navigating becomes treacherous.', '**Celestial Omen**: A shooting star streaks across the night sky. Some believe it foretells an upcoming event.', '**Mysterious Footprints**: Unusual footprints lead into the forest. Following them might lead to unexpected discoveries.', '**Friendly Yokai**: A playful yokai offers assistance or guidance. But yokai motives are often more complex than they seem.', '**Thunderstorm**: Dark clouds gather, and thunder rumbles ominously. Seek shelter or brave the tempest?'],
-        ['**Spectral Music**: Melodic music drifts on the wind. Following it leads to a hidden grove where spirits dance.', '**Startling Encounter**: You stumble upon a solitary figure deep in thought. They seem to have been waiting for someone.', '**Curious Artifact**: An odd object catches your eye, half-buried in the earth. What secrets does it hold?', '**Benevolent Guardian**: A mysterious figure watches over your campsite during the night. Their intentions are unclear.', '**Haunted Whispers**: Faint voices echo in your ears, revealing cryptic riddles or snippets of forgotten tales.', '**Flowering Shadows**: An ancient tree\'s blossoms cast intricate patterns on the ground. The petals hold power... or danger.'],
-        ['**Strange Animal**: An animal behaves unusually, leading you on a detour. Is it trying to warn you, or is it just an animal?', '**Moonlit Encounter**: An ethereal figure emerges from the moonlit shadows, offering guidance or a cryptic message.', '**Blossom Storm**: Cherry blossoms fall like snow, creating a beautiful but eerie atmosphere. What lies within the petals?', '**Mystic Mirage**: The landscape shifts before your eyes, revealing a mirrored version of reality. Step through, or stay put?', '**Lost in Thought**: A solitary monk meditates by the roadside. Join them, and you might gain insight into your journey.', '**Feral Guardians**: Enormous, wild creatures block your path. Are they protectors of this land, or something more sinister?'],
-        ['**Whispering Winds**: The wind carries distant voices and secrets. Follow the whispers to unravel hidden truths.', '**Mysterious Offer**: A mysterious figure presents you with a cryptic choice that could impact your destiny.', '**Unseen Observer**: You have the uncanny feeling of being watched. Yet, no one is visible among the trees.', '**Blossom Trail**: A trail of cherry blossoms beckons you deeper into the forest. What awaits at the end?', '**Guardian Statues**: A row of guardian statues seems to move and shift when you\'re not looking directly at them.', '**Mischievous Spirits**: Playful spirits steal your belongings and scatter them. Retrieve your items or engage in their antics.'],
-        ['**Crying Spirits**: You hear the mournful cries of spirits, urging you to help them find peace. Will you heed their call?', '**Freak Weather**: The weather changes drastically within moments, from sunshine to torrential rain or vice versa.', '**Veil of Illusion**: The world around you distorts and shifts, creating illusions that could lead you astray.', '**Lingering Echoes**: The echoes of a long-forgotten battle resound in the air, revealing hints of a tragic past.', '**Guiding Fireflies**: Fireflies light your way in the darkness, leading you to a hidden clearing or cave.', '**Starlit Serenade**: Stars align to form a recognizable shape, an ancient celestial map that might guide your journey.'],
-        ['**Restless Wind**: An eerie wind carries whispers of secrets and truths from distant lands. What tales does it tell?', '**Phantom Horses**: Spectral horses appear, inviting you to join their midnight ride. Will you accept their ghostly invitation?', '**Lost Lament**: A sorrowful song fills the air, sung by a voice you can\'t quite locate. Will you seek its source?', '**Cursed Artifact**: You stumble upon an artifact bearing a malevolent aura. Will you keep it for its power, or destroy it?', '**Guardian of Dreams**: A guardian spirit visits you in your dreams, offering advice or cryptic visions of the future.', '**Wandering Shadows**: Eerie figures wander the forest, trailing shadows that seem disconnected from their forms. Approach with caution.'],
+        ['Spirit Lanterns: Wisps of light lead you off the path to a glade where ghostly lanterns sway. Do you follow?', 'Sudden Fog: A thick fog engulfs you, concealing all but the immediate surroundings. Navigating becomes treacherous.', 'Celestial Omen: A shooting star streaks across the night sky. Some believe it foretells an upcoming event.', 'Mysterious Footprints: Unusual footprints lead into the forest. Following them might lead to unexpected discoveries.', 'Friendly Yokai: A playful yokai offers assistance or guidance. But yokai motives are often more complex than they seem.', 'Thunderstorm: Dark clouds gather, and thunder rumbles ominously. Seek shelter or brave the tempest?'],
+        ['Spectral Music: Melodic music drifts on the wind. Following it leads to a hidden grove where spirits dance.', 'Startling Encounter: You stumble upon a solitary figure deep in thought. They seem to have been waiting for someone.', 'Curious Artifact: An odd object catches your eye, half-buried in the earth. What secrets does it hold?', 'Benevolent Guardian: A mysterious figure watches over your campsite during the night. Their intentions are unclear.', 'Haunted Whispers: Faint voices echo in your ears, revealing cryptic riddles or snippets of forgotten tales.', 'Flowering Shadows: An ancient tree\'s blossoms cast intricate patterns on the ground. The petals hold power... or danger.'],
+        ['Strange Animal: An animal behaves unusually, leading you on a detour. Is it trying to warn you, or is it just an animal?', 'Moonlit Encounter: An ethereal figure emerges from the moonlit shadows, offering guidance or a cryptic message.', 'Blossom Storm: Cherry blossoms fall like snow, creating a beautiful but eerie atmosphere. What lies within the petals?', 'Mystic Mirage: The landscape shifts before your eyes, revealing a mirrored version of reality. Step through, or stay put?', 'Lost in Thought: A solitary monk meditates by the roadside. Join them, and you might gain insight into your journey.', 'Feral Guardians: Enormous, wild creatures block your path. Are they protectors of this land, or something more sinister?'],
+        ['Whispering Winds: The wind carries distant voices and secrets. Follow the whispers to unravel hidden truths.', 'Mysterious Offer: A mysterious figure presents you with a cryptic choice that could impact your destiny.', 'Unseen Observer: You have the uncanny feeling of being watched. Yet, no one is visible among the trees.', 'Blossom Trail: A trail of cherry blossoms beckons you deeper into the forest. What awaits at the end?', 'Guardian Statues: A row of guardian statues seems to move and shift when you\'re not looking directly at them.', 'Mischievous Spirits: Playful spirits steal your belongings and scatter them. Retrieve your items or engage in their antics.'],
+        ['Crying Spirits: You hear the mournful cries of spirits, urging you to help them find peace. Will you heed their call?', 'Freak Weather: The weather changes drastically within moments, from sunshine to torrential rain or vice versa.', 'Veil of Illusion: The world around you distorts and shifts, creating illusions that could lead you astray.', 'Lingering Echoes: The echoes of a long-forgotten battle resound in the air, revealing hints of a tragic past.', 'Guiding Fireflies: Fireflies light your way in the darkness, leading you to a hidden clearing or cave.', 'Starlit Serenade: Stars align to form a recognizable shape, an ancient celestial map that might guide your journey.'],
+        ['Restless Wind: An eerie wind carries whispers of secrets and truths from distant lands. What tales does it tell?', 'Phantom Horses: Spectral horses appear, inviting you to join their midnight ride. Will you accept their ghostly invitation?', 'Lost Lament: A sorrowful song fills the air, sung by a voice you can\'t quite locate. Will you seek its source?', 'Cursed Artifact: You stumble upon an artifact bearing a malevolent aura. Will you keep it for its power, or destroy it?', 'Guardian of Dreams: A guardian spirit visits you in your dreams, offering advice or cryptic visions of the future.', 'Wandering Shadows: Eerie figures wander the forest, trailing shadows that seem disconnected from their forms. Approach with caution.'],
       ]
     },
     supernatural_omens: {
@@ -291,6 +431,6 @@ export default {
         ['A noble’s estate is untouched by time, though no one has lived there in decades.', 'A shadowy figure rows a boat across the misty lake, waiting for a passenger.', 'A small shop sells books no one can read, but those who take one gain visions in their sleep.', 'A bell rings at the same time every day, though no one knows where the sound comes from.', 'A hidden path in the forest always leads to a different place depending on the traveler.', 'A lone tree on a hill is the only thing visible in a fog that never lifts.'],
         ['A festival occurs in an abandoned town, where music and laughter echo with no source.', 'A traveler steps into a house to escape the rain, only to find themselves in another village entirely.', 'A noble’s tea set is found still warm, though no one has used it for years.', 'A painter’s mural changes daily, depicting scenes of events that have yet to occur.', 'A river’s reflection shows a different season than the world above.', 'A child is found wandering alone, claiming they came from a village that does not exist.'],
       ]
-    },
+    }
   }
 };

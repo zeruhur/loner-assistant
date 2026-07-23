@@ -58,28 +58,33 @@ export function displayActiveCharacter(character) {
 /**
  * Show new character form
  */
-export function showNewCharacterForm() {
+export function showNewCharacterForm(prefill = null) {
+  const p = prefill || {};
+  const v = (s) => UI.escapeHtml(s || '');
+  const skillsVal = Array.isArray(p.skills) ? p.skills.join(', ') : (p.skills || '');
+  const gearVal = Array.isArray(p.gear) ? p.gear.join(', ') : (p.gear || '');
+
   const formHTML = `
     <form id="new-character-form">
       <div class="form-group">
         <label>Name *</label>
-        <input type="text" id="char-name" required placeholder="Character name">
+        <input type="text" id="char-name" required placeholder="Character name" value="${v(p.name)}">
       </div>
       <div class="form-group">
         <label>Concept</label>
-        <input type="text" id="char-concept" placeholder="e.g., Street-smart hacker">
+        <input type="text" id="char-concept" placeholder="e.g., Street-smart hacker" value="${v(p.concept)}">
       </div>
       <div class="form-group">
         <label>Skills (comma-separated)</label>
-        <input type="text" id="char-skills" placeholder="Hacking, Stealth">
+        <input type="text" id="char-skills" placeholder="Hacking, Stealth" value="${v(skillsVal)}">
       </div>
       <div class="form-group">
         <label>Frailty</label>
-        <input type="text" id="char-frailty" placeholder="Haunted by past">
+        <input type="text" id="char-frailty" placeholder="Haunted by past" value="${v(p.frailty)}">
       </div>
       <div class="form-group">
         <label>Gear (comma-separated)</label>
-        <input type="text" id="char-gear" placeholder="Cyberdeck, Lockpicks">
+        <input type="text" id="char-gear" placeholder="Cyberdeck, Lockpicks" value="${v(gearVal)}">
       </div>
       <div class="form-group">
         <label>Goal & Motive</label>
