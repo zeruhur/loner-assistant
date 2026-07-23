@@ -489,9 +489,14 @@
                     <h2 style="margin: 0;">Characters</h2>
                     <button class="help-button" onclick="HelpSystem.show('characters')" title="Show help for Characters">?</button>
                 </div>
-                <button class="btn btn-primary" onclick="showNewCharacterForm()">
-                    + New Character
-                </button>
+                <div style="display: flex; gap: var(--space-sm);">
+                    <button class="btn btn-secondary" onclick="CharacterGenerator.open()" title="Roll a character from a supplement's tables">
+                        🎲 Generate
+                    </button>
+                    <button class="btn btn-primary" onclick="showNewCharacterForm()">
+                        + New Character
+                    </button>
+                </div>
             </div>
             <div id="characters-list" class="grid-list"></div>
         </div>

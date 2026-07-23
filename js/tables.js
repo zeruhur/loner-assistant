@@ -286,6 +286,78 @@ export const TableSystem = {
   },
 
   /**
+   * Get all supplements that provide character-generator tables.
+   * A supplement qualifies if it has a `concepts` table in the
+   * `character` category (the minimum a generated character needs).
+   */
+  getCharacterSources() {
+    const sources = [];
+    for (const [id, supplement] of Object.entries(this.registry)) {
+      const tables = supplement.tables || {};
+      if (tables.concepts && tables.concepts.category === 'character') {
+        sources.push({ id, name: supplement.supplement.name });
+      }
+    }
+    sources.sort((a, b) => a.name.localeCompare(b.name));
+    return sources;
+  },
+
+  /**
+   * Roll a single character field (returns the string result).
+   * `field` is a character table id; 'name' maps to the gendered name table.
+   */
+  rollCharacterField(supplementId, field, gender = 'female') {
+    const supplement = this.registry[supplementId];
+    if (!supplement) return '';
+    const tableId = field === 'name'
+      ? (gender === 'male' ? 'male_names' : 'female_names')
+      : field;
+    if (!supplement.tables[tableId]) return '';
+    return this.roll(supplementId, tableId).result;
+  },
+
+  /**
+   * Generate a full character from a supplement's character tables.
+   * Loner PCs start with two skills and two pieces of gear (expandable
+   * through play), so those are the defaults.
+   */
+  generateCharacter(supplementId, { gender = 'female', skillCount = 2, gearCount = 2 } = {}) {
+    const supplement = this.registry[supplementId];
+    if (!supplement) throw new Error(`Supplement not found: ${supplementId}`);
+    const tables = supplement.tables;
+
+    // Roll `count` distinct results from a table (best-effort - falls back
+    // to allowing repeats if the table is too small to fill the quota).
+    const rollDistinct = (tableId, count) => {
+      if (!tables[tableId]) return [];
+      const out = [];
+      let attempts = 0;
+      while (out.length < count && attempts < count * 12) {
+        const v = this.roll(supplementId, tableId).result;
+        if (!out.includes(v)) out.push(v);
+        attempts++;
+      }
+      return out;
+    };
+
+    const firstName = this.rollCharacterField(supplementId, 'name', gender);
+    const surname = tables.surnames ? this.roll(supplementId, 'surnames').result : '';
+
+    return {
+      supplementId,
+      supplementName: supplement.supplement.name,
+      gender,
+      firstName,
+      surname,
+      fullName: [firstName, surname].filter(Boolean).join(' '),
+      concept: tables.concepts ? this.roll(supplementId, 'concepts').result : '',
+      skills: rollDistinct('skills', skillCount),
+      frailty: tables.frailties ? this.roll(supplementId, 'frailties').result : '',
+      gear: rollDistinct('gear', gearCount)
+    };
+  },
+
+  /**
    * Get active Get Inspired flavor
    */
   getActiveInspiredFlavor() {

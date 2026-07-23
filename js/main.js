@@ -26,6 +26,7 @@ import { ManualSystem } from './manual.js';
 import { ExportImportSystem } from './export-import.js';
 import { CampaignManager } from './campaigns.js';
 import { CharacterManager } from './characters.js';
+import { CharacterGenerator } from './character-generator.js';
 import { NPCManager, showNPCPanel, showNewNPCForm } from './npcs.js';
 import { LocationManager, showLocationPanel, showNewLocationForm } from './locations.js';
 import { ThreadManager, showThreadPanel, showNewThreadForm } from './threads.js';
@@ -247,6 +248,7 @@ function exposeCuratedGlobals() {
   window.ExportImportSystem = ExportImportSystem;
   window.CampaignManager = CampaignManager;
   window.CharacterManager = CharacterManager;
+  window.CharacterGenerator = CharacterGenerator;
   window.NPCManager = NPCManager;
   window.LocationManager = LocationManager;
   window.ThreadManager = ThreadManager;
