@@ -120,15 +120,15 @@ export const CharacterGenerator = {
     const c = current.character;
     const sources = TableSystem.getCharacterSources();
 
-    const supplementSelector = sources.length > 1 ? `
+    const supplementSelector = `
       <div class="form-group">
-        <label>Source</label>
+        <label>Source supplement</label>
         <select onchange="CharacterGenerator.setSupplement(this.value)"
                 style="width:100%;padding:0.5rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);">
           ${sources.map(s => `<option value="${s.id}" ${s.id === current.supplementId ? 'selected' : ''}>${UI.escapeHtml(s.name)}</option>`).join('')}
         </select>
       </div>
-    ` : '';
+    `;
 
     UI.showModal('Generate Character', `
       <div class="char-generator">
@@ -137,7 +137,7 @@ export const CharacterGenerator = {
         <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.75rem;">
           <div>
             <div style="font-size:0.7rem; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.25rem;">Name gender</div>
-            ${this.toggle([['female', 'Female'], ['male', 'Male']], current.gender, 'setGender')}
+            ${this.toggle([['female', 'Female'], ['male', 'Male'], ['any', 'Any']], current.gender, 'setGender')}
           </div>
           <div>
             <div style="font-size:0.7rem; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.25rem;">Save as</div>

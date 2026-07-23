@@ -309,9 +309,12 @@ export const TableSystem = {
   rollCharacterField(supplementId, field, gender = 'female') {
     const supplement = this.registry[supplementId];
     if (!supplement) return '';
-    const tableId = field === 'name'
-      ? (gender === 'male' ? 'male_names' : 'female_names')
-      : field;
+    let tableId = field;
+    if (field === 'name') {
+      // 'any' picks a gender per roll, so a generated cast can be mixed.
+      const g = gender === 'any' ? (Math.random() < 0.5 ? 'male' : 'female') : gender;
+      tableId = g === 'male' ? 'male_names' : 'female_names';
+    }
     if (!supplement.tables[tableId]) return '';
     return this.roll(supplementId, tableId).result;
   },
